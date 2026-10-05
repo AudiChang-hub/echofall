@@ -183,6 +183,12 @@
       const fps = this.settings.fps === 'max' ? 0 : this.settings.fps === '30' ? 30 : 60;
       if (fps && now - this.last < 1000 / fps - 3) return;
       let rdt = (now - this.last) / 1000; this.last = now;
+      // adaptive quality: on 自動, if the machine cannot hold ~45 fps for a few seconds of play, drop to the light profile
+      if (this.state === 'play' && G.Quality.pref === 'auto' && !G.Quality.autoLow && rdt > 0 && rdt < 0.5) {
+        this.fpsAvg = this.fpsAvg ? this.fpsAvg * 0.97 + rdt * 0.03 : rdt;
+        this.perfSlowT = this.fpsAvg > 1 / 44 ? (this.perfSlowT || 0) + rdt : 0;
+        if (this.perfSlowT > 4) { G.Quality.autoLow = true; this.applyQuality(); this.fpsAvg = 0; this.perfSlowT = 0; G.UI.toast('偵測到畫面不夠流暢，已自動切換為省電畫質（可在設定調整）', 'item'); }
+      }
       if (!(rdt > 0)) rdt = 0;
       if (rdt > 0.05) rdt = 0.05;
       this.realTime += rdt;
@@ -429,6 +435,7 @@
       const gt = this.player.gear || {};
       const n = Math.round((e.T.shards || 10) * (0.9 + Math.random() * 0.2) * (1 + (gt.shard || 0)));
       if (gt.killHeal && this.player.state !== 'dead') this.player.hp = Math.min(this.player.maxHp, this.player.hp + this.player.maxHp * gt.killHeal);
+      if (gt.killRes && this.player.state !== 'dead') this.player.gainRes(gt.killRes);
       G.Gear.onEnemyDeath(this, e);
       const count = Math.min(24, Math.max(3, Math.round(n / 8)));
       for (let i = 0; i < count; i++) {

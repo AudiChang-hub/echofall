@@ -183,18 +183,34 @@
       // brightness(0)+invert filter turns every fill pure white while keeping the shape's alpha)
       const wf = Math.max(0, this.flash - 0.45) / 0.55;
       if (wf > 0 && FILTER_OK && !this.dead) {
+        // drawn into a small offscreen canvas, whitened with source-in and stamped back: same silhouette as before,
+        // but a canvas `filter` on the main canvas made every hit frame expensive on laptops
         ctx.save();
-        ctx.filter = 'brightness(0) invert(1)'; ctx.globalAlpha = Math.min(1, wf * 1.15);
-        // the second pass must not advance animation/cloth or spawn particles twice
-        const keep = G.FX.parts.length, dtv = G.game.dtVis; G.game.dtVis = 0;
         if (k > 0) { ctx.translate(this.hitDir * 9 * k, 0); ctx.translate(this.x, this.y); ctx.scale(1 + 0.1 * k, 1 - 0.1 * k); ctx.translate(-this.x, -this.y); }
-        this.T.draw(ctx, this, true);
-        G.game.dtVis = dtv; G.FX.parts.length = Math.min(G.FX.parts.length, keep);
-        ctx.restore();
+        const m = ctx.getTransform(); ctx.restore();
+        const sc = this.T.scale || 1, bw = (this.w * 0.5 + 170) * sc, top = this.h * 1.35 * sc + 140, bot = 60 * sc;
+        const x0 = m.a * (this.x - bw) + m.e, y0 = m.d * (this.y - top) + m.f, x1 = m.a * (this.x + bw) + m.e, y1 = m.d * (this.y + bot) + m.f;
+        const rx = Math.floor(Math.min(x0, x1)), ry = Math.floor(Math.min(y0, y1)), rw = Math.min(1400, Math.ceil(Math.abs(x1 - x0)) + 2), rh = Math.min(1400, Math.ceil(Math.abs(y1 - y0)) + 2);
+        if (rw > 2 && rh > 2) {
+          if (!SIL.c) { SIL.c = document.createElement('canvas'); SIL.x = SIL.c.getContext('2d'); }
+          const c = SIL.c, x = SIL.x;
+          if (c.width < rw || c.height < rh) { c.width = Math.max(c.width, rw); c.height = Math.max(c.height, rh); }
+          x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; x.clearRect(0, 0, rw, rh);
+          x.setTransform(m.a, m.b, m.c, m.d, m.e - rx, m.f - ry);
+          // the second pass must not advance animation/cloth or spawn particles twice
+          const keep = G.FX.parts.length, dtv = G.game.dtVis; G.game.dtVis = 0;
+          try { this.T.draw(x, this, true); } finally { G.game.dtVis = dtv; G.FX.parts.length = Math.min(G.FX.parts.length, keep); }
+          x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'source-in'; x.globalAlpha = 1; x.fillStyle = '#ffffff'; x.fillRect(0, 0, rw, rh);
+          x.globalCompositeOperation = 'source-over';
+          ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = Math.min(1, wf * 1.15);
+          ctx.drawImage(c, 0, 0, rw, rh, rx, ry, rw, rh);
+          ctx.restore();
+        }
       }
     }
   }
   G.Enemy = Enemy;
+  const SIL = {};   // shared offscreen canvas for the hit-flash silhouette
   const FILTER_OK = (() => { try { const c = document.createElement('canvas').getContext('2d'); return 'filter' in c; } catch (e) { return false; } })();
 
   // smooth pose blend toward a target pose

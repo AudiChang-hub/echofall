@@ -156,7 +156,8 @@
         ctx.save();
         ctx.globalAlpha = k < 0.15 ? k / 0.15 : 1 - Math.max(0, (k - 0.6) / 0.4);
         ctx.font = `700 ${t.size}px Rajdhani, "Noto Sans TC", sans-serif`; ctx.textAlign = 'center';
-        ctx.fillStyle = t.col; ctx.shadowColor = t.col; ctx.shadowBlur = 12;
+        ctx.fillStyle = t.col; ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.strokeStyle = '#0b0612';
+        if ((G.textFlip || 1) < 0) { ctx.save(); ctx.translate(t.x, t.y - k * 30); ctx.scale(1, -1); ctx.strokeText(t.str, 0, 0); ctx.restore(); } else ctx.strokeText(t.str, t.x, t.y - k * 30);
         if ((G.textFlip || 1) < 0) { ctx.translate(t.x, t.y - k * 30); ctx.scale(1, -1); ctx.fillText(t.str, 0, 0); } else ctx.fillText(t.str, t.x, t.y - k * 30);
         ctx.restore();
       }

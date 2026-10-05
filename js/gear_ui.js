@@ -126,7 +126,7 @@
       card.className = 'loot-card r' + it.r;
       card.style.setProperty('--rc', R.col);
       card.innerHTML = `<div class="lc-ico">${GR.icon(it)}</div><div class="lc-main"><p class="lc-k">${R.name}　${GR.slotName[it.slot]}</p><h4>${esc(GR.name(it))}</h4>
-        <p class="lc-s">${esc(statShort(it))}</p>
+        <p class="lc-s">${esc(statShort(it))}${it.q && it.slot !== 'talisman' ? `　品質 ${Math.round(it.q * 100)}%` : ''}${(it.fx || []).length ? `　詞條 ×${it.fx.length}` : ''}</p>
         ${lines.length && cur ? `<ul class="lc-cmp">${lines.map((l) => lineHtml(l, true)).join('')}</ul><p class="lc-vs">與「${esc(GR.name(cur))}」比較</p>` : ''}
         ${!cur && it.slot !== 'weapon' ? '<p class="lc-vs">此欄位目前是空的</p>' : ''}</div>${badge(v)}`;
       host.appendChild(card);
@@ -192,7 +192,7 @@
         host.style.setProperty('--rc', R.col);
         host.innerHTML = `<p class="gd-k">${R.name} ${R.en} · ${GR.slotName[it.slot]}${it.il > 1 ? ` · 第 ${it.il} 章` : ''}</p>
           <h3><i class="gi">${GR.icon(it)}</i>${esc(GR.name(it))}</h3>
-          <p class="gd-desc">${esc(GR.desc(it))}</p>
+          <p class="gd-desc">${esc(GR.desc(it))}${it.q && it.slot !== 'talisman' ? `　｜　品質 <b class="${it.q >= 1.05 ? 'q-hi' : it.q <= 0.95 ? 'q-lo' : ''}">${Math.round(it.q * 100)}%</b>` : ''}</p>
           <ul class="gd-lines">${lines.map((l) => lineHtml(l, cmpWith !== undefined)).join('')}</ul>
           ${cmpWith ? `<p class="gd-vs">▲▼ 與目前裝備的「${esc(GR.name(cmpWith))}」比較</p>` : cmpWith === null && !isW ? '<p class="gd-vs">此欄位目前是空的</p>' : ''}
           <p class="gd-lore">${esc(GR.lore(it))}</p>

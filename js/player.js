@@ -167,6 +167,8 @@
     tryCancel(allowAttack) {
       const I = G.Input;
       if (I.pressed('dodge', 160) && this.sta > 0) { I.consume('dodge'); this.startDodge(); return true; }
+      // guard cuts an attack's recovery short (it used to wait for the whole swing to finish)
+      if (this.state !== 'guard' && I.down('guard') && this.onGround) { this.enterGuard(); return true; }
       if (allowAttack && I.pressed('light', 160) && this.sta > 0) {
         I.consume('light');
         if (this.counterT > 0 && this.counterTarget && !this.counterTarget.dead) { this.startCounter(); return true; }
@@ -179,7 +181,7 @@
     updMove(dt, mx, ctl) {
       const I = G.Input;
       const acc = this.onGround ? 3400 : 2200;
-      this.vx = U.approach(this.vx, mx * RUN * G.Boons.runMul(), acc * dt);
+      this.vx = U.approach(this.vx, mx * RUN * G.Boons.runMul() * (1 + ((this.gear && this.gear.run) || 0)), acc * dt);
       if (mx) this.facing = mx > 0 ? 1 : -1;
       if (!ctl) return;
       // jumping
@@ -207,7 +209,7 @@
         }
       }
       if (I.pressed('dodge', 150) && this.sta > 0) { I.consume('dodge'); this.startDodge(); return; }
-      if (I.down('guard') && this.onGround) { if (!mx) this.autoFace(); this.setState('guard', 0.06); this.vx *= 0.2; return; }
+      if (I.down('guard') && this.onGround) { if (!mx) this.autoFace(); this.enterGuard(); return; }
       // one skill button: the strongest technique the resonance gauge can pay for
       if (I.pressed('skill', 150)) {
         I.consume('skill');
@@ -222,6 +224,13 @@
       }
     }
 
+    // raise the blade now; a guard press buffered during a swing starts the perfect-parry window when the blade is up,
+    // so pressing slightly early is never punished
+    enterGuard() {
+      const I = G.Input, now = performance.now();
+      if (now - (I.pressT.guard || 0) < 450 && this.state !== 'parried' && this.state !== 'blocked') I.pressT.guard = now;
+      this.setState('guard', 0.04); this.vx *= 0.2;
+    }
     updGuard(dt, mx, ctl) {
       const I = G.Input;
       this.vx = U.approach(this.vx, 0, 1800 * dt);
@@ -503,6 +512,7 @@
       g.stats.parries++;
       g.onPerfectParry();
       G.Boons.onParry(this);
+      if (this.gear && this.gear.parryHeal) this.hp = Math.min(this.maxHp, this.hp + this.maxHp * this.gear.parryHeal);
       this.vx = -this.facing * 90;
     }
     block(src, info) {

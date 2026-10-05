@@ -69,7 +69,9 @@ window.G = window.G || {};
     pref: 'auto',
     autoLow: coarse || (navigator.deviceMemory != null && navigator.deviceMemory <= 4),
     get low() { return this.pref === 'low' || (this.pref === 'auto' && this.autoLow); },
-    get label() { return { auto: this.autoLow ? '自動（省電）' : '自動（高）', high: '高', low: '低（省記憶體）' }[this.pref]; },
+    // the full-screen colour-grade filter pass only runs on 高 (laptops on 自動 skip it; it is the priciest pass)
+    get full() { return this.pref === 'high'; },
+    get label() { return { auto: this.autoLow ? '自動（省電）' : '自動（標準）', high: '高（最佳畫面）', low: '低（省電）' }[this.pref]; },
   };
 
   /* ---------------- Storage (safe) ---------------- */

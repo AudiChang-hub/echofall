@@ -984,7 +984,7 @@
       ctx.fillStyle = cg; ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'source-over';
       // painted look: punchier saturation and contrast (one filtered self-copy; skipped on low quality)
-      if (!G.Quality.low && 'filter' in ctx) {
+      if (G.Quality.full && 'filter' in ctx) {
         ctx.save(); ctx.filter = 'saturate(1.28) contrast(1.1)'; ctx.globalCompositeOperation = 'copy';
         ctx.drawImage(ctx.canvas, 0, 0); ctx.restore();
       }

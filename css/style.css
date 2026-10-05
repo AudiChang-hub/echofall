@@ -833,3 +833,5 @@ html.touch .loot-card { padding: 6px 9px; }
   .tv-body { gap: 12px; margin-top: 8px; } .tv-c { padding: 6px 9px; grid-template-columns: 52px 1fr auto; } .tv-c b { font-size: 13px; }
   .tv-p { padding: 6px 8px; font-size: 12.5px; }
 }
+
+.gd-desc b.q-hi { color: #8dfcb0; } .gd-desc b.q-lo { color: #ff8f9f; } .gd-desc b { font-family: var(--mono); }

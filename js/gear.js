@@ -127,6 +127,10 @@
     drop: { d: (v) => `裝備掉落率 +${Math.round(v * 100)}%`, w: ['head'], v: [0.1, 0.2] },
     parry: { d: (v) => `完美格擋判定 +${Math.round(v * 1000)}ms`, w: ['head', 'body'], v: [0.008, 0.016] },
     dodge: { d: (v) => `閃避距離 +${Math.round(v * 100)}%`, w: ['body'], v: [0.04, 0.08] },
+    run: { d: (v) => `移動速度 +${Math.round(v * 100)}%`, w: ['body', 'head'], v: [0.03, 0.07] },
+    parryHeal: { d: (v) => `完美格擋回復 ${Math.round(v * 100)}% 生命`, w: ['weapon', 'head', 'body'], v: [0.02, 0.05] },
+    killRes: { d: (v) => `擊倒敵人回復 ${Math.round(v)} 共鳴`, w: ['weapon', 'head'], v: [3, 7], int: true },
+    boss: { d: (v) => `對頭目與菁英傷害 +${Math.round(v * 100)}%`, w: ['weapon'], v: [0.05, 0.12] },
   };
   const MAX_INV = 80, MAX_PLUS = 10;
 
@@ -156,7 +160,8 @@
   function make(slot, base, r, il, opts = {}) {
     const it = { uid: uid(), slot, base, r, il, plus: 0, fx: [], aff: opts.aff || '' };
     if (slot === 'talisman') return it;
-    it.fx = rollFx(slot, RARITY[r].fx, il);
+    it.q = Math.round((0.92 + Math.random() * 0.16) * 100) / 100;          // base-stat roll, shown as 品質 92–108%
+    it.fx = rollFx(slot, r === 0 ? (Math.random() < 0.35 ? 1 : 0) : RARITY[r].fx + (Math.random() < 0.45 ? 1 : 0), il);   // common 0–1 lines, rare 2–3, legendary 3–4
     if (slot === 'weapon' && !it.aff && r >= 1 && Math.random() < 0.18 + r * 0.14) it.aff = pick(Object.keys(AFF));
     return it;
   }
@@ -189,7 +194,7 @@
   function itemStats(it) {
     const s = {}, add = (k, v) => { s[k] = (s[k] || 0) + v; };
     const d = def(it); if (!d) return s;
-    const rm = RARITY[it.r].mul;
+    const rm = RARITY[it.r].mul * (it.q || 1);
     if (it.slot === 'weapon') {
       const C = CLASSES[d.cls];
       s.power = Math.round(100 * C.dmg * lvScale(it.il) * rm * (1 + 0.07 * it.plus));
@@ -214,7 +219,7 @@
     let v = 0;
     if (it.slot === 'weapon') v = s.power * s.speed * (1 + (s.spd || 0)) * (1 + (s.atk || 0)) * (1 + (s.crit || 0)) * (1 + 0.25 * ((s.bleedB || 0) + (s.frostB || 0)) / 14 + (s.shock || 0)) * (1 + (s.reach - 1) * 0.4);
     else if (it.slot === 'talisman') v = 10 * (it.r + 1);
-    else v = s.defense * 3 + (s.hp || 0) + (s.sta || 0) * 0.5 + (s.dr || 0) * 300 + (s.dodge || 0) * 80 + (s.crit || 0) * 120 + (s.res || 0) * 40 + (s.parry || 0) * 1500 + (s.shard || 0) * 40 + (s.drop || 0) * 40;
+    else v = s.defense * 3 + (s.hp || 0) + (s.sta || 0) * 0.5 + (s.dr || 0) * 300 + (s.dodge || 0) * 80 + (s.crit || 0) * 120 + (s.res || 0) * 40 + (s.parry || 0) * 1500 + (s.shard || 0) * 40 + (s.drop || 0) * 40 + (s.run || 0) * 60 + (s.parryHeal || 0) * 300 + (s.killRes || 0) * 2;
     return Math.round(v);
   }
 
@@ -487,6 +492,6 @@
     drop: ['掉落率', pct], parry: ['完美格擋判定', (v) => `+${Math.round(v * 1000)}ms`], dodge: ['閃避距離', (v) => `${v >= 0 ? '+' : ''}${Math.round(v * 100)}%`],
     iframes: ['閃避無敵', (v) => `+${v.toFixed(2)}s`], low: ['低血量增傷', pct], killHeal: ['擊倒回復', pct], heal: ['回復量', pct],
     tonic: ['調和劑', (v) => `+${v}`], shock: ['落雷機率', pct], frostB: ['寒氣累積', (v) => `${Math.round(v)}`], bleedB: ['出血累積', (v) => `${Math.round(v)}`],
-    guard: ['格擋減傷', pct], boss: ['對頭目增傷', pct],
+    guard: ['格擋減傷', pct], boss: ['對頭目增傷', pct], run: ['移動速度', pct], parryHeal: ['完美格擋回血', pct], killRes: ['擊倒回復共鳴', (v) => `+${Math.round(v)}`],
   };
 })(window.G);
