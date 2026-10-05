@@ -13,6 +13,9 @@
     G.Input.device = 'touch'; // the keydown handler marks 'kb'; these presses come from a finger
   };
 
+  // every hold button registers here so a missed pointerup can never leave one stuck down
+  const HELD = [];
+  const releaseAll = () => { for (const h of HELD) h.reset(); G.Input.touchX = 0; G.Input.touchDown = false; };
   function holdButton(b, code) {
     const ids = new Set();
     const on = (e) => { e.preventDefault(); e.stopPropagation(); ids.add(e.pointerId); b.setPointerCapture && b.setPointerCapture(e.pointerId); if (ids.size === 1) { send('keydown', code); b.classList.add('on'); } };
@@ -20,7 +23,18 @@
     b.addEventListener('pointerdown', on);
     b.addEventListener('pointerup', off); b.addEventListener('pointercancel', off); b.addEventListener('lostpointercapture', off);
     b.addEventListener('contextmenu', (e) => e.preventDefault());
+    HELD.push({ off, reset: () => { if (ids.size) { ids.clear(); send('keyup', code); b.classList.remove('on'); } } });
   }
+  // safety nets (iOS sometimes drops pointerup when a finger slides off a button or the view changes under it):
+  // a pointer released anywhere frees the buttons it held; no finger on the glass, or the app hidden, frees everything
+  document.addEventListener('pointerup', (e) => { for (const h of HELD) h.off(e); }, true);
+  document.addEventListener('pointercancel', (e) => { for (const h of HELD) h.off(e); }, true);
+  const noFingers = (e) => { if (!e.touches || e.touches.length === 0) releaseAll(); };
+  document.addEventListener('touchend', noFingers, true);
+  document.addEventListener('touchcancel', noFingers, true);
+  window.addEventListener('blur', releaseAll);
+  window.addEventListener('pagehide', releaseAll);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAll(); });
 
   function buildStick(root) {
     const zone = document.createElement('div');
@@ -52,6 +66,7 @@
     zone.addEventListener('pointermove', (e) => { if (e.pointerId === id) move(e); });
     const end = (e) => { if (e.pointerId !== id) return; id = null; G.Input.touchX = 0; G.Input.touchDown = false; home(); };
     zone.addEventListener('pointerup', end); zone.addEventListener('pointercancel', end); zone.addEventListener('lostpointercapture', end);
+    HELD.push({ off: end, reset: () => { if (id !== null) { id = null; G.Input.touchX = 0; G.Input.touchDown = false; home(); } } });
     home();
   }
 
