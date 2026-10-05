@@ -5,6 +5,13 @@
   // the permanent home of the game: a fixed address that always serves the newest build (js/update.js keeps it fresh)
   const HOME = 'https://audichang-hub.github.io/echofall/';
   const onHome = location.href.startsWith(HOME);
+  // auto-show policy: away from the permanent address (itch frame, claude.ai) once per visit until 不再提醒;
+  // on the permanent address in Safari once ever; never inside the home-screen app
+  const shouldAutoGuide = () => {
+    if (G.Store.get('iosGuideOff', false)) return false;
+    if (onHome && !FS.framed) return !G.Store.get('iosFsSeen2', false);
+    try { return !sessionStorage.getItem('iosGuideShown'); } catch (e) { return true; }
+  };
   const FS = G.Fullscreen = {
     get supported() { return !!(root.requestFullscreen || root.webkitRequestFullscreen); },
     get active() { return !!(doc.fullscreenElement || doc.webkitFullscreenElement); },
@@ -40,7 +47,9 @@
       el.querySelector('li.f').hidden = onHome && !FS.framed;
       el.querySelectorAll('li:not([hidden]) span').forEach((s, i) => { s.textContent = i + 1; });
       el.classList.add('show');
-      G.Store.set('iosFsSeen', true);
+      G.Store.set('iosFsSeen2', true);
+      try { sessionStorage.setItem('iosGuideShown', '1'); } catch (e) { /* ignore */ }
+      el.querySelector('.never').hidden = onHome && !FS.framed;
     },
   };
 
@@ -57,12 +66,13 @@
         <li><span>3</span>從主畫面的 ECHOFALL 圖示開啟，就是全螢幕，之後也會自動更新到最新版</li>
       </ol>
       <small>主畫面版的進度和瀏覽器分開，可用「存檔碼」搬過去。</small>
-      <div class="row"><a class="open" target="_blank" rel="noopener">開啟遊戲頁</a><button type="button" class="close">知道了</button></div>
+      <div class="row"><a class="open" target="_blank" rel="noopener">開啟遊戲頁</a><button type="button" class="close">知道了</button><button type="button" class="never">不再提醒</button></div>
     </div>`;
     doc.getElementById('app').appendChild(el);
     el.querySelector('.open').href = HOME;
     const hide = () => el.classList.remove('show');
     el.querySelector('.close').addEventListener('click', (e) => { e.stopPropagation(); hide(); });
+    el.querySelector('.never').addEventListener('click', (e) => { e.stopPropagation(); G.Store.set('iosGuideOff', true); hide(); });
     el.addEventListener('click', (e) => { if (e.target === el) hide(); });
     el.addEventListener('pointerdown', (e) => e.stopPropagation());
   }
@@ -92,7 +102,7 @@
     const check = () => {
       if (!FS.isTouch || !land.matches || FS.active || FS.standalone) { hide(); return; }
       if (FS.supported) p.classList.add('show');
-      else if (!tipShown && G.UI && G.UI.booted && !G.Store.get('iosFsSeen', false)) { tipShown = true; FS.guide(); }
+      else if (!tipShown && G.UI && G.UI.booted && shouldAutoGuide()) { tipShown = true; FS.guide(); }
     };
     (land.addEventListener ? land.addEventListener('change', check) : land.addListener(check));
     doc.addEventListener('fullscreenchange', () => { if (FS.active) hide(); });
@@ -108,7 +118,7 @@
       if (e.pointerType === 'mouse') return;
       window.removeEventListener('pointerdown', first, true);
       if (FS.supported) { if (!FS.active) FS.enter(); }
-      else if (!G.Store.get('iosFsSeen', false)) setTimeout(() => FS.guide(), 600);
+      else if (shouldAutoGuide()) setTimeout(() => FS.guide(), 600);
     }, true);
   });
   doc.addEventListener('fullscreenchange', () => window.dispatchEvent(new Event('resize')));
