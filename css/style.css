@@ -987,3 +987,10 @@ html.touch .loot-card { padding: 6px 9px; }
 .gd-need p { flex: 1 1 220px; min-width: 0; margin: 0; font: 400 12.5px/1.6 var(--sans); color: var(--dim); }
 .gd-need b { color: #ffd28a; }
 .gd-need .gb-act { min-height: 38px; }
+.py-info .tu-next { margin-top: 8px; font-size: 13px; color: var(--cyan); }
+/* 調校: 20 abilities — the list scrolls inside the pylon instead of running off the screen */
+.py-list { max-height: calc(100vh - 290px); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; scrollbar-width: thin; padding-right: 6px; }
+.py-list .mi.tu { padding-top: 8px; padding-bottom: 8px; }
+.py-list .mi.tu .en { display: none; }
+.py-buy small { color: var(--cyan); }
+@media (max-height: 480px) { .py-list { max-height: calc(100vh - 150px); } }

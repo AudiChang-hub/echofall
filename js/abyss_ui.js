@@ -15,7 +15,7 @@
           <div class="ab-body"><div class="ab-pact"><h4>苦難契約<em>PACT OF PUNISHMENT</em></h4><div class="ab-list"></div></div>
           <aside class="ab-side"><div class="ab-heat"><span>熱度</span><b></b></div><p class="ab-mul"></p>
           <ul class="ab-rules"><li>每一層的獎勵顯示在門上，由你選擇下一扇門</li><li>每 5 層有守門者；擊敗後可以選擇返回地表</li>
-          <li>共鳴回響只屬於這一趟；結束後恢復原本的共鳴</li><li>死亡不會遺落碎片，找到的結晶、碎片、裝備都會保留</li></ul>
+          <li>共鳴回響只屬於這一趟；結束後恢復原本的共鳴</li><li>死亡不會遺落碎片，找到的碎片、裝備都會保留</li></ul>
           <p class="ab-rec"></p><button type="button" class="gb-act main ab-go">踏入深淵</button></aside></div></div>`;
         document.getElementById('ui').appendChild(el);
       }
@@ -30,7 +30,7 @@
         }).join('');
         el.querySelector('.ab-heat b').textContent = heat;
         el.querySelector('.ab-heat').classList.toggle('hot', heat > 0);
-        el.querySelector('.ab-mul').textContent = heat ? `結晶獎勵 ×${(1 + 0.15 * heat).toFixed(2)}` : '不加任何契約，也能踏入深淵';
+        el.querySelector('.ab-mul').textContent = heat ? `守門者獎勵 ×${(1 + 0.15 * heat).toFixed(2)}` : '不加任何契約，也能踏入深淵';
         const rec = sv.abyss || { best: 0, runs: 0 };
         el.querySelector('.ab-rec').textContent = rec.runs ? `最深抵達：第 ${rec.best} 層　·　已下潛 ${rec.runs} 次` : '尚未下潛';
         el.querySelectorAll('.ab-c').forEach((b) => { b.onclick = () => { fi = +b.dataset.k; bump(1); }; });
@@ -71,7 +71,7 @@
       }
       el.innerHTML = `<div class="ab-end"><p class="ab-k">${r.survived ? 'ASCENDED' : 'FALLEN'}</p><h3>${r.survived ? '自深淵歸來' : '沉入寂靜'}</h3>
         <div class="ab-depth"><b>${r.depth}</b><span>層</span></div>
-        <dl><div><dt>殘響結晶</dt><dd>+${r.crystals}</dd></div><div><dt>殘響碎片</dt><dd>+${r.shards}</dd></div><div><dt>熱度</dt><dd>${r.heat}</dd></div><div><dt>最深紀錄</dt><dd>${r.best}</dd></div></dl>
+        <dl><div><dt>殘響碎片</dt><dd>+${r.shards}</dd></div><div><dt>熱度</dt><dd>${r.heat}</dd></div><div><dt>最深紀錄</dt><dd>${r.best}</dd></div></dl>
         <button type="button" class="gb-act main ab-ok">返回地表</button></div>`;
       this.showHud(false); this.bossBar(null);
       let done = false;

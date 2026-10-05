@@ -1,7 +1,8 @@
 'use strict';
 /* ECHOFALL — 共鳴之鏡 (Mirror of Echoes), modelled on Hades' Mirror of Night.
    Ten talents; each has two mutually exclusive faces (switch any time, free) and its own ranks.
-   Paid with 殘響結晶 (crystals) from bosses, elites, challenge rewards and the Abyss — shards stay for gear.
+   2026-10-05: the player preferred Talia's old 調校 — every ability is now its own upgrade (no either/or faces) and
+   everything is paid in 殘響碎片; the crystal currency is folded into shards (old crystals convert ×10).
    The first six A faces are the old 調校 upgrades (save.up keeps their ranks), so earlier saves carry over.
    save.mirror = { side: { slot: 'a' | 'b' }, rank: { 'slot:a' | 'slot:b': n } }, save.crystals = n */
 (function (G) {
@@ -30,8 +31,8 @@
     st(sv) { sv = sv || G.game.save; if (!sv.mirror) sv.mirror = { side: {}, rank: {} }; if (sv.crystals == null) sv.crystals = 0; return sv.mirror; },
     face(slot, side) {
       const f = slot[side];
-      if (f.up) { const u = up(f.up); return { id: f.up, name: u.name, en: u.en, max: u.max, cost: u.cost.map((c) => Math.ceil(c / 10)), desc: () => `每一級：${u.desc}`, up: true }; }
-      return f;
+      if (f.up) { const u = up(f.up); return { id: f.up, name: u.name, en: u.en, max: u.max, cost: u.cost.slice(), desc: () => `每一級：${u.desc}`, up: true }; }
+      return Object.assign({}, f, { cost: f.cost.map((c) => c * 10) });
     },
     side(slot, sv) { return this.st(sv).side[slot.id] || 'a'; },
     rank(slot, side, sv) { sv = sv || G.game.save; const f = slot[side]; return f.up ? (sv.up[f.up] || 0) : (this.st(sv).rank[slot.id + ':' + side] || 0); },
@@ -40,7 +41,7 @@
       const g = G.game, sv = g && g.save; if (!sv) return 0;
       for (const s of SLOTS) for (const side of ['a', 'b']) {
         const f = s[side], id = f.up || f.id;
-        if (id === effect) return this.side(s, sv) === side ? this.rank(s, side, sv) : 0;
+        if (id === effect) return this.rank(s, side, sv);
       }
       return 0;
     },
@@ -48,24 +49,25 @@
     cost(slot, side, sv) { const f = this.face(slot, side), r = this.rank(slot, side, sv); return r >= f.max ? null : f.cost[r]; },
     buy(slot, side, sv) {
       sv = sv || G.game.save; const c = this.cost(slot, side, sv); this.st(sv);
-      if (c == null || sv.crystals < c) return false;
-      sv.crystals -= c;
+      if (c == null || sv.shards < c) return false;
+      sv.shards -= c;
       const f = slot[side];
       if (f.up) sv.up[f.up] = (sv.up[f.up] || 0) + 1; else sv.mirror.rank[slot.id + ':' + side] = this.rank(slot, side, sv) + 1;
       return true;
     },
-    // 殘響結晶 income
+    // bonus income (bosses, elites, chests, the Abyss): paid out as shards (n is in the old crystal unit)
     gain(n, why) {
-      const g = G.game, sv = g.save; this.st(sv); sv.crystals += n;
-      G.UI.toast(`殘響結晶　+${n}${why ? '　' + why : ''}`, 'good'); G.SFX.play('discover', 1.1);
+      const g = G.game, sv = g.save; this.st(sv); const s = Math.round(n * 10); sv.shards += s;
+      G.UI.toast(`殘響碎片　+${s}${why ? '　' + why : ''}`, 'good'); G.SFX.play('discover', 1.1);
     },
     // older saves: one-time grant for chapters already cleared, so the Mirror is not empty on day one
     migrate(sv) {
       this.st(sv);
+      if (sv.crystals > 0) { sv.shards += sv.crystals * 10; sv.crystals = 0; }   // the crystal currency is gone
       if (sv.mirrorInit) return; sv.mirrorInit = true;
       let n = 0; for (let c = 1; c <= 8; c++) if (sv.flags && (sv.flags['ch_done_' + c] || (c === 1 && sv.flags.boss_dead))) n += 25;
       for (const k in (sv.flags || {})) if (k.startsWith('elite_')) n += 8;
-      sv.crystals += n;
+      sv.shards += n * 10;
     },
   };
 })(window.G);

@@ -2,7 +2,7 @@
 /* ECHOFALL — 殘響深淵 (the Abyss): a Hades-style run.
    · enter from a pylon; your Echoes start empty for the run (story Echoes are set aside and restored afterwards)
    · chamber after chamber in the arenas of the chapters you have reached; clear the foes, take the chamber's reward,
-     then choose the next door by the reward floating above it (共鳴回響 / 殘響果實 / 結晶 / 碎片 / 裝備 / 鍛造石 / 共鳴泉)
+     then choose the next door by the reward floating above it (共鳴回響 / 殘響果實 / 碎片 / 裝備 / 鍛造石 / 共鳴泉)
    · every 5th chamber a chapter boss guards the way down, every 5th +3 an elite; after a boss you may climb back out
    · death ends the run — crystals, shards and gear you found are kept (like Hades)
    · 苦難契約 (Pact of Punishment): optional conditions raise the heat for bigger crystal rewards
@@ -171,7 +171,7 @@
       done();
     },
     rollDoors() {
-      const r = this.run, keys = ['echo', 'echo', 'fruit', 'crystal', 'shards', 'gear', 'stone', 'heal'];
+      const r = this.run, keys = ['echo', 'echo', 'fruit', 'shards', 'shards', 'gear', 'stone', 'heal'];
       const owned = Object.keys(G.game.save.boons || {}).length;
       const pick = () => { let k; do { k = keys[Math.floor(Math.random() * keys.length)]; } while (k === 'fruit' && owned < 2); return k; };
       const a = pick(); let b = pick(); let guard = 0; while (b === a && guard++ < 10) b = pick();
