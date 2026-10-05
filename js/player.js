@@ -35,7 +35,9 @@
       this.coatB.inited = false; this.coatF.inited = false; this.scarf.inited = false;
     }
     recalc() {
-      const s = this.game.save, up = s.up, rel = s.equipped || [];
+      const s = this.game.save, rel = s.equipped || [];
+      // 共鳴之鏡: a talent only counts while its face is the active one (js/mirror.js)
+      const M = G.Mirror, up = { vit: M.lv('vit'), edge: M.lv('edge'), tempo: M.lv('tempo'), still: M.lv('still'), echo: M.lv('echo'), tonic: M.lv('tonic') };
       const prevMax = this.maxHp || 0;
       this.maxHp = 100 + 20 * (up.vit || 0);
       this.dmgMul = 1 + 0.12 * (up.edge || 0);
@@ -355,8 +357,8 @@
       const mx = G.Input.moveX();
       this.dodgeDir = mx ? (mx > 0 ? 1 : -1) : -this.facing;
       this.back = this.dodgeDir !== this.facing;
-      this.setState('dodge', 0.03); this.spendSta(STAM.dodge);
-      this.iframes = (this.assist ? 0.36 : 0.27) + ((this.gear && this.gear.iframes) || 0); this.perfectUsed = false;
+      this.setState('dodge', 0.03); this.spendSta(STAM.dodge * (1 - 0.25 * G.Mirror.lv('swift')));
+      this.iframes = (this.assist ? 0.36 : 0.27) + ((this.gear && this.gear.iframes) || 0) + 0.03 * G.Mirror.lv('shadow'); this.perfectUsed = false;
       G.SFX.play('dodge'); G.SFX.play('cloth', 1.2);
       G.Boons.onDodge(this);
       G.FX.dust(this.x, this.y, 6, { w: 20, speed: 160, dir: this.dodgeDir > 0 ? PI : 0, spread: 0.6 });
@@ -389,7 +391,7 @@
       this.vx = U.approach(this.vx, 0, 1500 * dt);
       if (this.st > 0.4 && !this.healed) {
         this.healed = true; const g = this.game;
-        g.save.tonic--; this.hp = Math.min(this.maxHp, this.hp + this.maxHp * 0.45 * (1 + ((this.gear && this.gear.heal) || 0)) + this.rally); this.rally = 0;
+        g.save.tonic--; this.hp = Math.min(this.maxHp, this.hp + this.maxHp * 0.45 * (1 + ((this.gear && this.gear.heal) || 0) + 0.15 * G.Mirror.lv('concentrate')) + this.rally); this.rally = 0;
         if ((g.save.equipped || []).includes('blessing')) this.gainRes(25 / this.resMul);
         G.SFX.play('heal'); G.FX.ember(this.x, this.y - 60, 30, '#9cf7d8', { w: 40, h: 90, up: 160 });
         G.FX.ring(this.x, this.y - 60, 10, 90, 0.5, '#9cf7d8', 3);
@@ -515,7 +517,7 @@
         if (since <= this.parryWin + (this.assist ? 0.06 : 0) + (g.tutBonus || 0)) { this.perfectParry(src, info); return 'parried'; }
         this.block(src, info); return 'blocked';
       }
-      this.takeDamage(info.dmg * g.diff.dmg * (this.dmgTaken || 1) * ((g.dyn && g.dyn.dmg) || 1), src, info);
+      this.takeDamage(info.dmg * g.diff.dmg * (this.dmgTaken || 1) * ((g.dyn && g.dyn.dmg) || 1) * G.Boons.dmgTakenMul(this), src, info);
       return 'hit';
     }
     perfectParry(src, info) {
@@ -557,6 +559,7 @@
       G.FX.ring(this.x, this.y - 60, 10, 160, 0.5, '#7ff4ff', 4);
       G.FX.ghost({ x: this.x, y: this.y, facing: this.facing, pose: Object.assign({}, this.pose) }, '#ffffff', 0.6, 0.7);
       g.stats.dodges++;
+      if (G.Mirror.lv('clarity')) this.critNext = true;
       g.onPerfectDodge();
     }
     takeDamage(d, src, info) {

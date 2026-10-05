@@ -138,7 +138,13 @@
       this.balT += dt;
       if (this.balT > 2.2 && this.state !== 'broken') this.bal = Math.max(0, this.bal - this.maxBal * 0.12 * dt);
       if (this.state === 'die') { if (this.st > 0.5) this.remove = true; return; }
-      if (this.state === 'executed') { this.vx = 0; this.vy = 0; return; }
+      if (this.state === 'executed') {
+        this.vx = 0; this.vy = 0;
+        // if the execution was interrupted (Rinne knocked out of it, a cut-scene, a menu), don't leave the foe frozen and invulnerable
+        const P = G.game.player;
+        if (this.st > 0.4 && !(P && P.state === 'execute' && P.exTarget === this)) { this.bal = 0; this.setState('idle'); this.cd = 0.6; }
+        return;
+      }
       if (this.state === 'broken') {
         this.vx = U.approach(this.vx, 0, 600 * dt);
         if (this.st > (this.boss ? 4.5 : 3.2)) { this.bal = 0; this.setState('idle'); this.cd = 0.4; }

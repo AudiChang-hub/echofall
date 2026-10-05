@@ -88,7 +88,8 @@
       }
       const src = { cx: b.x, cy: b.y - h / 2, y: b.y };
       if (Math.random() < (b.kind === 'crystal' ? 0.3 : 0.15)) G.Gear.spawnLoot(game, src, { stone: true }, 0, 1);
-      if (Math.random() < 0.05 * (1 + (gt.drop || 0))) G.Gear.spawnLoot(game, src, G.Gear.roll(ch, 0, gt.drop || 0), 0, 1);
+      if (Math.random() < 0.05 * (1 + (gt.drop || 0) + 0.2 * G.Mirror.lv('fortune'))) G.Gear.spawnLoot(game, src, G.Gear.roll(ch, 0, gt.drop || 0), 0, 1);
+      if (b.kind === 'crystal' && Math.random() < 0.1) G.Mirror.gain(1);
     },
     update(dt) { for (const b of this.list) if (b.hitT > 0) b.hitT = Math.max(0, b.hitT - dt * 5); },
     draw(ctx, cam, t) {
@@ -141,6 +142,54 @@
           ctx.beginPath(); ctx.moveTo(gx - 6 * a, gy); ctx.lineTo(gx + 6 * a, gy); ctx.moveTo(gx, gy - 6 * a); ctx.lineTo(gx, gy + 6 * a); ctx.stroke(); ctx.restore();
         }
         ctx.restore();
+      }
+    },
+    /* ---------- boss fog gates ---------- */
+    gates: [],
+    spawnGates(game) {
+      const L = G.LEVEL, F = game.save.flags, ch = L.chapter || 1;
+      this.gates = [];
+      if (F['boss_' + ch] || (ch === 1 && F.boss_dead)) return;   // boss already down: the way stays open
+      for (const id in L.encounters) {
+        const E = L.encounters[id];
+        if (!E.boss || !E.arena) continue;
+        const tr = L.triggers.find((t) => t.startEnc === id || t.enc === id);
+        const x = Math.min(tr ? tr.x : E.arena[0], E.arena[0]) - 70;
+        let y = G.Phys.groundBelow(x, (tr && tr.y != null ? tr.y : 0) - 260);
+        if (y > 1e8) y = 0;
+        const wall = { x: x - 14, y: y - 1800, w: 28, h: 1800, gate: id };
+        G.Phys.dyn.push(wall);
+        this.gates.push({ id, x, y, wall, open: false, t: 0 });
+      }
+    },
+    openGate(game, g) {
+      if (g.open) return;
+      g.open = true; G.Phys.dyn = G.Phys.dyn.filter((w) => w !== g.wall);
+      G.SFX.play('door'); G.SFX.play('pylon', 0.6);
+      G.FX.ring(g.x, g.y - 160, 10, 220, 0.7, '#ffd9a8', 6); G.FX.ember(g.x, g.y - 180, 40, '#ffd9a8', { w: 50, h: 340, up: 120 });
+      const P = game.player; P.vx = Math.sign(g.x + 60 - P.x) * 260;
+    },
+    drawGates(ctx, t) {
+      for (const g of this.gates) {
+        g.t += 1 / 60; const a = g.open ? Math.max(0, 1 - g.t * 0) : 1;
+        if (g.open) continue;
+        const H = 380, x = g.x, y = g.y;
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        const gr = ctx.createLinearGradient(x - 40, 0, x + 40, 0);
+        gr.addColorStop(0, 'rgba(255,214,160,0)'); gr.addColorStop(0.5, `rgba(255,214,160,${0.32 + 0.06 * Math.sin(t * 2)})`); gr.addColorStop(1, 'rgba(255,214,160,0)');
+        ctx.fillStyle = gr; ctx.fillRect(x - 40, y - H, 80, H);
+        // drifting light threads, like Elden Ring's fog walls
+        ctx.strokeStyle = `rgba(255,236,206,${0.55 * a})`; ctx.lineWidth = 1.5;
+        for (let i = 0; i < 7; i++) {
+          const ph = t * (0.6 + i * 0.13) + i * 1.7, ox = Math.sin(ph) * 16 + (i - 3) * 5;
+          ctx.beginPath(); ctx.moveTo(x + ox, y);
+          for (let k = 1; k <= 6; k++) ctx.lineTo(x + ox + Math.sin(ph + k * 0.9) * 10, y - H * k / 6);
+          ctx.stroke();
+        }
+        const top = ctx.createLinearGradient(0, y - H, 0, y - H + 120); top.addColorStop(0, 'rgba(255,214,160,0)'); top.addColorStop(1, 'rgba(255,214,160,0.18)');
+        ctx.fillStyle = top; ctx.fillRect(x - 40, y - H, 80, 120);
+        ctx.restore();
+        if (Math.random() < 0.3) G.FX.ember(x, y - Math.random() * H, 1, '#ffe2b8', { w: 30, h: 10, up: 60 });
       }
     },
     // the warm lip on every surface Rinne can stand on

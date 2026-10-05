@@ -205,7 +205,7 @@
       // owned Echoes as small coloured sigils (level pips under each)
       set('echoes', JSON.stringify(g.save.boons || {}), (v) => {
         const b = JSON.parse(v);
-        $('#echoes').innerHTML = Object.keys(b).map((id) => { const d = G.ECHOES[id]; return d ? `<span style="--c:${d.col}" title="${d.name}">${d.icon}<i>${'•'.repeat(b[id])}</i></span>` : ''; }).join('');
+        $('#echoes').innerHTML = Object.keys(b).map((id) => { const d = G.Boons.ALL[id]; return d ? `<span style="--c:${d.col}" title="${d.name}">${d.icon}<i>${'•'.repeat(b[id])}</i></span>` : ''; }).join('');
       });
       // boss
       const b = g.bossRef;
@@ -548,24 +548,27 @@
     openPylon(py, onLeave) {
       const g = G.game, sv = g.save, el = $('#pylon');
       $('#pyName').textContent = py.name;
-      const tabs = [['up', '調校'], ['gear', G.Gear && G.Gear.anyBetter(sv) ? '裝備・鍛造 ▲' : '裝備・鍛造'], ['travel', '旅行'], ['trade', '交易'], ['relic', '遺物'], ['codex', '檔案庫']];
+      const tabs = [['up', '共鳴之鏡'], ['gear', G.Gear && G.Gear.anyBetter(sv) ? '裝備・鍛造 ▲' : '裝備・鍛造'], ['travel', '旅行'], ['trade', '交易'], ['relic', '遺物'], ['codex', '檔案庫']];
       let ti = 0;
       const info = $('#pyInfo');
       const taliaLines = ['「止弦的第三根弦有點走音，我幫你調一下。」', '「聽說方舟的刀都是手工打的？真浪漫。」', '「別死喔。我是說真的。修共鳴碑很花時間的。」', '「鐘樓今天又有兩個小孩出生了。你在下面要加油。」'];
-      const shards = () => { $('#pyShards').textContent = Math.floor(sv.shards); };
+      const shards = () => { $('#pyShards').textContent = Math.floor(sv.shards); $('#pyCrystals').textContent = sv.crystals || 0; };
+      G.Mirror.st(sv);
       let menu;
-      const buildUp = () => D.upgrades.map((u) => {
-        const lv = () => sv.up[u.id] || 0;
+      // 共鳴之鏡 (Hades' Mirror of Night): each slot has two faces; Enter / the buy button strengthens the active face
+      const MR = G.Mirror;
+      const buildUp = () => MR.SLOTS.map((slot) => {
+        const fa = () => MR.face(slot, MR.side(slot, sv));
         return {
-          label: u.name, en: u.en, u,
-          extra: () => `<span class="lv">${Array.from({ length: u.max }, (_, k) => `<i class="${k < lv() ? 'on' : ''}"></i>`).join('')}</span>`,
+          label: '', en: '', slot,
+          extra: () => { const sd = MR.side(slot, sv), f = MR.face(slot, sd), r = MR.rank(slot, sd, sv); return `<span class="mr-name">${f.name}<em class="mr-side ${sd}">${sd === 'a' ? '甲' : '乙'}</em></span><span class="lv">${Array.from({ length: f.max }, (_, k) => `<i class="${k < r ? 'on' : ''}"></i>`).join('')}</span>`; },
           action: () => {
-            const l = lv(); if (l >= u.max) { G.SFX.play('uiBack'); return; }
-            const cost = u.cost[l]; if (sv.shards < cost) { G.SFX.play('uiBack'); return; }
-            sv.shards -= cost; sv.up[u.id] = l + 1; g.player.recalc();
-            if (u.id === 'tonic') sv.tonic = g.player.maxTonic;
-            if (u.id === 'vit') g.player.hp = g.player.maxHp;
-            G.SFX.play('pylon'); shards(); menu.refresh(); showInfo(menu.items[menu.i]); g.persist();
+            const sd = MR.side(slot, sv);
+            if (!MR.buy(slot, sd, sv)) { G.SFX.play('uiBack'); return; }
+            g.player.recalc();
+            if (slot.id === 'tonic' && sd === 'a') sv.tonic = g.player.maxTonic;
+            if (slot.id === 'vit' && sd === 'a') g.player.hp = g.player.maxHp;
+            G.SFX.play('pylon'); shards(); menu.refresh(); showInfo(menu.items[menu.i]); g.persist(); void fa;
           },
         };
       });
@@ -585,12 +588,17 @@
       };
       const showInfo = (it) => {
         if (!it) return;
-        if (it.u) {
-          const u = it.u, l = sv.up[u.id] || 0, max = l >= u.max, cost = max ? 0 : u.cost[l];
-          info.innerHTML = `<h4>${u.name}</h4><p class="en">${u.en} · LV ${l} / ${u.max}</p><p>${u.desc}</p>
-            <div class="cost ${!max && sv.shards < cost ? 'no' : ''}">${max ? '已達上限 MAX' : `<i class="shard-ico"></i>${cost}　<small>持有 ${Math.floor(sv.shards)}</small>`}</div>
-            <button type="button" class="py-buy" ${max || sv.shards < cost ? 'disabled' : ''}>${max ? '已達上限' : sv.shards < cost ? '殘響碎片不足' : `調校（-${cost}）`}</button>
-            <p class="talia">${taliaLines[Math.floor(Math.random() * taliaLines.length)]}<br>— 塔莉亞（遠端調校）</p>`;
+        if (it.slot) {
+          const slot = it.slot, sd = MR.side(slot, sv);
+          const faceHtml = (side) => {
+            const f = MR.face(slot, side), r = MR.rank(slot, side, sv), c = MR.cost(slot, side, sv), on = side === sd;
+            return `<div class="mr-face ${on ? 'on' : ''}"><p class="mr-k">${side === 'a' ? '甲面' : '乙面'}${on ? '　啟用中' : ''}</p><h4>${f.name}<em> Lv ${r} / ${f.max}</em></h4><p>${f.desc(Math.max(1, r))}</p>
+              <div class="mr-btns">${on ? `<button type="button" class="py-buy" data-buy ${c == null || sv.crystals < c ? 'disabled' : ''}>${c == null ? '已達上限' : sv.crystals < c ? `結晶不足（${c}）` : `強化（-${c} 結晶）`}</button>` : `<button type="button" class="py-buy py-swap" data-swap="${side}">切換到這一面（免費）</button>`}</div></div>`;
+          };
+          info.innerHTML = `${faceHtml('a')}${faceHtml('b')}<p class="talia">兩面只能擇一生效，可以隨時免費切換；兩面的等級分開計算。<br>殘響結晶：打倒頭目、菁英與深淵取得。</p>`;
+          info.querySelectorAll('[data-swap]').forEach((b) => { b.onclick = () => { MR.setSide(slot, b.dataset.swap, sv); g.player.recalc(); sv.tonic = Math.min(sv.tonic, g.player.maxTonic); G.SFX.play('ui'); menu.refresh(); showInfo(it); g.persist(); }; });
+          const bb = info.querySelector('[data-buy]'); if (bb) bb.onclick = () => { if (!bb.disabled && this.top() && this.top().id === 'pylon') menu.activate(); };
+          return;
         } else if (it.rk) {
           const c = D.codex.items.find((x) => x.id === it.rk);
           const on = sv.equipped.includes(it.rk), full = !on && sv.equipped.length >= 2;
@@ -645,8 +653,9 @@
       let i = -1, lock = 0.8, picked = false;
       const btns = cards.map((c, k) => {
         const b = document.createElement('button');
-        b.className = 'bp-card'; b.style.setProperty('--c', c.def.col);
-        b.innerHTML = `<span class="bp-lv">${c.lv > 1 ? 'Lv ' + c.lv : '新 NEW'}</span><div class="bp-ico">${c.def.icon}</div><div class="bp-name">${c.def.name}</div><div class="bp-en">${c.def.en}</div><p class="bp-d">${c.def.desc(c.lv)}</p>`;
+        b.className = 'bp-card' + (c.kind === 'duo' ? ' duo' : c.r > 0 ? ' rr' + c.r : ''); b.style.setProperty('--c', c.def.col);
+        const tag = c.tag || (c.lv > 1 ? 'Lv ' + c.lv : '新 NEW'), tcls = c.kind === 'duo' ? 'duo' : c.r > 0 ? 'r' + c.r : '';
+        b.innerHTML = `<span class="bp-lv ${tcls}">${tag}</span><div class="bp-ico">${c.def.icon}</div><div class="bp-name">${c.def.name}</div><div class="bp-en">${c.def.en}</div><p class="bp-d">${c.desc || c.def.desc(c.lv)}</p>`;
         b.addEventListener('click', (e) => { e.stopPropagation(); if (!picked) focus(k); });
         host.appendChild(b); return b;
       });
@@ -655,7 +664,7 @@
         i = k; btns.forEach((b, j) => b.classList.toggle('focus', j === k));
         const c = cards[k];
         ok.disabled = false; ok.style.setProperty('--c', c.def.col);
-        ok.innerHTML = `選擇「${c.def.name}」<em>${c.lv > 1 ? 'Lv ' + c.lv : 'NEW'}</em>`;
+        ok.innerHTML = `選擇「${c.def.name}」<em>${c.kind === 'fruit' ? '果實' : c.kind === 'duo' ? '雙重' : c.lv > 1 ? 'Lv ' + c.lv : 'NEW'}</em>`;
       };
       const pick = () => {
         if (picked || i < 0 || lock > 0) return; picked = true;

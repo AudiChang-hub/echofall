@@ -68,7 +68,7 @@
     hasSave() { const s = G.Store.get('save', null); return !!(s && s.v === 1 && (s.checkpoint || (s.chapter || 1) > 1)); },
     newGame(diffKey) {
       G.Chapters.load(1);
-      this.save = this.defaultSave(diffKey);
+      this.save = this.defaultSave(diffKey); G.Mirror.st(this.save); this.save.mirrorInit = true;
       this.diff = G.DATA.difficulty[diffKey]; this.stats = this.save.stats;
       this.player = new G.Player(this);
       this.player.x = 420; this.player.y = 0; this.player.facing = 1; this.player.setState('rest'); this.player.res = 0;
@@ -103,7 +103,7 @@
           .catch(() => { G.UI.loading(false); G.UI.toast('載入失敗，請確認網路後再試一次', 'warn'); G.UI.toTitle(); });
         return;
       }
-      this.save = Object.assign(this.defaultSave(s.diff), s);
+      this.save = Object.assign(this.defaultSave(s.diff), s); G.Mirror.migrate(this.save);
       this.diff = G.DATA.difficulty[this.save.diff] || G.DATA.difficulty.normal; this.stats = this.save.stats;
       G.Chapters.load(this.save.chapter || 1);
       this.player = new G.Player(this);
@@ -115,6 +115,7 @@
       this.player.reset(p ? p.x - 40 : L.start.x, p ? p.y : L.start.y);
       this.player.recalc(); this.player.hp = this.player.maxHp; this.player.sta = this.player.maxSta;
       this.save.tonic = this.player.maxTonic;
+      this.mirrorRefresh();
       this.player.setState('rest');
       this.cam.x = this.cam.tx = this.player.x; this.cam.y = this.player.y - 160;
       this.state = 'play'; this.control = false; this.fadeA = 1; this.fadeTarget = 0;
@@ -133,6 +134,7 @@
       G.UI.bossBar(null);
       this.lastZone = null;
       G.Props.spawn(this);   // crates, urns and crystals come back with the Hushborn
+      G.Props.spawnGates(this);   // boss rooms close again behind a fog gate
     },
     zoneMusic() { return G.Chapters.musicAt(this.player.x, this.player.y); },
 
@@ -164,7 +166,7 @@
       const begin = () => {
         this.resetWorld();
         const P = this.player;
-        P.reset(L.start.x, L.start.y); P.recalc(); P.hp = P.maxHp; P.sta = P.maxSta; this.save.tonic = P.maxTonic;
+        P.reset(L.start.x, L.start.y); P.recalc(); P.hp = P.maxHp; P.sta = P.maxSta; this.save.tonic = P.maxTonic; this.mirrorRefresh();
         this.cam.x = this.cam.tx = P.x; this.cam.y = P.y - 160; this.camGround = P.y;
         this.state = 'play'; this.fadeA = 1; this.fadeTarget = 0; G.UI.showHud(true);
         G.Music.play(this.zoneMusic());
@@ -401,6 +403,7 @@
     clearEncounter(id) {
       const E = L.encounters[id];
       this.encState[id] = 'cleared'; this.save.cleared[id] = true;
+      { const en = G.Mirror.lv('endure'), P = this.player; if (en && P && P.state !== 'dead') P.hp = Math.min(P.maxHp, P.hp + P.maxHp * 0.08 * en); }
       if (this.arena && this.arena.id === id) {
         this.arena = null;
         for (const w of G.Phys.dyn) G.FX.shards(w.x + 15, w.y + w.h - 40, 20, '#ff3d7f', 400);
@@ -440,8 +443,12 @@
     onEnemyDeath(e) {
       this.stats.kills++;
       const gt = this.player.gear || {};
-      const n = Math.round((e.T.shards || 10) * (0.9 + Math.random() * 0.2) * (1 + (gt.shard || 0)));
-      if (gt.killHeal && this.player.state !== 'dead') this.player.hp = Math.min(this.player.maxHp, this.player.hp + this.player.maxHp * gt.killHeal);
+      const n = Math.round((e.T.shards || 10) * (0.9 + Math.random() * 0.2) * (1 + (gt.shard || 0) + 0.15 * G.Mirror.lv('magnet')));
+      const heal = (gt.killHeal || 0) + 0.03 * G.Mirror.lv('absorb');
+      if (heal && this.player.state !== 'dead') this.player.hp = Math.min(this.player.maxHp, this.player.hp + this.player.maxHp * heal);
+      // 殘響結晶 (Mirror currency): first kill of a boss / elite pays the most; elites keep paying a little
+      if (e.boss) { const k = 'cry_' + e.type; if (!this.save.flags[k]) { this.save.flags[k] = true; G.Mirror.gain(40, '頭目'); } }
+      else if (e.elite) { const k = 'cry_' + e.type; G.Mirror.gain(this.save.flags[k] ? 4 : 15, '菁英'); this.save.flags[k] = true; }
       if (gt.killRes && this.player.state !== 'dead') this.player.gainRes(gt.killRes);
       G.Gear.onEnemyDeath(this, e);
       const count = Math.min(24, Math.max(3, Math.round(n / 8)));
@@ -536,6 +543,7 @@
       for (const n of L.notes) list.push({ kind: 'note', x: n.x, y: n.y, ref: n, label: '閱讀', read: F['note_' + n.id] });
       for (const it of L.items) if (!F[it.flag]) list.push({ kind: 'item', x: it.x, y: it.y, ref: it, label: '拾取' });
       for (const n of L.npcs) list.push({ kind: 'npc', x: n.x, y: n.y, ref: n, label: '交談' });
+      for (const g of G.Props.gates) if (!g.open) list.push({ kind: 'gate', x: g.x - 50, y: g.y, ref: g, label: '進入王房' });
       return list;
     },
     updInteract() {
@@ -557,6 +565,7 @@
     interact(it) {
       const F = this.save.flags, P = this.player;
       if (G.Chapters.hook('interact', this, it) === true) return;
+      if (it.kind === 'gate') { G.Props.openGate(this, it.ref); return; }
       if (it.kind === 'pylon') this.restAt(it.ref);
       else if (it.kind === 'note') {
         F['note_' + it.ref.id] = true; if (it.ref.id === 'n3') F.note_mira = true; if (it.ref.flag) F[it.ref.flag] = true;
@@ -598,7 +607,7 @@
       G.SFX.play('pylon');
       G.FX.ring(py.x, py.y - 80, 10, 200, 0.8, '#7ff4ff', 4); G.FX.ember(py.x, py.y - 90, 40, '#7ff4ff', { w: 40, h: 140, up: 200 });
       // souls-like: resting revives the Hushborn
-      P.recalc(); P.hp = P.maxHp; P.rally = 0; P.sta = P.maxSta; this.save.tonic = P.maxTonic;
+      P.recalc(); P.hp = P.maxHp; P.rally = 0; P.sta = P.maxSta; this.save.tonic = P.maxTonic; this.mirrorRefresh();
       const keepDrop = this.save.drop;
       this.resetWorld(); this.save.drop = keepDrop;
       this.resting = true; // resetWorld clears it; resting lasts until the player leaves the pylon
@@ -610,6 +619,12 @@
       else setTimeout(open, 500);
     },
     persist() { this.save.flags = this.save.flags || {}; G.Store.set('save', this.save); },
+    // per-rest Mirror effects: 不屈之心 re-arms, 共鳴湧動 refills resonance
+    mirrorRefresh() {
+      const P = this.player; if (!P) return;
+      P.mirrorDefy = true;
+      const s = G.Mirror.lv('surge'); if (s) P.res = Math.max(P.res || 0, 25 * s);
+    },
     // dynamic difficulty (chapter III on): compare Rinne's damage output and toughness with what the chapter expects,
     // and scale the Hushborn's health and damage to match - stronger builds meet tougher foes, struggling ones get a little slack
     dynScale() {
@@ -741,7 +756,9 @@
       const t = this.realTime, F = this.save.flags;
       // arena walls
       const wc = this.arena && this.arena.id === 'tut' ? '111,243,255' : '255,61,127', wl = this.arena && this.arena.id === 'tut' ? 'rgba(190,250,255,0.5)' : 'rgba(255,170,200,0.5)';
+      G.Props.drawGates(ctx, t);
       for (const w of G.Phys.dyn) {
+        if (w.gate) continue;
         const x = w.x + w.w / 2, top = Math.max(w.y, this.cam.y - 500), bot = Math.min(w.y + w.h, this.cam.y + 500);
         ctx.save(); ctx.globalCompositeOperation = 'lighter';
         const g = ctx.createLinearGradient(x - 30, 0, x + 30, 0);

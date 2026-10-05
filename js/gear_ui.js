@@ -234,7 +234,7 @@
             ${isW ? (it.slot === 'weapon' ? '<button type="button" class="gb-act" disabled>使用中</button>' : '<button type="button" class="gb-act" data-a="off">卸下</button>') : '<button type="button" class="gb-act main" data-a="on">裝備</button>'}
             ${cost ? `<button type="button" class="gb-act" data-a="up" ${canUp ? '' : 'disabled'}>強化 +${it.plus}→+${it.plus + 1}<small>鍛造石 ${cost.stones}・碎片 ${cost.shards}</small></button>` : forge && it.slot === 'weapon' ? '<button type="button" class="gb-act" disabled>已強化到 +10</button>' : ''}
             ${forge && GR.reforgeCost(it) ? `<button type="button" class="gb-act" data-a="ref" ${sv.shards >= GR.reforgeCost(it) ? '' : 'disabled'}>重鑄<small>重擲品質與詞條・碎片 ${GR.reforgeCost(it)}</small></button>` : ''}
-            ${!GR.canSalvage(sv, it) ? '' : `<button type="button" class="gb-act warn" data-a="sal">${armed === it.uid ? '確定分解？' : '分解'}<small>碎片 +${sal.shards}${sal.stones ? `・鍛造石 +${sal.stones}` : ''}</small></button>`}
+            ${!GR.canSalvage(sv, it) ? '' : `<button type="button" class="gb-act warn${armed === it.uid ? ' armed' : ''}" data-a="sal">${armed === it.uid ? '再按一次確認分解' : '分解'}<small>碎片 +${sal.shards}${sal.stones ? `・鍛造石 +${sal.stones}` : ''}</small></button>`}
           </div>`;
         host.querySelectorAll('.gb-act[data-a]').forEach((b) => { b.onclick = () => act(b.dataset.a); });
       };
@@ -256,7 +256,11 @@
         } else if (a === 'ref') {
           if (GR.reforge(sv, it)) { G.SFX.play('pylon'); G.SFX.play('discover', 1.2); this.toast(`${GR.name(it)}　重鑄完成`, 'good'); after(); render(); }
         } else if (a === 'sal') {
-          if (armed !== it.uid) { armed = it.uid; G.SFX.play('ui'); renderDetail(); return; }
+          if (armed !== it.uid) {
+            armed = it.uid; G.SFX.play('uiBack'); renderDetail();
+            clearTimeout(this._armT); this._armT = setTimeout(() => { if (armed === it.uid) { armed = null; if (this.top() && this.top().id === 'gear') renderDetail(); } }, 3000);
+            return;
+          }
           const v = GR.salvage(sv, it);
           if (v) { G.SFX.play('pickup'); this.toast(`分解：碎片 +${v.shards}${v.stones ? `　鍛造石 +${v.stones}` : ''}`, 'item'); armed = null; after(); render(); }
         }
@@ -295,10 +299,10 @@
         document.getElementById('ui').appendChild(el);
       }
       const wasPlay = g.state === 'play'; if (wasPlay) g.state = 'paused';
-      const E = G.ECHOES || {}, boons = sv.boons || {};
+      const E = G.Boons.ALL, boons = sv.boons || {}, RR = G.Boons.RARITY;
       const echoes = Object.keys(boons).filter((id) => E[id]).map((id) => {
-        const d = E[id], lv = boons[id];
-        return `<li style="--c:${d.col}"><i class="bd-ico">${d.icon}</i><div><b>${d.name}<em>Lv ${lv} / ${d.max}</em></b><p>${d.desc(lv)}</p></div></li>`;
+        const d = E[id], lv = boons[id], r = (sv.boonR || {})[id] || 0, duo = !!d.req;
+        return `<li style="--c:${d.col}"><i class="bd-ico">${d.icon}</i><div><b>${d.name}<em>${duo ? '雙重' : RR[r].name + '　Lv ' + lv + ' / ' + d.max}</em></b><p>${duo ? d.desc(1) : d.desc(lv, RR[r].mul)}</p></div></li>`;
       }).join('') || '<li class="bd-none">還沒有共鳴回響。打贏戰鬥後可以從三張卡中選一張，會一路帶到下一章。</li>';
       const owned = Object.keys(D.relics || {}).filter((k) => sv.flags['relic_' + k]);
       const relic = (k, on) => `<li class="${on ? '' : 'off'}"><i class="bd-ico rel">◆</i><div><b>${D.relics[k].name}<em>${on ? '裝備中' : '未裝備'}</em></b><p>${D.relics[k].desc}</p></div></li>`;
