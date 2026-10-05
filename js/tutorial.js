@@ -62,7 +62,7 @@
     { id: 'dodge', title: '閃避', text: '<b class="r">紅光</b> 攻擊不能格擋！看到紅光就按 {dodge} 閃過去（2 次）', phantom: true, attack: 'red', need: 2, count: (s) => s.redDodges, check: (s) => s.redDodges >= 2 },
     { id: 'execute', title: '處決', text: '幻影 <b>失衡</b> 了（頭上出現金色菱形）：靠近按 {light} 處決', phantom: true, breakIt: true, check: (s) => s.executed },
     { id: 'skill', title: '共鳴技', text: '攻擊和完美格擋會累積 <b>共鳴</b>（左上的菱形）。按 {skill} 施放共鳴技', res: 50, check: (s) => s.skill },
-    { id: 'heal', title: '回復', text: '按 {heal} 喝調和劑回復生命，到共鳴碑可以補充', hurt: true, check: (s) => s.healed },
+    { id: 'heal', title: '回復', text: '按 {heal} 喝調和劑回復生命，到魂燈台可以補充', hurt: true, check: (s) => s.healed },
   ];
 
   const Tut = G.Tut = {
@@ -76,7 +76,7 @@
       g.control = false;
       G.UI.choice({
         kicker: '戰鬥訓練 · COMBAT TRAINING', title: '要先熟悉戰鬥嗎？',
-        desc: '歐德會投影一個訓練幻影，帶你一步步練習攻擊、格擋、閃避與處決。第一次遊玩強烈建議參加（約 3 分鐘，隨時可以跳過）。',
+        desc: '寧舒會喚出一個訓練用的幻影，帶你一步步練習攻擊、格擋、閃避與處決。第一次遊玩強烈建議參加（約 3 分鐘，隨時可以跳過）。',
         items: [
           { label: '開始訓練', en: 'BEGIN TRAINING', action: () => this.start(onDone) },
           { label: '跳過，直接出發', en: 'SKIP', action: () => { g.save.flags.tut_done = true; g.control = true; onDone && onDone(); } },

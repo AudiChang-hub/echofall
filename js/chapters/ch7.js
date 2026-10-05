@@ -81,9 +81,9 @@
       st(10650, -205, 200, 'stave'), st(10960, -265, 220, 'beam', { c7h: 44 }),
     ],
     pylons: [
-      { id: 'c7_p1', x: 2800, y: 0, name: '灰港摺頁共鳴碑', dialog: 'c7_pylon1', flag: 'c7_pylon1_seen' },
-      { id: 'c7_p2', x: 7740, y: 0, name: '歌劇院後台共鳴碑', dialog: 'c7_pylon2', flag: 'c7_pylon2_seen' },
-      { id: 'c7_p3', x: 11420, y: 0, name: '終止線前共鳴碑', dialog: 'c7_pylon3', flag: 'c7_pylon3_seen' },
+      { id: 'c7_p1', x: 2800, y: 0, name: '摺頁王城魂燈台', dialog: 'c7_pylon1', flag: 'c7_pylon1_seen' },
+      { id: 'c7_p2', x: 7740, y: 0, name: '劇場後台魂燈台', dialog: 'c7_pylon2', flag: 'c7_pylon2_seen' },
+      { id: 'c7_p3', x: 11420, y: 0, name: '終止線前魂燈台', dialog: 'c7_pylon3', flag: 'c7_pylon3_seen' },
     ],
     notes: [
       { id: 'c7_n1', x: 600, y: 0, flag: 'c7_read_hymn' },
@@ -95,7 +95,7 @@
       { id: 'c7_n7', x: 11570, y: 0, flag: 'c7_read_vega' },
     ],
     items: [
-      { id: 'c7_toll', x: BELFRY.x + 30, y: BELFRY.y, flag: 'c7_got_toll', name: '巴洛的鐘聲', kind: 'key', sfx: 'c7_toll',
+      { id: 'c7_toll', x: BELFRY.x + 30, y: BELFRY.y, flag: 'c7_got_toll', name: '老鐸的鐘聲', kind: 'key', sfx: 'c7_toll',
         onTake(game) { game.bark(game.save.flags.c7_met_mira ? 'c7_tollMet' : 'c7_toll'); } },
     ],
     npcs: [],   // filled below (little Mira needs her painter)
@@ -155,10 +155,10 @@
       c7_boss: { manual: true, boss: true, arena: ARENA.boss, waves: [[{ t: 'c7_boss', x: ARENA.boss[0] + 950 }]] },
     },
     zones: [
-      { x: -1e9, name: '序奏・第一小節', en: 'PRELUDE — THE FIRST BAR', tint: 0, music: 'c7_explore', amb: 'c7_paper' },
-      { x: ZX[1], name: '摺頁裡的灰港', en: 'ASHPORT, FOLDED INTO THE MARGIN', tint: 0.1, music: 'c7_explore', amb: 'c7_ashport' },
+      { x: -1e9, name: '庭前・第一行', en: 'THE FIRST LINE', tint: 0, music: 'c7_explore', amb: 'c7_paper' },
+      { x: ZX[1], name: '摺進頁邊的王城', en: 'THE CAPITAL, FOLDED INTO THE MARGIN', tint: 0.1, music: 'c7_explore', amb: 'c7_ashport' },
       { x: ZX[2], name: '長休止', en: 'THE LONG REST', tint: 0.25, music: 'c7_void', amb: 'c7_void' },
-      { x: ZX[3], name: '回憶裡的歌劇院', en: 'THE OPERA, AS IT IS REMEMBERED', tint: 0.4, music: 'c7_explore2', amb: 'c7_opera' },
+      { x: ZX[3], name: '亡者記得的劇場', en: 'THE THEATRE, AS THE DEAD REMEMBER IT', tint: 0.4, music: 'c7_explore2', amb: 'c7_opera' },
       { x: ZX[4], name: '終止線', en: 'THE FINAL BARLINE', tint: 0.6, music: 'c7_explore2', amb: 'c7_coda' },
     ],
     tintAt,
@@ -1199,7 +1199,7 @@
      the Opera's proscenium around the elite's stage, the final double barline and its fermata
      ========================================================================================= */
   const floorY = (x) => (x >= RAISE.x0 && x < RAISE.x1 ? RAISE.y : x >= PIT.x0 && x < PIT.x1 ? PIT.y : 0);
-  const MOVES = [[2500, 'II', '灰港・摺頁', 'Ashport, folded'], [5270, 'III', '長休止', 'the Long Rest'], [7650, 'IV', '歌劇院', 'the Opera'], [10440, 'V', '終止線', 'the final barline']];
+  const MOVES = [[2500, 'II', '王城・摺頁', 'the capital, folded'], [5270, 'III', '長休止', 'the Long Rest'], [7650, 'IV', '劇場', 'the Theatre'], [10440, 'V', '終止線', 'the final barline']];
   function doubleBar(g, x, base, top, s = 1) {
     cel(g, () => { g.beginPath(); g.rect(x, top, 7 * s, base - top); }, '#3c3444', '#17131c', 3, '#f2c766', 1.6);
     cel(g, () => { g.beginPath(); g.rect(x + 14 * s, top, 20 * s, base - top); }, '#3c3444', '#17131c', 6, '#f2c766', 2);
@@ -1240,8 +1240,8 @@
       const pts = [[-110, 0], [-112, -290]]; for (let x = -112; x <= 112; x += 10) pts.push([x, -290 - (rr() < 0.3 ? rr() * 6 : 0)]); pts.push([112, -282]); for (let y = -282; y <= 0; y += 12) pts.push([112 + (rr() - 0.5) * 6, y]);
       g.fillStyle = 'rgba(11,6,18,0.3)'; g.beginPath(); g.ellipse(4, 2, 130, 7, 0, 0, TAU); g.fill();
       cel(g, () => poly(g, pts), '#f4ecdb', '#cfc4ae', 10, '#fffaf0', 2.2);
-      text(g, '休止之所', 0, -246, 30, '#1c1722', { italic: false, weight: 900, font: '"Noto Serif TC", serif' });
-      text(g, 'THE REST — Op. 7', 0, -214, 13, '#5a4f62', { weight: 600 });
+      text(g, '遺忘之庭', 0, -246, 30, '#1c1722', { italic: false, weight: 900, font: '"Noto Serif TC", serif' });
+      text(g, 'THE GARDEN OF FORGETTING', 0, -214, 13, '#5a4f62', { weight: 600 });
       g.fillStyle = '#2a2430'; for (let i = 0; i < 5; i++) g.fillRect(-96, -170 + i * 7, 192, 1);
       glyph(g, 'treble', -84, -156, 6.4, { lit: '#2a2430', dark: '#17131c', inkW: 0, d: 0 });
       flat(g, -66, -163.5, 5, '#2a2430');
@@ -1489,7 +1489,7 @@
         game.dialog(F.c7_got_toll ? 'c7_miraMeetHave' : 'c7_miraMeet', () => {
           F.c7_met_mira = true;
           if (F.c7_got_toll) done();
-          else G.UI.journal('支線任務：回家的鐘聲', '順著紅線往上，到倒掛的鐘樓裡找回巴洛的鐘聲');
+          else G.UI.journal('支線任務：回家的鐘聲', '順著紅線往上，到倒掛的鐘樓裡找回老鐸的鐘聲');
         });
       } else if (F.c7_got_toll && !F.c7_quest_done) done();
       else if (!F.c7_quest_done) game.dialog('c7_miraWait');
@@ -1753,8 +1753,8 @@
      ========================================================================================= */
   const data = {
     speakers: {
-      c7_mira: { name: '米菈', en: 'MIRA — A MEMORY', color: '#ff9a8c' },
-      c7_odevega: { name: '歐德……？', en: 'ODE — IN HER VOICE', color: '#ffffff' },
+      c7_mira: { name: '諾娜', en: 'NONA — A MEMORY', color: '#ff9a8c' },
+      c7_odevega: { name: '寧舒……？', en: 'NINSHU — IN HER VOICE', color: '#ffffff' },
     },
     hints: {
       c7_erase: '休止符劃出<b>紅色劃痕</b>時，那塊平台約一秒後會消失三秒——離開它，或趁它劃到一半時用 {light} 打斷。地面永遠都在',
@@ -1763,33 +1763,33 @@
     },
     barks: {
       c7_hum: { who: 'ode', text: '……有人在哼歌。倒著唱。' },
-      c7_pit: { who: 'ode', text: '……這一小節，沉下去了。' },
+      c7_pit: { who: 'ode', text: '……這一行，沉下去了。' },
       c7_toll: { who: 'ode', text: '……還是溫的。' },
       c7_tollMet: { who: 'ode', text: '她在等六點。' },
-      c7_bellRing: { who: 'ode', text: '……塔莉亞的鐘。傳到這裡了。' },
+      c7_bellRing: { who: 'ode', text: '……山上的鐘。傳到這裡了。' },
       c7_bellMute: { who: 'ode', text: '沒有鐘錘的鐘。在這裡，也一樣啞。' },
       c7_unflip: { who: 'ode', text: '……頁面，翻回來了。' },
     },
     dialog: {
       c7_enter: [
-        { who: 'ode', text: '……凜音。還聽得見嗎。' },
-        { who: 'rinne', text: '太清楚了。' },
-        { who: 'sys', text: '（腳下是五條白線。沒有風。每一個聲音，都停在下一個音之前。）' },
+        { who: 'ode', text: '……還聽得見嗎。' },
+        { who: 'rinne', text: '（妳點頭。）' },
+        { who: 'sys', text: '（腳下是五條白線。沒有風。每一段人生，都寫成了一行。）' },
       ],
       c7_score: [
-        { who: 'sys', text: '（線上寫滿了音符。晨禱、叫賣、某個人的心跳。有些小節，只剩擦過的灰。）' },
-        { who: 'rinne', text: '……被吃掉的聲音，都落在這裡。' },
+        { who: 'sys', text: '（線上寫滿了字。誰的搖籃曲、誰的婚禮、某個人最後的心跳。有些段落，只剩擦過的灰。）' },
+        { who: 'rinne', text: '（妳伸手碰了一下。灰是溫的。）' },
       ],
       c7_restmarks: [
-        { who: 'sys', text: '（線上浮著幾個休止符。它們經過的地方，音符一個接一個不見了。）' },
+        { who: 'sys', text: '（線上浮著幾個黑色的記號。它們經過的地方，字一個接一個不見了。）' },
       ],
       c7_mirror: [
-        { who: 'sys', text: '（前方站著一個墨水寫成的人影。握刀的手勢，和凜音一模一樣。）' },
-        { who: 'rinne', text: '……是我。' },
+        { who: 'sys', text: '（前方站著一個墨水寫成的人影。握刀的手勢，和妳一模一樣。）' },
+        { who: 'rinne', text: '（妳停下腳步。那是妳自己。）' },
       ],
       c7_ashport: [
-        { who: 'rinne', text: '……灰港。' },
-        { who: 'sys', text: '（倒懸的城市。鐘聲、海鷗、早市，全都停在響起之前的那一刻。）' },
+        { who: 'rinne', text: '（是溫陀。倒著的。）' },
+        { who: 'sys', text: '（倒懸的溫陀。鐘聲、海鷗、早市，全都停在響起之前的那一刻。）' },
       ],
       c7_choir: [
         { who: 'sys', text: '（廣場上有人在唱詩。嘴張著，沒有聲音。）' },
@@ -1798,72 +1798,72 @@
         { who: 'sys', text: '（倒掛的鐘樓。鐘還在，它的聲音卻掉了出來，浮在一旁，像一張摺好的紙。）' },
       ],
       c7_line: [
-        { who: 'sys', text: '（五線，只剩一線。底下不是黑暗——是「沒有」。）' },
-        { who: 'rinne', text: '長休止。' },
-        { who: 'ode', text: '……那我們，就是唯一還在動的聲音。' },
+        { who: 'sys', text: '（五線，只剩一線。底下不是黑暗——是「忘了」。）' },
+        { who: 'rinne', text: '（妳想起島上的一盞燈。想不起是誰點的。）' },
+        { who: 'ode', text: '……我替妳記著。' },
       ],
       c7_flip: [
-        { who: 'ode', text: '……凜音。別慌。' },
+        { who: 'ode', text: '……別慌。' },
         { who: 'sys', text: '（不是墜落。是這一頁，翻了過來。）' },
-        { who: 'rinne', text: '……城市是正的。' },
+        { who: 'rinne', text: '（城市，是正的。）' },
       ],
       c7_opera: [
-        { who: 'rinne', text: '……萊拉。' },
-        { who: 'sys', text: '（還沒有沉沒的歌劇院。燈全亮著，座位全空著。）' },
+        { who: 'rinne', text: '（劇場。水還沒有淹進來的時候。）' },
+        { who: 'sys', text: '（還沒有淹水的劇場。燈全亮著，座位全空著。）' },
       ],
       c7_fermata: [
         { who: 'sys', text: '（一座拱門在走路。它走過的地方，時間都停得久一點。）' },
       ],
       c7_eliteIntro: [
-        { who: 'graves', text: '……又見面了，方舟的劍。' },
-        { who: 'rinne', text: '葛雷夫。' },
-        { who: 'graves', text: '她已安息。我也是。' },
-        { who: 'graves', text: '只是上一次，我的劍斷了一根弦。' },
-        { who: 'graves', text: '這一次……讓我把這支舞跳完。' },
+        { who: 'graves', text: '……又見面了，王的女兒。' },
+        { who: 'rinne', text: '（妳認得他。王城的掘墓人，葛雷夫。）' },
+        { who: 'graves', text: '在這裡，我還沒拿起鏟子。' },
+        { who: 'graves', text: '我替不會死的人，挖了十八年的墳。' },
+        { who: 'graves', text: '這一次……讓我用劍，把這支舞跳完。' },
       ],
       c7_eliteDefeat: [
         { who: 'graves', text: '……好劍。' },
-        { who: 'graves', text: '那句「我累了」，她聽見了。……謝謝。' },
-        { who: 'graves', text: '這誓言，我已不需要。你帶著走吧。' },
-        { who: 'graves', text: '往上走。這一次，別讓那孩子一個人唱。' },
+        { who: 'graves', text: '我發過誓，要替王送完最後一程。他到現在，都還沒死。' },
+        { who: 'graves', text: '這誓言，我已不需要。妳帶著走吧。' },
+        { who: 'graves', text: '往下走。這一次，別讓那扇門關著。' },
       ],
       c7_coda: [
-        { who: 'sys', text: '（天上的太陽已被塗滿。一顆黑色的全音符。）' },
+        { who: 'sys', text: '（天上的太陽已被塗滿。一顆黑色的圓。）' },
         { who: 'sys', text: '（前方，一細一粗兩道直線，高得看不見頂。）' },
       ],
       c7_bossIntro: [
-        { who: 'ode', text: '……凜音。前方的訊號，和我核心裡的那一段，是同一個頻率。' },
-        { who: 'vega', text: '——站住。報上隊別、編號。' },
-        { who: 'rinne', text: '第七降臨隊。晚禱七號。' },
-        { who: 'vega', text: '第七隊……我不記得你的臉。' },
+        { who: 'ode', text: '……前面那個人。我認得她的燈。' },
+        { who: 'vega', text: '——站住。是誰派妳來的。' },
+        { who: 'rinne', text: '（妳搖頭。）' },
+        { who: 'vega', text: '我也是。……我不記得，我為什麼來了。' },
         { who: 'vega', text: '只記得，還有一個人，我沒有教完。' },
         { who: 'vega', text: '拔刀。手記得的，比臉多。' },
-        { who: 'rinne', text: '……那是她的站姿。' },
+        { who: 'rinne', text: '（妳的手，認得這個站姿。）' },
       ],
       c7_bossDefeat: [
         { who: 'vega', text: '……收刀的時候，手腕還是會抖一下。' },
-        { who: 'vega', text: '跟我一樣。……是你啊，凜音。長這麼高了。' },
+        { who: 'vega', text: '跟我一樣。……是妳啊，島上的那個孩子。長這麼高了。' },
         { who: 'vega', text: '還有好多話……只剩一句話的時間了。' },
       ],
       c7_listen: [
-        { who: 'vega', text: '你七歲那年，對著通風口唱歌。你說，通風口會回答。' },
-        { who: 'vega', text: '有一晚，我也聽見了。很遠的地方，有個孩子，接著你唱下一句。' },
-        { who: 'vega', text: '所以我教你握刀。不是為了打仗。是為了有一天，你能走到這裡。' },
+        { who: 'vega', text: '那年我往下走，在一座島上停了一個冬天。燈下有個孩子，對著海唱歌。' },
+        { who: 'vega', text: '她說，浪會回答。……有一晚，我也聽見了。' },
+        { who: 'vega', text: '所以我教她握刀。不是為了打仗。是想著，要是我走不到底——總有一天，她能。' },
         { who: 'vega', text: '……對不起。這本來是我該走的路。' },
-        { who: 'rinne', text: '隊長——' },
-        { who: 'vega', text: '早餐要吃。大衣的袖子，我改短了。' },
+        { who: 'rinne', text: '（妳搖頭。妳不記得了。）' },
+        { who: 'vega', text: '沒關係。我也忘了。……早飯要吃。衣袖，我替妳改短了。' },
         { who: 'vega', text: '最後一句。我一直想親口說完的……別回頭——' },
-        { who: 'c7_odevega', text: '——往前走。替我，把歌唱完。' },
-        { who: 'vega', text: '……啊。原來那一句，我留在你那裡了。' },
-        { who: 'vega', text: '歐德。……她，交給你了。' },
-        { who: 'ode', text: '……收到，隊長。' },
-        { who: 'rinne', text: '我會唱完。' },
+        { who: 'c7_odevega', text: '——走到底。替我，把那扇門打開。' },
+        { who: 'vega', text: '……啊。原來那一句，我早就留在你那裡了。' },
+        { who: 'vega', text: '寧舒。……她，交給你了。' },
+        { who: 'ode', text: '……是，公主。' },
+        { who: 'rinne', text: '（妳點頭。）' },
       ],
       c7_sever: [
-        { who: 'rinne', text: '最後的話，我已經聽過了。' },
+        { who: 'rinne', text: '（妳舉起刀。最後的話，妳已經聽過了。）' },
         { who: 'vega', text: '……是嗎。那就……往——' },
-        { who: 'sys', text: '（訊號斷了。）' },
-        { who: 'ode', text: '……我的核心裡，有一句話差點說出口。現在，不見了。' },
+        { who: 'sys', text: '（殘影斷了。墨水落在線上，再也寫不成字。）' },
+        { who: 'ode', text: '……燈裡，有一句話差點說出口。現在，不見了。' },
       ],
       // pylon first visits and Mira's lines are rebuilt from the save on entry (they remember what you did)
       c7_pylon1: [], c7_pylon2: [], c7_pylon3: [],
@@ -1871,92 +1871,92 @@
     },
     codex: {
       people: [
-        { id: 'c7_mira', name: '米菈的回憶', en: 'MIRA — A MEMORY', portrait: 'c7_mira', unlock: 'c7_met_mira', tag: 'NPC｜坐在灰港屋頂上的女孩',
-          body: ['休止之所裡，一段關於米菈的回憶：十二歲，圍著父親的紅圍巾，抱著會唱歌的音樂盒，坐在灰港鐘塔斷落的屋頂上，等傍晚六點的鐘聲。',
-            '她記得黑頭髮的大姐姐教她的歌，記得「只要屏住呼吸，就不會再有東西不見」。她不記得，自己已經屏住呼吸多久了。',
+        { id: 'c7_mira', name: '諾娜的記憶', en: 'NONA — A MEMORY', portrait: 'c7_mira', unlock: 'c7_met_mira', tag: 'NPC｜老鐸的女兒',
+          body: ['遺忘之庭裡的諾娜：十二歲，圍著父親的紅圍巾，抱著會唱歌的音樂盒，坐在倒懸鐘塔的屋頂上，等傍晚六點的鐘聲。',
+            '她死在冥界的門還開著的那幾年，走了進來，也一點一點忘了人間。父親的臉、家門的顏色，都忘了。只有鐘聲，她忘不掉。',
             '她的紅圍巾末端少了一截。那一截，被風吹到了很遠很遠的地方。'] },
-        { id: 'c7_vega', name: '薇格的殘響', en: 'THE ECHO OF ELAINE VEGA', portrait: 'c7_boss', unlock: 'c7_boss_seen', tag: '頭目｜第七降臨隊隊長（殘響）',
-          body: ['艾蓮・薇格陣亡的那一刻，她把一小段自己上傳進了一架戰術無人機。剩下的——沒說完的話、沒教完的課——沉進了休止之所。',
-            '休止把她重新寫了一遍：墨水與金箔，比生前高大一些，用的是凜音的劍術。因為那本來就是她的劍術。',
-            '她不記得凜音的臉。可是她的手記得。'] },
-        { id: 'c7_graves', name: '葛雷夫的回憶', en: 'GRAVES, REMEMBERED', portrait: 'c7_elite', unlock: 'c7_elite_seen', tag: '菁英｜第一降臨隊副隊長（殘響）',
-          body: ['灰港屋頂上的斷弦騎士。在聖堂前，他請凜音替他告訴瑪絲緹娜：「我累了。」',
-            '在休止之所裡，他的鎧甲是白的，劍是完整的。他不再守護誰的寂靜——他只是想用一把完整的劍，把那支舞跳完。'] },
+        { id: 'c7_vega', name: '六公主的殘影', en: 'THE SIXTH PRINCESS, AN AFTERIMAGE', portrait: 'c7_boss', unlock: 'c7_boss_seen', tag: '頭目｜溫陀王的第六個女兒（殘影）',
+          body: ['姊妹之中，只有她曾經提著一盞燈，走下冥界去取生命之水。她在第六道門前倒下，燈把她帶回去三次。第四次，她忘了自己為什麼而來。',
+            '遺忘之庭把剩下的她重新寫了一遍：墨水與金箔，比生前高大一些，用的是一個島上孩子的劍術。因為那本來就是她教的。',
+            '她不記得那孩子的臉。可是她的手記得。'] },
+        { id: 'c7_graves', name: '掘墓人的殘影', en: 'THE GRAVEDIGGER, REMEMBERED', portrait: 'c7_elite', unlock: 'c7_elite_seen', tag: '菁英｜溫陀王城的掘墓人（殘影）',
+          body: ['王城的掘墓人葛雷夫。十八年來，他替不會死的人挖墳，一座也沒有填上。人間的他還在挖；掉進遺忘之庭的，只是他忘掉的那一點。',
+            '在這裡，他還沒拿起鏟子：鎧甲是白的，劍是完整的。他曾是王的騎士，發誓要替王送完最後一程。王一直沒有死。'] },
       ],
       world: [
-        { id: 'c7_rest', name: '休止之所', en: 'THE REST', unlock: 'c7_arrived',
-          body: ['方舟上方、星星之間，一塊沒有星光的方形黑暗。從裡面看，它是一頁沒有寫完的樂譜。',
-            '大寂靜吞掉的每一個聲音都落在這裡：方舟的晨禱、灰港的晚鐘、歌劇院最後的高音、一位隊長最後的三秒。它們沒有消失——它們在等下一個音。',
+        { id: 'c7_rest', name: '遺忘之庭', en: 'THE GARDEN OF FORGETTING', unlock: 'c7_arrived',
+          body: ['第六道門的後面，一塊沒有星光的方形黑暗。從裡面看，它是一頁寫滿了字的譜。',
+            '亡者走到這裡，要把生前放下：一生的每一件事都寫在線上，再一行一行擦掉。擦掉的不會消失——它們落在更深的地方，等人想起。',
             '沒有人量得出它有多寬、多深。在這裡，時間只是一個還沒有落下的拍子。'] },
         { id: 'c7_staff', name: '五線', en: 'THE FIVE LINES', unlock: 't_c7_t_score',
-          body: ['休止之所的地面是五線譜：黑色的石板，表面刻著五條白線，和寫在線上的音樂。',
-            '有些段落被擦掉了，只剩下灰色的指痕——寂靜先到過的地方。',
-            '石板底下還有一頁，再一頁——樂譜一直往下疊。沒有人知道有幾頁。'] },
+          body: ['遺忘之庭的地面是五線譜：黑色的石板，表面刻著五條白線，和寫在線上的一生。',
+            '有些段落被擦掉了，只剩下灰色的指痕——已經忘掉的地方。',
+            '石板底下還有一頁，再一頁——人一直往下忘。沒有人知道有幾頁。'] },
         { id: 'c7_folds', name: '摺頁', en: 'THE FOLDED PAGES', unlock: 't_c7_t_ashport',
-          body: ['休止之所把它記得的地方摺進了樂譜的邊緣：倒掛的灰港、懸在虛空上的鐘樓聚落、燈火通明的萊拉大歌劇院、方舟的腹部。',
-            '它們都是倒著的——在這裡，城市從天空長下來。只有在那一頁翻過去的時候，它們才是正的。'] },
+          body: ['遺忘之庭把亡者記得的地方摺進了譜的邊緣：倒掛的王城、懸在虛空上的鐘樓、燈火通明的劇場、一艘船的腹部。',
+            '它們都是倒著的——在這裡，記憶從天空長下來。只有在那一頁翻過去的時候，它們才是正的。'] },
         { id: 'c7_longrest', name: '長休止', en: 'THE LONG REST', unlock: 't_c7_t_line',
-          body: ['五線譜在這裡只剩下一條線，底下什麼都沒有。樂譜上，這叫「長休止」：整個樂團一起停下來，好幾個小節，一個音也不發。',
-            '走到一半，整頁樂譜會翻過來。上面變成下面，倒掛的城市變成正的。線還在你腳下——只要你繼續走。'] },
+          body: ['五線譜在這裡只剩下一條線，底下什麼都沒有。譜上，這叫「長休止」：所有人一起停下來，好幾個小節，一個字也不留。',
+            '走到一半，整頁會翻過來。上面變成下面，倒掛的城市變成正的。線還在妳腳下——只要妳繼續走。'] },
         { id: 'c7_thread', name: '紅線', en: 'THE RED THREAD', unlock: 'c7_met_mira',
-          body: ['休止之所裡唯一的紅色：一條細細的紅線，橫過整片天空，一路往上延伸。',
-            '那是米菈圍巾上的鬚鬚。她把它綁在鐘樓上、綁在每一個她去過的地方——這樣才不會迷路。',
+          body: ['遺忘之庭裡唯一的紅色：一條細細的紅線，橫過整片天空，一路往上延伸。',
+            '那是諾娜圍巾上的鬚鬚。她把它綁在鐘樓上、綁在每一個她去過的地方——這樣才不會忘了路。',
             '順著它走，就會找到她。'] },
         { id: 'c7_finalbar', name: '終止線', en: 'THE FINAL BARLINE', unlock: 't_c7_t_coda',
-          body: ['一細一粗兩條直線，高得看不到頂。在樂譜上，它的意思是「全曲終」。',
+          body: ['一細一粗兩條直線，高得看不到頂。在譜上，它的意思是「全曲終」；在這裡，它的意思是「到此為止，都忘了」。',
             '終止線上方懸著一個巨大的延長記號——「在這裡，停久一點」。有人一直停在那裡，停了很久很久。',
-            '剛進入休止之所時，天上的太陽是一個空心的全音符。走到這裡，它已經被塗滿了：一顆黑色的太陽。'] },
+            '剛走進遺忘之庭時，天上的太陽是一個空心的圓。走到這裡，它已經被塗滿了：一顆黑色的太陽。'] },
       ],
       items: [
-        { id: 'c7_toll', name: '巴洛的鐘聲', en: "BARROW'S TOLL", unlock: 'c7_got_toll',
-          body: ['從灰港大教堂倒掛的鐘樓裡掉出來的一聲鐘響，被摺成一張紙的形狀。握在手裡，是溫的。',
-            '靜默之夜之後，巴洛每天傍晚六點都去敲一次那口裂掉的鐘。這是其中的一聲。'] },
+        { id: 'c7_toll', name: '老鐸的鐘聲', en: "OLD DOR'S TOLL", unlock: 'c7_got_toll',
+          body: ['從王城倒掛的鐘樓裡掉出來的一聲鐘響，被摺成一張紙的形狀。握在手裡，是溫的。',
+            '諾娜死後，老鐸每天傍晚六點都去敲一次那口裂掉的鐘。這是其中的一聲。'] },
         { id: 'c7_key', name: '發條鑰匙', en: 'THE WINDING KEY', unlock: 'relic_c7_key', relic: true,
-          body: ['米菈音樂盒的發條鑰匙。音樂盒掉在灰港，鑰匙卻一直被她握在手心裡。', '「這樣歌就不會停了。」', '遺物效果：最大生命 +15，共鳴累積 +15%。'] },
+          body: ['諾娜音樂盒的發條鑰匙。音樂盒留在王城，鑰匙卻跟著她下了冥界。她什麼都忘了，只記得不能鬆手。', '「這樣歌就不會停了。」', '遺物效果：最大生命 +15，共鳴累積 +15%。'] },
       ],
       notes: [
-        { id: 'c7_n1', name: '晨禱的第二句', en: 'THE SECOND LINE', body: [
-          '（五線譜的角落，摺著一小段旋律。旁邊用四萬兩千種筆跡，寫著同一句歌詞。）',
-          '「在。我們都在。」',
-          '頌歌號的晨禱，第二句。那一天早上六點，所有人都張開了嘴，卻沒有唱出來。',
+        { id: 'c7_n1', name: '搖籃曲的第二句', en: 'THE SECOND LINE', body: [
+          '（五線譜的角落，摺著一小段旋律。旁邊用許多種筆跡，寫著同一句歌詞。）',
+          '「睡吧。天亮的時候，有人叫妳的名字。」',
+          '溫陀的母親們唱給孩子的搖籃曲，第二句。十八年來沒有孩子出生，這一句再也沒有人唱過。',
           '它沒有消失。它掉到了這裡，一直摺著，等人把它唱完。',
-          '（最下面一行，是用蠟筆寫的，歪歪扭扭：「在。——朵朵」）'] },
+          '（最下面一行，是用炭寫的，字很大，像剛學會寫字：「沒有人叫我。」）'] },
         { id: 'c7_n2', name: '第七千三百零五聲', en: 'THE 7,305TH TOLL', body: [
           '（一張被雨淋濕過的樂譜。上面只有一個音，重複了很多很多次，每一個音旁邊都標著小小的數字。）',
           '1、2、3……7303、7304、7305。',
-          '灰港大教堂的晚鐘。靜默之夜之後，有個人每天傍晚六點都去敲一次——即使鐘已經裂了，即使它一聲也沒有響。',
-          '休止之所把每一聲都收下了。一聲都沒有漏。',
+          '王城大教堂的晚鐘。女兒死後，有個人每天傍晚六點都去敲一次——即使鐘已經裂了，即使它一聲也沒有響。',
+          '遺忘之庭把每一聲都收下了。一聲都沒有漏。',
           '最後一個數字旁邊，有人用很輕的筆跡寫著：「她找得到回家的路。」'] },
-        { id: 'c7_n3', name: '通風口的回答', en: 'WHAT THE VENT SANG BACK', body: [
-          '（一張很舊的作業紙，頁首印著「頌歌號・第三育幼院」。上面是孩子歪歪扭扭畫的五線譜。）',
-          '上半段：一個七歲的孩子對著通風口唱的歌。音準很差，可是很認真。',
-          '下半段：另一種筆跡，很細、很輕，像是怕吵到誰。它接著上半段，把旋律唱了下去——一個音都沒有錯。',
-          '那是瑪絲緹娜教給一個女孩的歌。',
-          '紙的背面寫著：「通風口會回答。——凜音，七歲」'] },
-        { id: 'c7_n4', name: '沒有吹響的撤退號', en: 'THE RETREAT NEVER SOUNDED', body: [
-          '（一段軍號譜，標題是「撤退」。每一個音都被人用指甲輕輕刮過，卻沒有刮破紙。）',
-          '第二降臨隊的信號手歐林，十七年來每天吹一次集合號：「我在這裡，跟著聲音走。」',
-          '他從來沒有吹過撤退號。',
-          '譜的邊緣寫著：「只要撤退號不響，就沒有人需要回頭。」',
+        { id: 'c7_n3', name: '浪的回答', en: 'WHAT THE WAVES SANG BACK', body: [
+          '（一片很舊的木板，從燈塔的牆上拆下來的。上面用貝殼刻著歪歪扭扭的五條線。）',
+          '上半段：一個七歲的孩子對著海唱的歌。音準很差，可是很認真。',
+          '下半段：另一種刻痕，很細、很輕，像是怕吵到誰。它接著上半段，把旋律唱了下去——一個音都沒有錯。',
+          '那是溫陀王宮裡，王后唱給女兒們的歌。',
+          '木板背面刻著：「浪會回答。」署名的地方，被刮掉了。'] },
+        { id: 'c7_n4', name: '沒有吹響的回頭號', en: 'THE CALL HOME, NEVER SOUNDED', body: [
+          '（一段號角譜，標題是「回頭」。每一個音都被人用指甲輕輕刮過，卻沒有刮破紙。）',
+          '雪嶺山門的號手，十七年來每天吹一次引路號：「我在這裡，跟著聲音走。」',
+          '他從來沒有吹過回頭號。',
+          '譜的邊緣寫著：「只要回頭號不響，就沒有人需要回頭。」',
           '（這一頁，是倒著寫的。）'] },
         { id: 'c7_n5', name: '沒唱完的高音', en: 'THE UNSUNG HIGH C', body: [
-          '（歌劇總譜的最後一頁。女高音聲部停在一個很高很高的音上——一個沒有唱出來的高音 C。）',
-          '萊拉大歌劇院，季終公演。十九歲的露塞特・德瓦爾唱到這裡的那一瞬間，大寂靜抵達了。',
+          '（輓歌總譜的最後一頁。女高音聲部停在一個很高很高的音上——一個沒有唱出來的高音 C。）',
+          '溺死者的劇場，最後一場。十九歲的露塞特唱到這裡的那一瞬間，水淹了進來。',
           '兩千名觀眾屏住呼吸，等那個音。',
           '他們到現在都還在等。',
           '音符上方，有人用鉛筆輕輕畫了一個延長記號。旁邊寫著：「多久都可以。」'] },
         { id: 'c7_n6', name: '屏住的呼吸', en: 'A HELD BREATH', body: [
           '（一整頁，什麼都沒有寫。只有正中央，一個小小的休止符。）',
           '休止符旁邊，有一行孩子的字：',
-          '「如果我不出聲，就不會再有人不見了。」',
-          '「所以我要一直、一直憋著氣。」',
+          '「我生下來，就沒有呼吸。」',
+          '「所以我不出聲。不出聲，就不會被丟掉。」',
           '「……可是，好難過喔。」'] },
-        { id: 'c7_n7', name: '最後的三秒', en: 'THE LAST THREE SECONDS', body: [
-          '【第七降臨隊・隊長通訊　最後三秒　降臨伏擊】',
-          '第一秒：「凜音，進艙。不要回頭。」',
-          '第二秒：（上傳中……）「無人機，接住這一段。拜託了。」',
-          '第三秒：「……還有，凜音，記得吃早——」',
-          '（通訊中斷。休止之所把最後半句，原封不動地收著。）'] },
+        { id: 'c7_n7', name: '燈芯上的三句', en: 'THREE LINES ON A WICK', body: [
+          '【魂燈・燈芯上的三道焦痕　第六道門】',
+          '第一句：「寧舒，往回飛。不要等我。」',
+          '第二句：（燈火一晃）「接住這一段。拜託了。」',
+          '第三句：「……還有，告訴島上那孩子，早飯要——」',
+          '（燈熄了一次。遺忘之庭把最後半句，原封不動地收著。）'] },
       ],
     },
     relics: {
@@ -1965,62 +1965,62 @@
   };
   G.Relics.c7_key = { apply(P2) { P2.maxHp += 15; P2.resMul *= 1.15; } };
   // the elite's relic belongs to the foes author; keep a fallback so the drop never breaks
-  if (!G.DATA.relics.c7_oath) data.relics.c7_oath = { name: '斷弦之誓', desc: '生命高於 70% 時，劍擊傷害 +15%' };
+  if (!G.DATA.relics.c7_oath) data.relics.c7_oath = { name: '騎士之誓', desc: '生命高於 70% 時，劍擊傷害 +15%' };
   if (G.UI && G.UI.portraits) G.UI.portraits.c7_mira = (ctx, W, H, game) => { ctx.setTransform(3.4, 0, 0, 3.4, W / 2 - 20, H * 0.82); drawMira(ctx, 0, 0, (game && game.realTime) || 1, 1, 1, !!(game && game.save && game.save.flags.c7_quest_done), 1); };
 
   // lines that remember what you did in earlier chapters (rebuilt whenever the chapter is entered or Mira speaks)
   function pylonLines(F) {
     const D = G.DATA.dialog;
     D.c7_pylon1 = [
-      { who: 'talia', text: '凜音？……你的訊號，是從方舟「上面」來的。那裡明明什麼都沒有。' },
-      { who: 'rinne', text: '有。一頁樂譜。' },
-      { who: 'talia', text: '……我不問了。共鳴碑我遠端校好了，刻度也多刻了幾格。' },
-      F.c2_quest_done ? { who: 'talia', text: '鐘樓每天傍晚六點都在敲鐘。大家說，要敲到你回家為止。' } : { who: 'talia', text: '……小心點。你的訊號，一天比一天小聲。' },
-      { who: 'rinne', text: '……聽得到。' },
+      { who: 'talia', text: '……妳還在嗎？燈台的火，是從「下面的下面」燒上來的。那裡明明什麼都沒有。' },
+      { who: 'rinne', text: '（妳把燈舉高，照著腳下寫滿字的線。）' },
+      { who: 'talia', text: '……我不問了。燈芯我多剪了一截，應該夠亮。' },
+      F.c2_quest_done ? { who: 'talia', text: '山上的門鐘，每天傍晚都在響。大家說，要響到妳回來為止。' } : { who: 'talia', text: '……小心點。妳的燈，一天比一天暗。' },
+      { who: 'rinne', text: '（妳把燈芯撥亮了一點。）' },
     ];
     D.c7_pylon2 = [
-      { who: 'ode', text: '……這一頁的背面，有人在叫我。不是「歐德」。' },
-      { who: 'rinne', text: '要去看看嗎。' },
-      { who: 'ode', text: '你去，我就跟。' },
+      { who: 'ode', text: '……這裡，我來過。' },
+      { who: 'rinne', text: '（妳看著寧舒。）' },
+      { who: 'ode', text: '在妳之前。……我也陪過一個人。' },
     ];
     D.c7_pylon3 = [
       { who: 'ode', text: '如果前面真的是她……我不知道之後，我還是不是我。' },
-      { who: 'rinne', text: '你是歐德。會數拍子，飛得有點歪。' },
-      { who: 'ode', text: '……一。二。三。' },
+      { who: 'rinne', text: '（妳把燈捧在手心裡，捧了很久。）' },
+      { who: 'ode', text: '……嗯。' },
     ];
   }
   function miraLines(F) {
     const D = G.DATA.dialog;
     const meet = [
       { who: 'c7_mira', text: '……啊。妳踩到我的屋頂了。' },
-      { who: 'c7_mira', text: '這裡離天空最近。爸爸說的。' },
-      { who: 'rinne', text: '米菈？' },
-      { who: 'c7_mira', text: '妳怎麼知道？……妳也是方舟來的嗎？跟黑頭髮的大姐姐一樣？' },
-      { who: 'c7_mira', text: '大姐姐教了我一首歌。她說，只要屏住呼吸，就不會再有東西不見。' },
+      { who: 'c7_mira', text: '這裡離天空最近。爹說的。' },
+      { who: 'rinne', text: '（妳想起王城的老敲鐘人。他的鐘，他的女兒。）' },
+      { who: 'c7_mira', text: '妳認得我爹？……妳也是上面來的嗎？跟拿刀的大姊姊一樣？' },
+      { who: 'c7_mira', text: '大姊姊說，她要去最下面取水。走過這裡的時候，她已經忘了一半。' },
     ];
     D.c7_miraMeet = meet.concat([
-      { who: 'c7_mira', text: '我在等鐘聲。傍晚六點，爸爸會敲鐘。聽到了，就知道該回家。' },
-      { who: 'c7_mira', text: '這裡好安靜。聽不到鐘，就不知道哪一邊是家。' },
+      { who: 'c7_mira', text: '我在等鐘聲。傍晚六點，爹會敲鐘。聽到了，就知道該回家。' },
+      { who: 'c7_mira', text: '這裡的人，都在忘。我也忘了好多。只剩鐘聲還記得。' },
       { who: 'c7_mira', text: '掉下來的聲音，都會浮在某個地方。……妳能幫我找找嗎？' },
-    ], F.gave_musicbox ? [{ who: 'sys', text: '（她說的爸爸，是灰港的守鐘人巴洛。那只音樂盒，已經回到他手上了。）' }] : [],
+    ], F.gave_musicbox ? [{ who: 'sys', text: '（她說的爹，是王城的老鐸。那只音樂盒，已經回到他手上了。）' }] : [],
     F.c5_got_ribbon ? [{ who: 'sys', text: '（她的圍巾末端少了一截。像是被誰撕去，綁在了很遠的地方。）' }] : [],
-    [{ who: 'rinne', text: '我去找。' }]);
+    [{ who: 'rinne', text: '（妳點頭。）' }]);
     D.c7_miraMeetHave = meet.slice(0, 2).concat([{ who: 'c7_mira', text: '……咦？妳身上，有鐘聲的味道。' }]);
     D.c7_miraWait = [
       { who: 'c7_mira', text: '鐘聲會往上掉喔。這裡的東西，都往上掉。' },
-      { who: 'c7_mira', text: '那條紅線，是我圍巾的鬚鬚。綁在鐘樓上，就不會迷路。' },
+      { who: 'c7_mira', text: '那條紅線，是我圍巾的鬚鬚。綁在鐘樓上，就不會忘了路。' },
     ];
     D.c7_miraDone = [
-      { who: 'rinne', text: '……找到了。' },
+      { who: 'rinne', text: '（妳攤開手。手心裡，是一聲摺好的鐘響。）' },
       { who: 'c7_mira', text: '……！' },
       { who: 'sys', text: '（一聲鐘響。在沒有空氣的地方，傳得很遠、很遠。）' },
-      { who: 'c7_mira', text: '是爸爸的鐘。……他還在敲。' },
-      { who: 'c7_mira', text: '那我還可以回家。對不對？' },
-      { who: 'rinne', text: '……對。' },
-      F.gave_musicbox ? { who: 'c7_mira', text: '音樂盒在爸爸那裡？那他一定是用髮夾在上發條。……笨爸爸，鑰匙在我這裡。' }
-        : { who: 'c7_mira', text: '我的音樂盒掉在灰港了。找到的話……這把鑰匙，能讓它再唱一次。' },
+      { who: 'c7_mira', text: '是爹的鐘。……他還在敲。' },
+      { who: 'c7_mira', text: '那我還記得，家在哪裡。對不對？' },
+      { who: 'rinne', text: '（妳點頭。）' },
+      F.gave_musicbox ? { who: 'c7_mira', text: '音樂盒在爹那裡？那他一定是用髮夾在上發條。……笨爹爹，鑰匙在我這裡。' }
+        : { who: 'c7_mira', text: '我的音樂盒留在王城了。找到的話……這把鑰匙，能讓它再唱一次。' },
       { who: 'c7_mira', text: '給妳。這樣歌就不會停了。' },
-      { who: 'c7_mira', text: '姐姐要往上走吧。上面很安靜。……如果在那裡遇到我，跟我說，鐘還在響。' },
+      { who: 'c7_mira', text: '姊姊要往下走吧。下面很安靜。……如果在那裡遇到一個沒有名字的人，跟她說，鐘還在響。' },
     ];
     D.c7_miraAfter = [
       { who: 'c7_mira', text: '噓。……六點了。' },
@@ -2044,7 +2044,7 @@
   function hold(game) { const Pl = game.player; game.control = false; Pl.vx = 0; if (Pl.busy && Pl.state !== 'rest' && Pl.state !== 'dead') Pl.setState('move'); }
   function release(game) { game.focus = null; game.control = true; G.Input.clearBuffers(); }
   function finish(game, listened) {
-    if (CH7) CH7.outro = listened ? '「別回頭。」——往前走。' : '「……往——」';
+    if (CH7) CH7.outro = listened ? '「別回頭。」——走到底。' : '「……往——」';
     game.focus = null;
     game.completeChapter();
   }
@@ -2163,12 +2163,12 @@
         hold(game);
         if (DEVQ && DEVQ.get('c7choose')) { epilogue(game, DEVQ.get('c7choose') !== 'sever'); return; }   // dev aid: run a branch headless
         G.UI.choice({
-          kicker: '薇格的殘響　THE ECHO OF ELAINE VEGA',
+          kicker: '六公主的殘影　THE SIXTH PRINCESS',
           title: '讓她把話說完嗎？',
-          desc: '她的聲音正在散去。聽她說完，殘響將在此用盡最後的時間；斬斷它，休止便再也不能把她寫成別的模樣。',
+          desc: '她的聲音正在散去。聽她說完，殘影將在此用盡最後的時間；斬斷它，遺忘便再也不能把她寫成別的模樣。',
           items: [
             { label: '聽她說完', en: 'LET HER FINISH', action: () => epilogue(game, true) },
-            { label: '斬斷殘響', en: 'SEVER THE ECHO', action: () => epilogue(game, false) },
+            { label: '斬斷殘影', en: 'SEVER THE AFTERIMAGE', action: () => epilogue(game, false) },
           ],
         });
       });
@@ -2181,13 +2181,13 @@
      REGISTER
      ========================================================================================= */
   CH7 = G.Chapters.register({
-    id: 7, key: 'ch7', num: 'VII', numZh: '七', title: '休止之所', en: 'THE REST',
+    id: 7, key: 'ch7', num: 'VII', numZh: '七', title: '遺忘之庭', en: 'THE GARDEN OF FORGETTING',
     intro: [
-      { t: '方舟之上，星辰之間，\n有一頁無人寫完的樂譜。', s: 'ABOVE THE ARK, BETWEEN THE STARS — A PAGE NO ONE FINISHED.' },
-      { t: '所有被寂靜吞下的聲音，\n都落在這裡，等下一個音。', s: 'EVERY SOUND THE HUSH EVER SWALLOWED FELL HERE, WAITING FOR THE NEXT NOTE.' },
+      { t: '第六道門的後面，\n亡者在這裡放下生前。', s: 'PAST THE SIXTH GATE, THE DEAD SET DOWN THEIR LIVES.' },
+      { t: '所有被忘記的事，\n都寫在這裡，一行一行被擦掉。', s: 'ALL THAT IS FORGOTTEN IS WRITTEN HERE — AND ERASED, LINE BY LINE.' },
     ],
     enterDialog: 'c7_enter',
-    outro: '「別回頭。」——往前走。',
+    outro: '「別回頭。」——走到底。',
     level, pal,
     sky: { sun: false, shafts: false, clouds: false, ark: false, rays: 0 },
     bg: {

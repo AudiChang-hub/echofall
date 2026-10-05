@@ -1,5 +1,5 @@
 'use strict';
-/* ECHOFALL — Chapter III foes (斷層之井 THE FAULTWELL)
+/* ECHOFALL — Chapter III foes (回頭路 THE WAY BACK)
    c3_carapace 晶甲蟹 · c3_echobat 回音蝠 · c3_listener 深聽者 · c3_borer 鑽岩蟲 · elite c3_elite 爆破手・莫格
    Hand-inked Canvas art, no images. API: docs/CHAPTER_API.md §4–5 · spec: docs/STORY.md §3 (III).
    Dev aid: add ?c3hb=1 to the URL to see every attack's hit boxes (yellow = pending, red = live). */
@@ -143,7 +143,7 @@
   const D = G.DATA;
   D.speakers.c3_mog = D.speakers.c3_mog || { name: '莫格', en: 'MOG', color: '#ff9a4d' };
   Object.assign(D.barks, {
-    c3_eliteP2: { who: 'c3_mog', text: '引信……已經點著了。誰都別想再往下。' },
+    c3_eliteP2: { who: 'c3_mog', text: '引信……已經點著了。這一次，上面一定聽得見。' },
     c3_bk_shield: { who: 'ode', text: '……碎了。' },
     c3_bk_heard: { who: 'ode', text: '……牠聽見了。' },
     c3_bk_borer: { who: 'ode', text: '……在底下。' },
@@ -155,29 +155,29 @@
   });
   D.relics.c3_fuse = { name: '引信', desc: '對菁英與頭目的處決傷害 +50%' };
   const pushCodex = (k, entry) => { D.codex[k] = D.codex[k] || []; if (!D.codex[k].some((q) => q.id === entry.id)) D.codex[k].push(entry); };
-  pushCodex('items', { id: 'c3_fuse', name: '引信', en: 'THE FUSE', unlock: 'relic_c3_fuse', relic: true, body: ['莫格留下的最後一條引信。末端一點火星，十年不肯熄。', '遺物效果：對菁英與頭目的處決傷害 +50%。'] });
+  pushCodex('items', { id: 'c3_fuse', name: '引信', en: 'THE FUSE', unlock: 'relic_c3_fuse', relic: true, body: ['莫格留下的最後一條引信。末端一點火星，十八年不肯熄。他一直在等，等上面傳來一聲回應。', '遺物效果：對菁英與頭目的處決傷害 +50%。'] });
   [
     { id: 'c3_carapace', name: '晶甲蟹', en: 'CARAPACE', tag: '寂裔｜中階・重甲', body: [
-      '棲息在共鳴器官化石之間的大型甲殼類。牠把寂靜結晶養成一面塔盾，一輩子扛在身前。',
+      '棲息在化石管風琴之間的大型甲殼類。牠把寂靜結晶養成一面塔盾，一輩子扛在身前。',
       '攻擊模式：鉗擊重砸（白光，可格擋）／快鉗（白光）／盾衝（紅光，必須閃避）。正面的攻擊會被晶盾彈開，盾上的裂痕會越來越多。',
       '弱點：完美格擋鉗擊重砸可以直接震碎晶盾。牠轉身很慢——翻滾繞到背後，甲殼底下是軟的。'] },
     { id: 'c3_echobat', name: '回音蝠', en: 'ECHO BAT', tag: '寂裔｜低階・飛行群聚', body: [
       '沒有眼睛的洞穴蝙蝠，一對碟形巨耳能聽見三條隧道外的心跳。總是三、四隻一起盤旋，輪流出手。',
       '攻擊模式：先發出一圈聲納掃描，再俯衝撲擊（白光）；也會吐出聲波彈（白光，完美格擋可反彈）。',
-      '弱點：俯衝之後會貼著地面滑行一小段，那是砍牠的時機。被擊落後會掉在地上掙扎。', '鑽井營的礦工說，牠們在黑暗裡聽的不是獵物，是自己的回音。'] },
+      '弱點：俯衝之後會貼著地面滑行一小段，那是砍牠的時機。被擊落後會掉在地上掙扎。', '掘路營的礦工說，牠們在黑暗裡聽的不是獵物，是自己的回音。'] },
     { id: 'c3_listener', name: '深聽者', en: 'DEEP LISTENER', tag: '寂裔｜中階・潛伏', body: [
       '高瘦、沒有眼睛的東西。頭顱後方張著兩片巨大的耳扇，一動也不動地站在黑暗裡「聽」。',
       '牠靠聲音狩獵：奔跑、攻擊、翻滾都會被聽見——耳扇越亮，代表牠聽得越清楚。停下腳步，聲音會慢慢散去。',
       '攻擊模式：聽見聲音的瞬間，以紅光撲擊（必須閃避）；近身時雙爪連抓（白光、白光）。',
       '弱點：在牠察覺之前出手，可以造成奇襲傷害。'] },
     { id: 'c3_borer', name: '鑽岩蟲', en: 'BORER', tag: '寂裔｜中階・地底', body: [
-      '鑽穿斷層岩盤的分節巨蟲。第三降臨隊的鑽井日誌裡，把牠叫做「會自己找路的鑽頭」。',
+      '鑽穿回頭路岩盤的分節巨蟲。哈德爾的掘路日誌裡，把牠叫做「會自己找路的鑽頭」——牠找到的路，全都往下。',
       '在地底時無法被攻擊——留意滑過地面的晶鰭。地面龜裂、透出紅光時，牠就要破土而出（紅光，必須閃避）。',
       '攻擊模式：破土突襲（紅光）／甩身橫掃（白光）。', '弱點：破土之後牠會在地面上停留一陣子，再鑽回地底。'] },
-    { id: 'c3_elite', name: '爆破手・莫格', en: 'MOG THE SAPPER', tag: '菁英｜第三降臨隊爆破手', body: [
-      '第三降臨隊的爆破專家。隊伍在斷層深處失聯後，他仍然守著最後一批炸藥——和一條他不肯讓任何人通過的隧道。',
+    { id: 'c3_elite', name: '爆破手・莫格', en: 'MOG THE SAPPER', tag: '菁英｜掘路隊爆破手', body: [
+      '掘路隊的爆破手。同伴一個個長進岩壁之後，他仍然守著最後一批火藥——和一條他不肯讓任何人通過的坑道。',
       '攻擊模式：十字鎬二連擊（白光）／高舉後停頓的延遲重劈（白光，別太早格擋）／低掃（白光）／投擲晶體炸藥（落地後紅圈，離開範圍）／重鎬砸地，晶刺沿地面竄出（紅光）。',
-      '半血之後，背包裡的晶體炸藥全數覺醒：一次投出三枚，並會接上更長的連擊。', '「我把隧道炸塌，是為了讓上面的人活下來。……為什麼，還要下來？」'] },
+      '半血之後，背包裡的晶體炸藥全數覺醒：一次投出三枚，並會接上更長的連擊。', '「炸得夠響，上面就聽得見。……他們一定聽得見。」'] },
   ].forEach((c) => pushCodex('hushborn', Object.assign({ portrait: c.id, unlock: 'seen_' + c.id }, c)));
 
   /* =========================== 晶甲蟹 CARAPACE =========================== */

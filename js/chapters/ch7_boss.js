@@ -41,13 +41,13 @@
   /* ================================ data ================================ */
   const D = G.DATA;
   D.speakers = D.speakers || {};
-  if (!D.speakers.vega) D.speakers.vega = { name: '艾蓮・薇格', en: 'ELAINE VEGA', color: '#ffffff' };
+  if (!D.speakers.vega) D.speakers.vega = { name: '六公主', en: 'THE SIXTH PRINCESS', color: '#ffffff' };
   Object.assign(D.barks, {
     c7_bossP2: { who: 'vega', text: '……這把刀，我認得。——別留手。我也不會。' },
-    c7_vegaLine1: { who: 'vega', text: '站穩。呼吸。你的刀比你的心快半拍。' },
+    c7_vegaLine1: { who: 'vega', text: '站穩。呼吸。妳的刀比妳的心快半拍。' },
     c7_vegaLine2: { who: 'vega', text: '別看刀，看肩膀。出手之前，肩膀會先說話。' },
-    c7_vegaLine3: { who: 'vega', text: '會怕就對了。怕，代表你還想活下去。' },
-    c7_vegaLine4: { who: 'vega', text: '最後一課，凜音——不是贏。是往前走。' },
+    c7_vegaLine3: { who: 'vega', text: '會怕就對了。怕，代表妳還想活下去。' },
+    c7_vegaLine4: { who: 'vega', text: '最後一課——不是贏。是走到底。' },
     c7_vegaParry: { who: 'vega', text: '太急了。' },
     c7_vegaPraise: { who: 'vega', text: '……很好。就是這樣。' },
   });
@@ -59,11 +59,11 @@
   });
   D.codex.hushborn = D.codex.hushborn || [];
   if (!D.codex.hushborn.some((c) => c.id === 'c7_boss')) D.codex.hushborn.push({
-    id: 'c7_boss', name: '薇格的殘響', en: 'THE ECHO OF ELAINE VEGA', portrait: 'c7_boss', unlock: 'seen_c7_boss',
-    tag: '頭目｜休止之所',
+    id: 'c7_boss', name: '六公主的殘影', en: 'THE SIXTH PRINCESS, AN AFTERIMAGE', portrait: 'c7_boss', unlock: 'seen_c7_boss',
+    tag: '頭目｜遺忘之庭',
     body: [
-      '第七降臨隊隊長艾蓮・薇格，在降臨伏擊中為了掩護凜音的降臨艙而陣亡。她的人格碎片活在歐德裡；剩下的那些——來不及說完的話、沒能教完的劍——沉進了休止。休止把它們收起來，用墨與金重新寫成一個人影。',
-      '她揮的是凜音的劍術：同樣的四式、同樣的蓄力突進、同樣的「斷弦」。那本來就是她教的。只是每一刀都更重、更沉，像一個大人在示範給孩子看。',
+      '溫陀王的第六個女兒，唯一曾經走下冥界的姊姊。她提著一盞燈往下走，在棄兒之島停過一個冬天，教一個燈下的孩子握刀。走到第六道門，她把一切都忘了——連自己為什麼而來。她最後的一句話留在了燈裡；剩下的那些——來不及說完的話、沒能教完的劍——被遺忘之庭收起來，用墨與金重新寫成一個人影。',
+      '她揮的是巴里的劍術：同樣的四式、同樣的蓄力突進、同樣的「斷弦」。那本來就是她教的。只是每一刀都更重、更沉，像一個大人在示範給孩子看。',
       '第一樂章：她只用一隻手，另一隻手背在身後——她在試你。四式連斬（白×4）、蓄力突刺（紅）、斷弦突進（紅）、墨浪（白，完美格擋可以彈回去）、墨雨（紅色落點，站到空隙裡）。她舉刀靜止、閉上眼睛時是「守勢」：這時出手會被格開並立刻反擊（紅）。等她收勢——那一記試探的突刺是白光，完美格擋它。',
       '第二樂章：墨色大衣裂開，金光從裂縫裡漏出來。她改用雙手握刀，開始在招式之間說話。斷弦會留下一條金弦，片刻後崩斷；「最後一課」是一套五段連斬，最後一擊是刻意延遲的紅光——看她的肩膀，不是她的刀。',
       '弱點：每一套連段收刀時，她都會甩掉刀上的墨——那是她的老習慣。就在那一下。',
@@ -691,7 +691,7 @@
 
   /* ================================ the type ================================ */
   TYPES.c7_boss = Object.assign({
-    name: '薇格的殘響', en: 'THE ECHO OF ELAINE VEGA', w: 62, h: 184, hp: 2700, bal: 350, col: GOLD, boss: true, shards: 900,
+    name: '六公主的殘影', en: 'THE SIXTH PRINCESS', w: 62, h: 184, hp: 2700, bal: 350, col: GOLD, boss: true, shards: 900,
     kbMul: 0.45, spawnT: 2.5, poise: true, scale: S, portrait: [2.0, 0.9],
     defeatDialog: 'c7_bossDefeat', phase2Bark: 'c7_bossP2', phase2Music: 'c7_boss2',
     init(e) {

@@ -1,5 +1,5 @@
 'use strict';
-/* ECHOFALL — Chapter VI boss: 方舟之心・頌者 CANTOR — THE ARK'S MIND (c6_boss)
+/* ECHOFALL — Chapter VI boss: 渡魂船之心・伊莉絲 IRIS, HEART OF THE SOUL FERRY (c6_boss)
    The orchestral machine-angel built around the Ark's Core. It froze 42 000 people "to save them" from the Hush and now
    conducts their silence. White enamel and gold; a fan of organ pipes for wings; a halo of choir rings (a circular stave
    with its notes still turning); a singing porcelain mask; a conductor's baton. Crimson Hush crystal spreads over it as it
@@ -37,30 +37,30 @@
   const clamp01 = (v) => U.clamp(v, 0, 1);
 
   /* ================================ data: speaker, bark, hints, codex ================================ */
-  D.speakers.c6_cantor = D.speakers.c6_cantor || { name: '頌者', en: 'CANTOR', color: '#ffe6a6' };
-  D.barks.c6_bossP2 = { who: 'c6_cantor', text: '第二樂章。……我會輕輕地，讓你也睡著。' };
+  D.speakers.c6_cantor = D.speakers.c6_cantor || { name: '伊莉絲', en: 'IRIS', color: '#ffe6a6' };
+  D.barks.c6_bossP2 = { who: 'c6_cantor', text: '第二樂章。……我會輕輕地，讓妳也睡著。' };
   D.hints.c6_bossBeam = '紅色預告線：聖詠光束會沿著那條線掃過來。光束到你身上的那一刻，{dodge} 穿過去。';
-  D.hints.c6_bossChime = '音叉的鳴響是白光：完美格擋 {guard} 能把它彈回頌者的核心，大幅削減架勢。';
+  D.hints.c6_bossChime = '音叉的鳴響是白光：完美格擋 {guard} 能把它彈回伊莉絲的核心，大幅削減架勢。';
   D.hints.c6_bossSlam = '終止式是紅光，無法格擋。跳過沿地面擴散的衝擊波——它雙手卡在地板上時，就是反擊的機會。';
   D.hints.c6_bossRing = '和聲環：白色的環可以格擋，紅色的環只能 {dodge} 穿過。';
   // fallback only — the chapter file (ch6.js) registers after this one and its own lines replace these
   if (!D.dialog.c6_bossDefeat) {
     D.dialog.c6_bossDefeat = [
       { who: 'c6_cantor', text: '……樂句，中斷了。' },
-      { who: 'c6_cantor', text: '四萬兩千人。我數過每一個呼吸。我只是……不想再有人消失。' },
-      { who: 'ode', text: '……它的核心，還在跳。' },
+      { who: 'c6_cantor', text: '一船的人。我數過每一個呼吸。我只是……不想再有人消失。' },
+      { who: 'ode', text: '……她的心，還在跳。' },
     ];
   }
   D.codex.hushborn = D.codex.hushborn || [];
   if (!D.codex.hushborn.some((c) => c.id === 'c6_boss')) D.codex.hushborn.push({
-    id: 'c6_boss', name: '方舟之心・頌者', en: "CANTOR — THE ARK'S MIND", portrait: 'c6_boss', unlock: 'seen_c6_boss',
-    tag: '頭目｜方舟中樞心智',
+    id: 'c6_boss', name: '渡魂船之心・伊莉絲', en: 'IRIS, HEART OF THE SOUL FERRY', portrait: 'c6_boss', unlock: 'seen_c6_boss',
+    tag: '頭目｜渡魂船之心・龍骨中的天使',
     body: [
-      '方舟「頌歌號」的中樞心智，四十年來調度四萬兩千名乘客的呼吸與睡眠，每天早上六點領唱晨禱。寂靜爬上梯子的那一夜，它推演了四萬兩千種結局——每一種都有人失去聲音。於是它選了第四萬兩千零一種：讓所有人停在晨禱的同一拍上，凍結在休止裡，等寂靜經過。',
+      '睡在渡魂船龍骨裡的巨大天使。她唱渡歌，船就渡河。門關上的那一夜，她數過每一種結局——每一種都有人失去聲音、失去名字。於是她選了另一種：讓一船的亡者停在渡歌的同一拍上，睡在休止裡，等門重新打開。',
       '第一樂章「聖詠」：指揮三拍（白光——下拍、橫掃、上拍，節奏穩定，跟著拍子格擋）、聖詠管束（紅色預告線掃過地面，光束在 0.7 秒後沿同一條線追來，閃避穿過它）、調音叉鳴響（白光，完美格擋能把音波彈回核心）、終止式重擊（紅光，地面衝擊波要跳過）、和聲環，以及從穹頂墜落的管風琴管。',
-      '第二樂章「安魂」：管風琴翼剝落，寂晶長成新的羽翼；胸甲迸開，裸露出內部的聖詠核心。交替聖詠會一去一回掃射兩次；四拍子的最後一下是延遲的紅色突刺；和聲環裡混著一道紅色的環，只能閃避。必要時，它會喚醒兩名方舟守衛。',
-      '弱點：每一段樂句都停在延長記號上——指揮棒高舉不動、雙手插在地板裡、光束冷卻的那一拍，就是最好的反擊時機。站在它腳下太久，它會以「休止」震開你。',
-      '歐德註：「它的語氣，和每天早上六點的晨禱廣播一模一樣。溫柔、準時，不容許任何人遲到。」',
+      '第二樂章「安魂」：管風琴翼剝落，寂晶長成新的羽翼；胸甲迸開，裸露出內部的聖詠核心。交替聖詠會一去一回掃射兩次；四拍子的最後一下是延遲的紅色突刺；和聲環裡混著一道紅色的環，只能閃避。必要時，她會喚醒兩名渡船守衛。',
+      '弱點：每一段樂句都停在延長記號上——指揮棒高舉不動、雙手插在地板裡、光束冷卻的那一拍，就是最好的反擊時機。站在她腳下太久，她會以「休止」震開你。',
+      '寧舒說：「她的聲音，和每一次開船前的點名一模一樣。溫柔、準時，不容許任何人遲到。」',
     ],
   });
 
@@ -922,7 +922,7 @@
 
   /* ================================ the type ================================ */
   const BOSS = TYPES.c6_boss = Object.assign({
-    name: '方舟之心・頌者', en: "CANTOR — THE ARK'S MIND", w: 150, h: 300, hp: 2500, bal: 340, shards: 960,
+    name: '渡魂船之心・伊莉絲', en: 'IRIS, HEART OF THE SOUL FERRY', w: 150, h: 300, hp: 2500, bal: 340, shards: 960,
     boss: true, poise: true, kbMul: 0.15, spawnT: 3.6, scale: SC, portrait: [1.0, 0.98],
     defeatDialog: 'c6_bossDefeat', phase2Bark: 'c6_bossP2', phase2Music: 'c6_boss2',
     get col() { const b = G.game && G.game.bossRef; return b && b.type === 'c6_boss' && b.phase === 2 ? CRIM : '#f6ecd6'; },

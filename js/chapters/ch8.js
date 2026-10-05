@@ -66,8 +66,8 @@
       { x: 4470, y: 100, w: 130, k: 'light' }, { x: 4565, y: -5, w: 115, k: 'light' }, { x: 4455, y: -110, w: 120, k: 'light' }, { x: 4560, y: -215, w: 120, k: 'light' },
     ],
     pylons: [
-      { id: 'c8_p1', x: 2800, y: FLOOR[2], name: '光之階梯共鳴碑', dialog: 'c8_pylon1', flag: 'c8_pylon1_seen' },
-      { id: 'c8_p2', x: 6500, y: 0, name: '最後的共鳴碑', dialog: 'c8_pylon2', flag: 'c8_pylon2_seen' },
+      { id: 'c8_p1', x: 2800, y: FLOOR[2], name: '光之階梯魂燈台', dialog: 'c8_pylon1', flag: 'c8_pylon1_seen' },
+      { id: 'c8_p2', x: 6500, y: 0, name: '最後的魂燈台', dialog: 'c8_pylon2', flag: 'c8_pylon2_seen' },
     ],
     notes: [
       { id: 'c8_n1', x: 430, y: FLOOR[0], flag: 'c8_read_apology' },
@@ -123,11 +123,11 @@
       c8_boss: { manual: true, boss: true, arena: ARENA.boss, waves: [[{ t: 'c8_boss', x: ARENA.boss[0] + 950 }]] },
     },
     zones: [
-      { x: -1e9, name: '側幕', en: 'THE WINGS', tint: 0, music: 'c8_explore', amb: 'c8_wings' },
+      { x: -1e9, name: '第七道門', en: 'THE SEVENTH GATE', tint: 0, music: 'c8_explore', amb: 'c8_wings' },
       { x: RISE[0], name: '鐘聲的記憶', en: 'A MEMORY OF BELLS', tint: 0.1, music: 'c8_explore', amb: 'c8_memory' },
       { x: RISE[1], name: '光之階梯', en: 'THE STAIRCASE OF LIGHT', tint: 0.25, music: 'c8_explore2', amb: 'c8_memory' },
-      { x: RISE[2], name: '屋頂上的夕陽', en: 'THE ROOFTOP AT SUNSET', tint: 0.4, music: 'c8_explore2', amb: 'c8_memory' },
-      { x: RISE[3], name: '休止之心', en: 'THE HEART OF THE REST', tint: 0.55, music: 'c8_heart', amb: 'c8_heart' },
+      { x: RISE[2], name: '畫出來的夕陽', en: 'A PAINTED SUNSET', tint: 0.4, music: 'c8_explore2', amb: 'c8_memory' },
+      { x: RISE[3], name: '冥后的王座', en: 'THE THRONE OF THE DEAD QUEEN', tint: 0.55, music: 'c8_heart', amb: 'c8_heart' },
     ],
     tintAt,
   };
@@ -736,8 +736,8 @@
       for (let yy = top + 46; yy < bot + 30; yy += 26) rect(g, x0, yy, s.w, 1.2, rgba(INK, 0.6));
       for (let px = x0 + 90; px < x1 - 60; px += 210) { g.beginPath(); g.arc(px, top + 62, 8, 0, TAU); g.fillStyle = '#0c0d16'; g.fill(); g.strokeStyle = M.steelL; g.lineWidth = 2; g.stroke(); glow(g, px, top + 62, 14, '#ffd48a', 0.4); }
       g.restore();
-      stencil(g, 'DESCENT  I', x0 + 330, top + 70, 15, rgba('#e8e2d0', 0.75), { font: 'Rajdhani, sans-serif', weight: 700, ink: false });
-      stencil(g, '第一降臨隊', x0 + 520, top + 70, 13, rgba('#e8e2d0', 0.65), { ink: false });
+      stencil(g, 'JUDGEMENT', x0 + 330, top + 70, 15, rgba('#e8e2d0', 0.75), { font: 'Rajdhani, sans-serif', weight: 700, ink: false });
+      stencil(g, '審判之座', x0 + 520, top + 70, 13, rgba('#e8e2d0', 0.65), { ink: false });
       // the deck surface: steel plates, rivets, hazard ends, the launch rails
       rect(g, x0, top, s.w, 20, M.steelL); rect(g, x0, top, s.w, 2, '#e6ecff'); rect(g, x0, top + 18, s.w, 3, '#2a2d40');
       for (let px = x0; px < x1; px += 96) { rect(g, px, top + 2, 1.2, 16, rgba(INK, 0.55)); for (const ry of [5, 14]) { g.fillStyle = '#c8d0e8'; g.fillRect(px + 5, top + ry, 1.6, 1.6); g.fillRect(px + 88, top + ry, 1.6, 1.6); } }
@@ -824,7 +824,7 @@
     cr([[x + 2, y - 18], [x + 2, y - 5]], '#7a6a5a', 1.8); g.beginPath(); g.arc(x + 2, y - 21, 3.2, 0, TAU); g.fillStyle = '#f0c8a0'; g.fill();
     cr([[x - 1, y - 17], [x + 5, y - 17], [x + 7, y - 12]], M.scarf, 1.8);
     cr([[x - 30, y + 2], [x + 30, y + 2]], '#6ab06a', 1.4);
-    g.fillStyle = '#3a3040'; g.font = '700 6px "Noto Sans TC", sans-serif'; g.textAlign = 'center'; g.fillText('米菈', x + 18, y - 4);
+    g.fillStyle = '#3a3040'; g.font = '700 6px "Noto Sans TC", sans-serif'; g.textAlign = 'center'; g.fillText('無名', x + 18, y - 4);
   }
   function easel(g, x, base) {
     g.strokeStyle = INK; g.lineWidth = 3.4; g.lineCap = 'round';
@@ -988,8 +988,8 @@
     g.beginPath(); g.arc(x - w / 2 + 34, base - h * 0.5, 3.4, 0, TAU); g.fillStyle = M.goldL; g.fill(); ink(g, 0.8);
     // the sign above
     rect(g, x - 46, base - h - 62, 92, 22, '#1e1626'); g.strokeStyle = INK; g.lineWidth = 1.4; g.strokeRect(x - 46, base - h - 62, 92, 22);
-    stencil(g, '舞台入口', x, base - h - 55, 10, 'rgba(255,214,150,0.95)', { ink: false });
-    stencil(g, 'STAGE DOOR', x, base - h - 45.5, 7, 'rgba(255,214,150,0.7)', { ink: false, font: 'Rajdhani, sans-serif', weight: 700 });
+    stencil(g, '第七道門', x, base - h - 55, 10, 'rgba(255,214,150,0.95)', { ink: false });
+    stencil(g, 'THE SEVENTH GATE', x, base - h - 45.5, 7, 'rgba(255,214,150,0.7)', { ink: false, font: 'Rajdhani, sans-serif', weight: 700 });
     void rr;
   }
   // the great music box: the case and plinth, the open lid with its painting (comb, cylinder and key are live)
@@ -1054,7 +1054,7 @@
     g.strokeStyle = M.goldL; g.lineWidth = 1.4; g.strokeRect(px0 - 6, py0 - 6, pw0 + 12, ph0 + 12);
     for (const bx of [x0, x1 - 30]) for (const by of [top, BOXG.top + BOX.h - 48]) { poly(g, [[bx, by], [bx + 30, by], [bx + 30, by + 30], [bx, by + 30]]); g.fillStyle = M.brass; g.fill(); ink(g, 1.4); rect(g, bx + 2, by + 2, 26, 3, M.brassL); }
     rect(g, cx - 70, top + 12, 140, 18, M.brass); g.strokeStyle = INK; g.lineWidth = 1.4; g.strokeRect(cx - 70, top + 12, 140, 18);
-    stencil(g, '給米菈', cx, top + 21.5, 12, '#3a2414', { ink: false });
+    stencil(g, '給沒有名字的孩子', cx, top + 21.5, 12, '#3a2414', { ink: false });
     g.beginPath(); g.arc(cx, top + 207, 8, 0, TAU); g.fillStyle = M.brass; g.fill(); ink(g, 1.2);
     rect(g, cx - 2, top + 205, 4, 9, '#1a0e08');
     // the plinth and its feet
@@ -1769,10 +1769,10 @@
      ========================================================================================= */
   const data = {
     speakers: {
-      c8_mira: { name: '米菈', en: 'MIRA', color: '#ffd2dc' },
-      c8_girl: { name: '屋頂上的女孩', en: 'THE GIRL ON THE ROOF', color: '#ffb59a' },
-      c8_barrow: { name: '巴洛（回憶）', en: 'BARROW — REMEMBERED', color: '#e8c9a0' },
-      c8_trio: { name: '第一降臨隊', en: 'DESCENT I', color: '#f2d38a' },
+      c8_mira: { name: '厄蕾絲', en: 'ERESH', color: '#ffd2dc' },
+      c8_girl: { name: '沒有名字的女孩', en: 'THE GIRL WITH NO NAME', color: '#ffb59a' },
+      c8_barrow: { name: '老鐸（回憶）', en: 'OLD DOR — REMEMBERED', color: '#e8c9a0' },
+      c8_trio: { name: '三判官', en: 'THE THREE JUDGES', color: '#f2d38a' },
     },
     hints: {
       c8_stairs: '<b>光之階梯</b>可以從下方 {jump} 穿過去站上；站在上面時按住「下」再按 {jump} 就能落下',
@@ -1780,214 +1780,214 @@
     },
     barks: {
       c8_ghost: { who: 'ode', text: '……空舞台上，留著一盞燈。' },
-      c8_memoryFoe: { who: 'ode', text: '……是記憶。休止記得每一場仗。' },
-      c8_belfryRing: { who: 'ode', text: '……整個休止裡，只有這口鐘還在響。' },
+      c8_memoryFoe: { who: 'ode', text: '……是記憶。冥界記得每一場仗。' },
+      c8_belfryRing: { who: 'ode', text: '……整座冥界，只有這口鐘還在響。' },
       c8_belfryMute: { who: 'ode', text: '鐘結了冰。在這裡，它也是啞的。' },
       c8_belfry: { who: 'ode', text: '鐘結了冰。在這裡，它也是啞的。' },
-      c8_island: { who: 'ode', text: '甲板上的編號，是「I」。' },
-      c8_door: { who: 'ode', text: '……凜音，等一下。我的分區在發燙。有人想見你。' },
-      c8_taliaAfter: { who: 'ode', text: '……她把鐘聲，藏進了碑文裡。' },
+      c8_island: { who: 'ode', text: '……那三道目光，在上面。' },
+      c8_door: { who: 'ode', text: '……等一下。燈裡，有人想見妳。' },
+      c8_taliaAfter: { who: 'ode', text: '……她把笑聲，藏進了燈油裡。' },
       c8_e5clear: { who: 'ode', text: '……安靜了。這一次，是我們讓它安靜的。' },
     },
     dialog: {
       c8_enter: [
-        { who: 'sys', text: '（沒有風，沒有回音。一座望不到盡頭的舞台，白得像還沒寫上音符的譜。）' },
-        { who: 'sys', text: '（天上掛著一顆黑色的太陽。舞台的最高處，有東西在響。）' },
-        { who: 'rinne', text: '音樂盒。' },
-        { who: 'ode', text: '……那首歌。只有上半段。' },
-        { who: 'rinne', text: '上去吧。' },
+        { who: 'sys', text: '（第七道門。門後沒有守門人，只有三道目光。它們看了妳一眼，妳就死了。）' },
+        { who: 'sys', text: '（妳被掛在宮殿的鉤子上，掛了三天。第三天，一盞燈飄進來，帶著一口糧、一口水。）' },
+        { who: 'ode', text: '……醒來。' },
+        { who: 'sys', text: '（宮殿的最高處，有一只音樂盒在響。只有上半段。）' },
+        { who: 'rinne', text: '（妳站起來。）' },
       ],
       c8_hush: [
         { who: 'sys', text: '（前方有小小的人影。沒有臉，雙手死死摀著嘴。）' },
-        { who: 'rinne', text: '……不是孩子。' },
+        { who: 'rinne', text: '（不是孩子。是沒能出生的孩子。）' },
       ],
       c8_bellMem: [
         { who: 'sys', text: '（鐘聲。在不可能有聲音的地方。）' },
-        { who: 'rinne', text: '灰港的鐘。……米菈的記憶。' },
-        { who: 'sys', text: '（每天黃昏，有人在這裡敲鐘。好讓一個愛爬屋頂的女孩，知道該回家了。）' },
+        { who: 'rinne', text: '（王城的鐘。在這裡，不該聽得見。）' },
+        { who: 'sys', text: '（每天黃昏，有人在這裡敲鐘，好讓一個愛爬屋頂的女孩知道該回家。有人從底下，聽了很多年。）' },
       ],
       c8_barrowTalk: [
-        { who: 'c8_barrow', text: '米菈——天快黑了，下來吃飯。' },
-        { who: 'c8_barrow', text: '……又躲到屋頂上了吧。爸爸再敲一次。聽到了，就知道路在哪裡。' },
-        { who: 'sys', text: '（他看不見你。這是二十年前，某一個黃昏。）' },
+        { who: 'c8_barrow', text: '諾娜——天快黑了，下來吃飯。' },
+        { who: 'c8_barrow', text: '……又躲到屋頂上了吧。爹再敲一次。聽到了，就知道路在哪裡。' },
+        { who: 'sys', text: '（他看不見妳。這是很多年前，某一個黃昏。）' },
       ],
       c8_barrowAgain: [
-        { who: 'c8_barrow', text: '一、二、三……數到一百，就要回家喔。爸爸會一直敲，敲到妳回來。' },
+        { who: 'c8_barrow', text: '一、二、三……數到一百，就要回家喔。爹會一直敲，敲到妳回來。' },
       ],
       c8_vista: [
-        { who: 'sys', text: '（腳邊的燈一盞盞亮起，沿著舞台邊緣，一路亮到看不見的高處。）' },
-        { who: 'sys', text: '（四周漂著島：灰港、斷層之井、鐘樓、歌劇院、梯子、方舟。走過的每一處，休止都記得。）' },
+        { who: 'sys', text: '（腳邊的燈一盞盞亮起，沿著宮殿邊緣，一路亮到看不見的高處。）' },
+        { who: 'sys', text: '（四周漂著島：王城、山門、礦道、劇場、倒懸之塔、渡魂船。走過的每一道門，這裡都記得。）' },
         { who: 'rinne', text: '她在等。' },
       ],
       c8_roof: [
-        { who: 'sys', text: '（夕陽。整個休止裡，唯一有顏色的天空。）' },
+        { who: 'sys', text: '（夕陽。整座冥界裡，唯一有顏色的天空。顏色塗錯了。）' },
         { who: 'sys', text: '（屋頂上，坐著一個小女孩。）' },
-        { who: 'rinne', text: '（紅色的圍巾。大得不像是她的。）' },
+        { who: 'rinne', text: '（紅色的圍巾。大得不像是她的。像是從上面撿來的。）' },
       ],
       c8_girlTalk: [
         { who: 'c8_girl', text: '……妳也是來看夕陽的嗎？' },
-        { who: 'c8_girl', text: '這裡是灰港最高、最接近夕陽的地方。我把音樂盒藏在這裡。' },
-        { who: 'rinne', text: '妳叫什麼名字？' },
-        { who: 'c8_girl', text: '米菈。……噓，別告訴爸爸。他會敲鐘叫我回家，可是我想再看一下下。' },
-        { who: 'c8_girl', text: '老師說，太陽下山以後，世界會變得很安靜。安靜的時候，什麼都不會不見。' },
-        { who: 'c8_girl', text: '可是我不喜歡太安靜。太安靜，就聽不到爸爸的鐘了。' },
-        { who: 'rinne', text: '……我會帶妳回家。' },
-        { who: 'c8_girl', text: '真的？那妳要答應我——' },
-        { who: 'c8_girl', text: '如果有一天，世界真的安靜了……妳要陪我一起唱。這樣我就不怕了。' },
+        { who: 'c8_girl', text: '這是我畫的。上面的夕陽，是這個顏色嗎？' },
+        { who: 'rinne', text: '（妳蹲下來，看著她。）' },
+        { who: 'c8_girl', text: '……妳想問我的名字嗎？沒有人替我取。' },
+        { who: 'c8_girl', text: '上面每天黃昏，都有人敲鐘叫一個女孩回家。我每天都在聽。' },
+        { who: 'c8_girl', text: '從來沒有人，敲鐘叫我。' },
+        { who: 'rinne', text: '（妳伸出手。）' },
+        { who: 'c8_girl', text: '要帶我上去嗎？那妳要答應我——' },
+        { who: 'c8_girl', text: '如果有一天，門真的打開了……妳要唱歌給我聽。這樣我就不怕了。' },
       ],
       c8_girlAgain: [
-        { who: 'c8_girl', text: '♪ 睡吧，鐘聲會替妳數星星——……後面我還不會。老師說，等我長大，就教我下半段。' },
+        { who: 'c8_girl', text: '♪ 睡吧，燈會替妳數星星——……後面我不會。只聽人唱過一次，只有上半段。' },
       ],
       c8_eliteIntro: [
-        { who: 'sys', text: '（甲板上站著三個人。二十年前的制服，肩章繡著「I」。旗手、鼓盾手、鳴鐘者。）' },
-        { who: 'c8_trio', text: '第一降臨隊，全員到齊。……隊長，尚未歸隊。' },
-        { who: 'c8_trio', text: '命令是：在她回來之前，守住甲板。' },
-        { who: 'rinne', text: '她不會回來了。' },
-        { who: 'c8_trio', text: '……那就用你的劍，向我們報告。' },
+        { who: 'sys', text: '（高台上站著三個人。面具底下沒有臉。一人執旗，一人執鼓，一人執鐘。）' },
+        { who: 'c8_trio', text: '第七個女兒。我們判過妳了。' },
+        { who: 'c8_trio', text: '妳死過一次。為什麼還站著。' },
+        { who: 'rinne', text: '（妳身旁，燈火亮了一下。）' },
+        { who: 'c8_trio', text: '……那就再判一次。' },
       ],
       c8_eliteDefeat: [
-        { who: 'c8_trio', text: '……報告，收到。' },
-        { who: 'c8_trio', text: '隊長她……找到想守護的東西了嗎？' },
-        { who: 'rinne', text: '找到了。她把一首歌，留給了一個孩子。' },
-        { who: 'c8_trio', text: '是嗎。……第一降臨隊，任務結束。解散。' },
-        { who: 'sys', text: '（三人朝同一個方向敬禮。然後，像布幕落下一樣，靜靜地消失了。）' },
+        { who: 'c8_trio', text: '……判決，收回。' },
+        { who: 'c8_trio', text: '十八年。我們判了十八年的死，一個人也沒有走進來。' },
+        { who: 'rinne', text: '（妳抬頭，看向更高的地方。）' },
+        { who: 'c8_trio', text: '……要去那裡嗎。三判官，退庭。' },
+        { who: 'sys', text: '（三人同時垂下了目光。然後，像布幕落下一樣，靜靜地消失了。）' },
       ],
       c8_summit: [
-        { who: 'sys', text: '（最後一層舞台。巨大的音樂盒在黑色的太陽下緩緩轉著，只唱上半段。）' },
-        { who: 'sys', text: '（休止記得的每一個對手、每一個聲音，都在這裡等著。）' },
+        { who: 'sys', text: '（最後一層。巨大的音樂盒在黑色的太陽下緩緩轉著，只唱上半段。）' },
+        { who: 'sys', text: '（妳走過的每一道門、每一個對手，都在這裡等著。）' },
         { who: 'rinne', text: '最後一次。' },
       ],
       c8_vegaTalk: [
-        { who: 'sys', text: '（歐德的鏡頭亮起。一道光投在舞台上，凝成一個人影——短髮，長大衣，眉上一道疤。）' },
-        { who: 'vega', text: '嗨，凜音。' },
-        { who: 'rinne', text: '……隊長。' },
-        { who: 'vega', text: '上次，你沒等我說完。沒關係。你一直都比心快半拍。……剩下的，只有一句。' },
-        { who: 'vega', text: '門後的那個孩子，憋了二十年的氣。她以為不出聲，就沒有人會離開。' },
-        { who: 'vega', text: '我也曾經這麼想。所以把最後一句話，留給了一架無人機。' },
+        { who: 'sys', text: '（寧舒的燈火一晃，在地上投出一個人影——束著髮，佩著刀，衣角燒焦了一塊。）' },
+        { who: 'vega', text: '……又見面了。' },
+        { who: 'rinne', text: '（妳想叫她。叫不出聲。）' },
+        { who: 'vega', text: '上次，妳沒等我說完。沒關係。妳的刀一向比心快。……剩下的，只有一句。' },
+        { who: 'vega', text: '門後的那個人，是我們的大姊。她生下來，就沒有呼吸過。' },
+        { who: 'vega', text: '我走到第六道門，就忘了自己是來救人的。只好把最後一句話，留給一盞燈。' },
         { who: 'ode', text: '……我有名字。' },
-        { who: 'vega', text: '抱歉，歐德。——凜音。「把歌唱完」，從來不是要你一個人唱。' },
-        { who: 'vega', text: '去吧。不管你選哪條路，我都在。' },
+        { who: 'vega', text: '抱歉，寧舒。——小妹。「走到底」，從來不是要妳一個人走。' },
+        { who: 'vega', text: '去吧。不管妳選哪條路，我都在。' },
       ],
       c8_vegaAgain: [
-        { who: 'sys', text: '（她把手放在你的肩上。光沒有重量，但你感覺得到。）' },
-        { who: 'vega', text: '別回頭。往前走。' },
+        { who: 'sys', text: '（她把手放在妳的肩上。光沒有重量，但妳感覺得到。）' },
+        { who: 'vega', text: '別回頭。走到底。' },
       ],
       c8_pylon1: [
-        { who: 'sys', text: '（共鳴碑。頻段上，塔莉亞的聲音斷斷續續。）' },
-        { who: 'talia', text: '……（雜訊）……凜……？……鐘樓……聽得……' },
+        { who: 'sys', text: '（魂燈台。燈火裡，妲莉的聲音斷斷續續。）' },
+        { who: 'talia', text: '……（燈花爆了一下）……還……？……燈……亮著……' },
         { who: 'rinne', text: '告訴她，我還在走。' },
       ],
       c8_pylon2: [
-        { who: 'sys', text: '（最後一座共鳴碑。頻段上什麼都沒有。方舟依舊沉默。）' },
-        { who: 'ode', text: '門後，就是她。……我陪你到最後。' },
-        { who: 'rinne', text: '嗯。' },
+        { who: 'sys', text: '（最後一座魂燈台。燈火很低。）' },
+        { who: 'ode', text: '我也這樣帶過另一位公主。帶回來三次。第四次，她不記得要醒。' },
+        { who: 'rinne', text: '（妳握住了燈。）' },
       ],
       c8_apologyAfter: [
-        { who: 'rinne', text: '……「下半段，本來就不該由一個人來唱。」' },
+        { who: 'rinne', text: '（「下半段，我一直沒能唱完。」）' },
       ],
       c8_odeAfter: [
-        { who: 'ode', text: '……那份日誌，不存在。' },
-        { who: 'rinne', text: '嗯。' },
-        { who: 'ode', text: '……你的心跳，七十一。你在笑嗎。' },
+        { who: 'ode', text: '……那些灰，不存在。' },
+        { who: 'rinne', text: '……' },
+        { who: 'ode', text: '……妳的呼吸，慢了一點。妳在笑嗎。' },
       ],
       c8_bossIntro: [
-        { who: 'sys', text: '（音樂盒前坐著一個女孩，抱著膝蓋，像在玩捉迷藏。她的背後，有一道比天空還大的影子。）' },
+        { who: 'sys', text: '（音樂盒前坐著一個女孩，抱著膝蓋。她的背後，有一道比天空還大的影子。）' },
         { who: 'c8_mira', text: '……噓。' },
-        { who: 'c8_mira', text: '不要出聲。大家都不出聲，就不會有人不見。' },
-        { who: 'c8_mira', text: '爸爸的鐘、老師的手、屋頂上的夕陽……我全都收好了。' },
-        { who: 'rinne', text: '米菈。巴洛在等妳回家。' },
-        { who: 'c8_mira', text: '……騙人。回家的路，一出聲就會斷掉。' },
-        { who: 'sys', text: '（影子張開雙臂，把整座舞台擁進懷裡。）' },
-        { who: 'c8_mira', text: '拜託……再一下下就好。' },
+        { who: 'c8_mira', text: '父王的第七個女兒。我看著他，把妳放進木箱。' },
+        { who: 'c8_mira', text: '我是第一個。生下來就沒有呼吸。他連名字，都沒有給我。' },
+        { who: 'rinne', text: '（妳握緊了刀。）' },
+        { who: 'c8_mira', text: '他不要女兒。那就讓他永遠死不了。' },
+        { who: 'sys', text: '（影子張開雙臂，把整座宮殿擁進懷裡。）' },
+        { who: 'c8_mira', text: '……妳不該來的。' },
       ],
       c8_bossDefeat: [
-        { who: 'sys', text: '（影子散開，像潑進水裡的墨。音樂盒前只剩一個跪著的身影——光做的，比記憶裡高了一點，卻還是縮成小小的一團。）' },
+        { who: 'sys', text: '（影子散開，像潑進水裡的墨。音樂盒前只剩一個跪著的身影，縮成小小的一團。）' },
         { who: 'c8_mira', text: '……好累。' },
-        { who: 'c8_mira', text: '我憋了二十年。只要一吐氣，這首歌就會唱完。唱完了，大家就會……離開。' },
-        { who: 'rinne', text: '歌唱完了，還有下一首。' },
-        { who: 'c8_mira', text: '……可是，我不會唱下一首。' },
-        { who: 'sys', text: '（止弦在凜音手裡輕輕一震。是那首歌的第一個音。）' },
+        { who: 'c8_mira', text: '十八年。我一直在等他往下看一眼。他一次都沒有。' },
+        { who: 'rinne', text: '（妳在她面前跪下。）' },
+        { who: 'c8_mira', text: '……嗯。妳來了。' },
+        { who: 'sys', text: '（音樂盒底下，有一口井。井裡的水，是亮的。）' },
       ],
       // epilogue placeholders (rebuilt from the save's flags when an ending begins)
-      c8_endA1: [{ who: 'rinne', text: '這首歌——我們一起唱完。' }],
-      c8_endA3: [{ who: 'c8_mira', text: '……我聽見了。爸爸的鐘。' }],
-      c8_endB1: [{ who: 'rinne', text: '把它給我。' }],
-      c8_endB3: [{ who: 'ode', text: '……休止的錨點，已轉移。世界之歌，恢復播放。' }],
-      c8_endC1: [{ who: 'rinne', text: '不走了。' }],
-      c8_endC2: [{ who: 'c8_mira', text: '姐姐的手……好暖。' }],
+      c8_endA1: [{ who: 'rinne', text: '（妳在大姊身邊坐下。）' }],
+      c8_endA3: [{ who: 'c8_mira', text: '……門，開了。' }],
+      c8_endB1: [{ who: 'rinne', text: '（妳伸出手。）' }],
+      c8_endB3: [{ who: 'ode', text: '……門，開了。' }],
+      c8_endC1: [{ who: 'rinne', text: '（妳搖頭。）' }],
+      c8_endC2: [{ who: 'c8_mira', text: '……水的聲音。' }],
     },
     codex: {
       people: [
-        { id: 'c8_mira', name: '米菈・休止之心', en: 'MIRA, HEART OF THE REST', portrait: 'c8_girl', unlock: 'c8_boss_seen', tag: '休止之心｜守鐘人巴洛的女兒',
-          body: ['二十年前在灰港的屋頂上看夕陽的女孩。她聽得見「休止」——世界之歌中間，所有人同時停下來的那一拍。', '瑪絲緹娜帶著她一路爬上頌歌之梯，想把她藏在最高、最安全的地方。在那裡，米菈學會了憋氣：只要她不吐氣，這首歌就不會唱完；歌不唱完，就不會有人離開。', '大寂靜，就是一個害怕的孩子，替整個世界憋住的那一口氣。'] },
-        { id: 'c8_descent1', name: '第一降臨隊', en: 'DESCENT I', unlock: 'c8_elite_seen', tag: '瑪絲緹娜的第一支小隊',
-          body: ['方舟的第一支降臨隊。隊長瑪絲緹娜、副隊長葛雷夫，以及旗手、鼓盾手、鳴鐘者。', '隊長帶著一個沒有編號的乘客往更高的地方去之前，留下一道命令：「在我回來之前，守住甲板。」', '他們守了二十年。'] },
+        { id: 'c8_mira', name: '冥后・厄蕾絲', en: 'ERESH, QUEEN OF THE DEAD', portrait: 'c8_girl', unlock: 'c8_boss_seen', tag: '冥界之主｜溫陀王的第一個女兒',
+          body: ['溫陀王的第一個女兒。生下來就沒有呼吸，父親沒有替她取名字，讓人把小小的棺木抬進了冥界。', '她在冥界長大。亡者一個一個被叫著名字走進門，只有她站在門口等，等到自己成了替所有人關門的人。從來沒有人為她唱過一首歌。', '十八年前，她看見父親把第七個女兒放進木箱，推進大海。那一天，她關上了門。'] },
+        { id: 'c8_descent1', name: '三判官', en: 'THE THREE JUDGES', unlock: 'c8_elite_seen', tag: '冥后宮殿的審判者',
+          body: ['坐在第七道門後的三位判官。一人執旗，一人執鼓，一人執鐘。', '他們的眼睛是「死亡之眼」：被看一眼的人，就會死。十八年來門關著，他們一個人也沒有判過。', '直到一個沒有名字的女孩，自己走了進來。'] },
       ],
       world: [
-        { id: 'c8_heart', name: '休止之心', en: 'THE HEART OF THE REST', unlock: 'c8_arrived',
-          body: ['方舟之上、天空之上的地方。休止在這裡沒有形狀——它借用了一座舞台：望不到盡頭、白得像沒寫上音符的五線譜。', '世界上所有沒能發出的聲音，都被收在這裡：沒說出口的話、沒敲響的鐘、沒唱完的歌。'] },
+        { id: 'c8_heart', name: '冥后宮殿', en: 'THE PALACE OF THE DEAD QUEEN', unlock: 'c8_arrived',
+          body: ['冥界的最底層。宮殿沒有牆，只有一座望不到盡頭的白色舞台，白得像一張還沒寫上名字的紙。', '所有沒被叫出口的名字，都收在這裡。生命之水也在這裡。十八年來，沒有人來取。'] },
         { id: 'c8_blacksun', name: '黑色的太陽', en: 'THE BLACK SUN', unlock: 't_c8_t_vista',
-          body: ['掛在休止上空的日蝕。光被它吃掉，只剩一圈白色的日冕。', '歐德拍過照，照片也是黑的。越往舞台的高處走，它就越大、越近——像一個屏住的呼吸。'] },
+          body: ['掛在冥后宮殿上空的日蝕。光被它吃掉，只剩一圈白色的日冕。', '亡者叫它「死亡之眼」。越往宮殿的高處走，它就越大、越近——像一口從來沒有吸進去的氣。'] },
         { id: 'c8_islands', name: '記憶之島', en: 'ISLANDS OF MEMORY', unlock: 't_c8_t_vista',
-          body: ['漂浮在舞台四周的島：灰港的街區、斷層之井的晶體、鐘樓、梯子的支架、沉沒的歌劇院、方舟的尖塔。', '凜音走過的每一個地方，休止都記得。光之階梯把它們串在一起，一路通往黑色的太陽。'] },
+          body: ['漂浮在宮殿四周的島：王城的街、雪嶺的山門、回頭的礦道、溺死者的劇場、倒懸之塔、渡魂船的桅杆。', '妳走過的每一道門，冥界都記得。光之階梯把它們串在一起，一路通往黑色的太陽。'] },
         { id: 'c8_ghostlight', name: '鬼燈', en: 'THE GHOST LIGHT', unlock: 't_c8_t_ghost',
-          body: ['劇場的老規矩：散場之後，舞台上要留一盞沒有燈罩的燈，讓舞台永遠不會完全變暗。', '休止之心的舞台上，也有人留了一盞。沒有人知道是誰。'] },
+          body: ['劇場的老規矩：散場之後，舞台上要留一盞沒有燈罩的燈，讓舞台永遠不會完全變暗。', '冥后的舞台上，也有人留了一盞。沒有人知道是誰。燈座上，有一道很舊的焦痕。'] },
         { id: 'c8_musicbox', name: '巨大的音樂盒', en: 'THE GREAT MUSIC BOX', unlock: 'c8_boss_seen',
-          body: ['立在最後一層舞台正中央的音樂盒。蓋子內側畫著灰港的夕陽，鐘塔的屋頂上，一個男人牽著一個圍紅圍巾的女孩。', '銅牌上刻著：「給米菈」。它的滾筒只轉得完上半段——下半段的針，一根都沒有。'] },
-        { id: 'c8_endA', name: '終章　續唱', en: 'ENDING A — ENCORE', unlock: 'ending_encore',
-          body: ['凜音和米菈一起唱完了那首歌。所有找回來的聲音都接了上去——走音的、沙啞的、太小聲的。', '米菈吐出了那口氣。黑色的太陽裂開，裂縫裡是早晨。灰港的鐘響了二十一聲。'] },
-        { id: 'c8_endB', name: '終章　獨奏', en: 'ENDING B — SOLO', unlock: 'ending_solo',
-          body: ['凜音接過了那口氣，替米菈守住休止。世界重新開始唱歌，只是少了一個聲音。', '歐德留在她身邊數拍子。一、二、三、四。'] },
-        { id: 'c8_endC', name: '終章　休止', en: 'ENDING C — FERMATA', unlock: 'ending_fermata',
-          body: ['凜音放下止弦，留在寂靜裡陪著米菈。那一個音被延長了，比樂譜上寫的還要長很多很多。', '米菈不再害怕了。只是，再也沒有人醒來。'] },
+          body: ['立在最後一層正中央的音樂盒。蓋子內側畫著人間的夕陽，鐘塔的屋頂上，一個男人牽著一個圍紅圍巾的女孩。畫的人沒看過夕陽，顏色塗錯了。', '銅牌上刻著：「給沒有名字的孩子」。它的滾筒只轉得完上半段——下半段的針，一根都沒有。'] },
+        { id: 'c8_endA', name: '終章　歸還', en: 'ENDING A — RETURN', unlock: 'ending_encore',
+          body: ['巴里帶著生命之水回到人間。王與王后醒來，冥界的七道門重新打開。', '冥界要一個人來換。第一次跪下來道歉的國王，自己走下了冥界。'] },
+        { id: 'c8_endB', name: '終章　引魂', en: 'ENDING B — THE GUIDE', unlock: 'ending_solo',
+          body: ['巴里把生命之水交給寧舒帶上去，自己留在冥界，成為替亡者領路的人。', '厄蕾絲第一次走出冥界，去過她從沒過過的人生。'] },
+        { id: 'c8_endC', name: '終章　安息', en: 'ENDING C — REPOSE', unlock: 'ending_fermata',
+          body: ['巴里把生命之水倒進乾涸的冥河。沒有人復活；所有寂裔終於得以入冥安息，國王也在其中。', '冥河邊，兩姊妹並肩坐著，誰也沒有說話。'] },
       ],
       notes: [
-        { id: 'c8_n1', name: '瑪絲緹娜的道歉', en: "MAESTRINA'S APOLOGY", body: [
-          '給米菈：',
-          '如果妳讀到這張紙，代表我已經不在妳身邊了。對不起。',
-          '我在斷層之井的深處聽見了休止——像一首歌的中間，所有人同時停下來的那一拍。我在那一拍裡，聽見了一個孩子的呼吸。那是妳。',
-          '我以為，只要把妳帶到最高的地方，讓整個世界陪妳一起屏住呼吸，就再也不會有人失去任何東西。',
-          '我錯了。停下來的歌，不是歌。被保護得什麼都不會失去的人，最後也什麼都沒有了。',
-          '我只教了妳上半段。下半段我一直寫不出來——因為那一段，本來就不該由一個人來唱。',
-          '如果有人來找妳，就跟他一起唱吧。　——瑪絲緹娜'] },
-        { id: 'c8_n2', name: '米菈的日記・方舟', en: "MIRA'S DIARY — THE ARK", body: [
-          '（一頁從方舟學童筆記本撕下來的紙。字比灰港那本日記大了一點點。）',
-          '今天到方舟了。這裡好白、好亮，每個人都穿一樣的衣服。早上六點大家會一起唱歌，聲音大到地板都在抖。',
-          '老師說，不可以讓別人知道我聽得見「那個」。那個很安靜很安靜的聲音。',
-          '晚上它在叫我。它說，只要我不出聲，大家就都不會不見。',
-          '我想爸爸。我想聽鐘聲。',
-          '如果我憋氣憋得夠久，是不是就可以把所有人都留住？'] },
-        { id: 'c8_n3', name: '塔莉亞的信', en: "TALIA'S LETTER", body: [
-          '【鐘樓聚落・共鳴碑頻段　未送達訊息 ×1】',
-          '凜音：我不知道你收不收得到。頻段上只剩我一個人在講話，有點像對著山谷大喊，然後等回音。',
-          '今天我又把你那把刀的共振頻率算了一次。你走得越高，它就會越安靜——我猜是休止在吃掉聲音。所以我在碑文裡偷偷加了一段。',
-          '是鐘樓大鐘的頻率。只要你還碰得到共鳴碑，你的刀裡就有我們的鐘聲。（如果大鐘還沒修好……那就是我敲扳手的聲音。也不錯吧？）',
-          '快點回來。小艾說要請你吃烤山羊。我跟她說你一定會回來，所以我已經先答應她了。',
-          '　——塔莉亞'] },
-        { id: 'c8_n4', name: '歐德的日誌', en: "ODE'S OWN LOG", body: [
-          '【戰術無人機・歐德　私人日誌（權限：無）】',
-          '我沒有寫日誌的權限。所以，這份日誌不存在。',
-          '第 1 天（降臨伏擊之後）：凜音一個人。我也是。我的加密分區裡住著一個人，她不說話。',
-          '第 2 天：凜音吃了半條口糧。我記下來了。',
-          '第 117 天：完美格擋 2,031 次。她每一次都會停半拍，好像在聽什麼。後來我才知道，她在聽那首歌。',
-          '第 ??? 天：時鐘在休止裡失效了。我改用凜音的心跳計時。每分鐘 62 下，很穩。',
-          '給未來的我：如果分區裡的那個人要走了，不要攔她。她已經等了很久，想把話說完。',
-          '給凜音：我不會唱歌。可是我會數拍子。一、二、三、四……你只要跟著數就好。'] },
-        { id: 'c8_n5', name: '第一降臨隊・最後一次點名', en: "DESCENT I — THE LAST ROLL CALL", body: [
-          '【第一降臨隊　甲板點名（筆跡：葛雷夫）】',
-          '隊長：瑪絲緹娜。——到。（她說「到」的時候在哼歌。）',
-          '副隊長：葛雷夫。——到。',
-          '旗手。——到。　鼓盾手。——到。　鳴鐘者。——到。（第一次出任務，手在抖。）',
-          '以及：一位沒有編號的乘客。隊長抱著她一路爬上梯子。名字欄是空白的，有人用鉛筆在旁邊畫了一條紅色的圍巾。',
-          '隊長的命令：「下一站，比方舟更高的地方。在我回來之前，守住甲板。」',
-          '全員到齊。'] },
+        { id: 'c8_n1', name: '王后的歌', en: "THE QUEEN'S LULLABY", body: [
+          '給我的第一個孩子：',
+          '妳生下來的那天，沒有哭。產婆說，沒有呼吸的孩子，不算數。妳父王點了點頭，就走了。',
+          '他們不讓我替妳取名字。他們說，取了名字，就要記得。',
+          '我替妳寫了一首歌，叫〈給沒有名字的孩子〉。只寫完上半段，只唱了一次，箱子就被抬走了。',
+          '後來我又生了六個女兒。每一個，我都唱完了整首。只有妳，我一直欠著。',
+          '下半段，我一直沒能唱完。',
+          '如果有人去找妳，請她替我唱完。　——溫陀王后'] },
+        { id: 'c8_n2', name: '棺木板上的字', en: 'WORDS ON A COFFIN BOARD', body: [
+          '（一片小小的棺木板。上面用炭寫著字，字很大，像剛學會寫字。）',
+          '今天又有人下來了。他們都有名字。守門的人一個一個叫，叫到的就進門。',
+          '沒有人叫我。我站在門口等，等到門都關了。',
+          '上面每天黃昏都有人敲鐘，叫一個女孩回家。我數過，他敲一百下。',
+          '我想知道，被叫回家是什麼感覺。',
+          '如果我一直不讓他們進來，上面的人，是不是就會一直叫？'] },
+        { id: 'c8_n3', name: '妲莉的紙條', en: "DALI'S NOTE", body: [
+          '（一張纏在燈芯上的小紙條。字寫得很小，怕佔掉燈芯的位置。）',
+          '我不知道妳收不收得到。燈芯只有一根，我只好把字寫得很小、很小。',
+          '妳走得越深，燈就越暗。所以我在每一座燈台的油裡，偷偷加了一點東西。',
+          '是我的笑聲。我只剩這個了。只要妳還碰得到燈台，燈裡就有人在笑。',
+          '快點回來。我想知道外面的花長什麼樣子。我已經跟大家說了，妳會帶一朵下來。',
+          '　——妲莉'] },
+        { id: 'c8_n4', name: '燈芯的灰', en: "ASH FROM NINSHU'S WICK", body: [
+          '（魂燈裡燒落的灰。排起來，像字。）',
+          '燈不會寫字。所以，這些字不存在。',
+          '第一次（雪嶺山門）：妳死了。我把妳帶回燈台。妳醒來的時候，什麼都沒問。',
+          '第二次：妳醒來，先摸了一下刀。我記下來了。',
+          '第二十七次：燈裡住著一個人，她不說話。她一直在看妳握刀的樣子。',
+          '第 ??? 次：冥界沒有日夜。我改用妳的呼吸計時。很穩。',
+          '給以前的我：那位公主最後一次沒有醒，不是你的錯。',
+          '給妳：我不會唱歌。可是我會數。一、二、三……妳只要跟著醒來就好。'] },
+        { id: 'c8_n5', name: '判決簿・最後一頁', en: 'THE BOOK OF JUDGEMENT — LAST PAGE', body: [
+          '（三判官的判決簿。前面十八年，每一頁都只寫著同一行。）',
+          '本年。入冥者：無。',
+          '本年。入冥者：無。',
+          '本年。入冥者：一名。名字：無。女。生者。',
+          '判決：死。',
+          '（底下另一種筆跡，很淡，像燈火燒出來的：「判決，三日後失效。」）',
+          '退庭。'] },
       ],
     },
     relics: {},
   };
-  if (!G.DATA.speakers.c6_cantor) data.speakers.c6_cantor = { name: '頌者', en: 'CANTOR', color: '#ffe6a6' };
+  if (!G.DATA.speakers.c6_cantor) data.speakers.c6_cantor = { name: '渡魂船之心', en: 'HEART OF THE FERRY', color: '#ffe6a6' };
   // the elite's relic belongs to the foes author; keep a fallback so its drop can never break
-  if (!G.DATA.relics.c8_banner) data.relics.c8_banner = { name: '第一降臨隊的軍旗', desc: '最大生命 +15；處決後回復 10 生命' };
+  if (!G.DATA.relics.c8_banner) data.relics.c8_banner = { name: '判官之旗', desc: '最大生命 +15；處決後回復 10 生命' };
   if (!G.Relics.c8_banner) G.Relics.c8_banner = { apply(P2) { P2.maxHp += 15; } };
   if (G.UI && G.UI.portraits) G.UI.portraits.c8_girl = (ctx, W, H, game) => {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -2009,83 +2009,83 @@
   const say = (who, text) => ({ who, text });
   function buildDialogs(F) {
     // Barrow, remembered: the music box on his crate if it ever came home
-    const bt = [say('c8_barrow', '米菈——天快黑了，下來吃飯。'), say('c8_barrow', '……又躲到屋頂上了吧。爸爸再敲一次。聽到了，就知道路在哪裡。'),
-      say('sys', '（他看不見你。這是二十年前，某一個黃昏。）')];
-    if (F.gave_musicbox) bt.push(say('sys', '（他腳邊的木箱上，擱著那只音樂盒。記憶，跟著現實改變了。）'), say('rinne', '……她知道，爸爸還在等。'));
-    else if (F.got_musicbox) bt.push(say('sys', '（那只音樂盒，還在你的行囊裡。他還不知道。）'), say('rinne', '……'));
-    else bt.push(say('sys', '（他身邊沒有音樂盒。它大概還躺在灰港的某個屋頂上。）'));
+    const bt = [say('c8_barrow', '諾娜——天快黑了，下來吃飯。'), say('c8_barrow', '……又躲到屋頂上了吧。爹再敲一次。聽到了，就知道路在哪裡。'),
+      say('sys', '（他看不見妳。這是很多年前，某一個黃昏。）')];
+    if (F.gave_musicbox) bt.push(say('sys', '（他腳邊的木箱上，擱著那只音樂盒。記憶，跟著人間改變了。）'), say('rinne', '（她會知道的。爹還在等。）'));
+    else if (F.got_musicbox) bt.push(say('sys', '（那只音樂盒，還在妳的行囊裡。他還不知道。）'), say('rinne', '……'));
+    else bt.push(say('sys', '（他身邊沒有音樂盒。它大概還躺在王城的某個屋頂上。）'));
     bt.push(say('c8_barrow', '（他又拉了一次鐘繩。裂開的鐘，用它唯一會的那個音，喊著同一個名字。）'));
     DD.c8_barrowTalk = bt;
     // Elaine Vega, through Ode
-    const vt = [DD.c8_vegaTalk[0], say('vega', '嗨，凜音。'), say('rinne', '……隊長。')];
-    if (F.c7_listened) vt.push(say('vega', '上次，你讓我把話說完了。……所以這一次，只說一件事。'));
-    else vt.push(say('vega', '上次，你沒等我說完。沒關係。你一直都比心快半拍。……剩下的，只有一句。'));
-    vt.push(say('vega', '門後的那個孩子，憋了二十年的氣。她以為不出聲，就沒有人會離開。'),
-      say('vega', '我也曾經這麼想。所以把最後一句話，留給了一架無人機。'),
+    const vt = [DD.c8_vegaTalk[0], say('vega', '……又見面了。'), say('rinne', '（妳想叫她。叫不出聲。）')];
+    if (F.c7_listened) vt.push(say('vega', '上次，妳讓我把話說完了。……所以這一次，只說一件事。'));
+    else vt.push(say('vega', '上次，妳沒等我說完。沒關係。妳的刀一向比心快。……剩下的，只有一句。'));
+    vt.push(say('vega', '門後的那個人，是我們的大姊。她生下來，就沒有呼吸過。'),
+      say('vega', '我走到第六道門，就忘了自己是來救人的。只好把最後一句話，留給一盞燈。'),
       say('ode', '……我有名字。'),
-      say('vega', '抱歉，歐德。——凜音。「把歌唱完」，從來不是要你一個人唱。'),
-      say('vega', '去吧。不管你選哪條路，我都在。'));
+      say('vega', '抱歉，寧舒。——小妹。「走到底」，從來不是要妳一個人走。'),
+      say('vega', '去吧。不管妳選哪條路，我都在。'));
     DD.c8_vegaTalk = vt;
     // the pylon band: Talia if her bell rings again; CANTOR if the Ark woke
     if (F.c2_quest_done) DD.c8_pylon1 = [
-      say('talia', '……凜音？聽得到嗎？訊號好爛——'),
-      say('talia', '鐘樓的大鐘，剛剛自己響了一聲。大家都跑出來看。……我覺得，那是你。'),
-      say('rinne', '我在很高的地方。'),
-      say('talia', '……多高？算了，別告訴我。我會頭暈。'),
-      say('talia', '不管你在哪裡，鐘聲都在你後面。')];
+      say('talia', '……妳還在嗎？燈好暗——'),
+      say('talia', '山上的門鐘，剛剛自己響了一聲。大家都跑出來看。……我覺得，那是妳。'),
+      say('rinne', '（妳把燈舉高了一點。）'),
+      say('talia', '……好暗。算了，我不問。我會怕。'),
+      say('talia', '不管妳在哪裡，燈都在妳後面。')];
     if (F.c6_spared) DD.c8_pylon2 = [
-      say('c6_cantor', '晚禱七號。這裡是頌歌號。'),
-      say('c6_cantor', '四萬兩千人，正聽著你的頻段。他們不知道你在哪裡，只知道你在往上走。'),
-      say('c6_cantor', '晨禱的第二段，我們一直留著。需要的時候，整艘船都會替你唱。'),
+      say('c6_cantor', '第七位公主。這裡是渡魂船。'),
+      say('c6_cantor', '船上的亡者，都在看妳往下走。他們不知道妳是誰，只知道妳替他們走。'),
+      say('c6_cantor', '門開的時候，整艘船都會來接。'),
       say('rinne', '……謝謝。')];
   }
   function buildEpilogue(F, kind) {
     if (kind === 'encore') {
-      const a1 = [say('rinne', '米菈。不用再一個人憋氣了。'), say('rinne', '這首歌，我們一起唱完。'),
-        say('c8_mira', '……可是我只會上半段。老師說，等我長大就教我。她沒有回來。')];
-      if (F.c4_quest_done) a1.push(say('sys', '（凜音攤開從劇院找回的樂譜。下半段，是瑪絲緹娜的筆跡。她寫完了，只是來不及教。）'));
-      else a1.push(say('sys', '（下半段，她其實早就聽過了。這一路上每一次刀刃相擊，止弦都替她記下了一個音。）'));
-      if (F.c5_quest_done) a1.push(say('rinne', '還有。叮叮要我告訴妳：燈，都還亮著。'), say('c8_mira', '……叮叮。（她笑了。很小聲。）'));
-      a1.push(say('rinne', '♪ 睡吧，鐘聲會替妳數星星——'), say('c8_mira', '……♪ 睡吧，風會記得回家的路——'));
+      const a1 = [say('rinne', '（妳在大姊身邊坐下。）'), say('rinne', '（妳張開嘴。沒有聲音。）'),
+        say('c8_mira', '……妳也沒有聲音了嗎。從來沒有人唱給我聽過。我只聽過上半段。')];
+      if (F.c4_quest_done) a1.push(say('sys', '（妳攤開從劇場找回的那份樂譜：〈給沒有名字的孩子〉。上半段是王后的筆跡。下半段，溺死的人替她寫完了。）'));
+      else a1.push(say('sys', '（下半段，妳其實聽過。在島上，在很小的時候。妳只是忘了自己還記得。）'));
+      if (F.c5_quest_done) a1.push(say('rinne', '（妳指向上面。倒懸之塔上的燈，都還亮著。）'), say('c8_mira', '……燈。（她好像懂了。笑了，很小聲。）'));
+      a1.push(say('rinne', '（沒有聲音。妳還是唱了。）'), say('c8_mira', '……♪ 睡吧，燈會替妳數星星——'));
       DD.c8_endA1 = a1;
-      DD.c8_endA2a = [say('sys', '（很遠的地方，一口裂開的鐘響了。一聲、兩聲——是灰港。）'), say('barrow', '米菈——天黑了，該回家了。')];
-      DD.c8_endA2b = [say('talia', '……鐘樓的大鐘，自己響了。不是我敲的。凜音，是你吧？')];
-      DD.c8_endA2c = [say('c6_cantor', '全艦廣播。晨禱，第二段。……四萬兩千人，請跟著唱。')];
+      DD.c8_endA2a = [say('sys', '（很遠的地方，一口裂開的鐘響了。一聲、兩聲——是王城。）'), say('barrow', '諾娜——天黑了，該回家了。')];
+      DD.c8_endA2b = [say('talia', '……燈台的火，自己亮了。不是我點的。是妳吧？')];
+      DD.c8_endA2c = [say('c6_cantor', '渡魂船，起錨。……十八年份的亡者，請上船。')];
       DD.c8_endA2d = [say('sys', '（無數的聲音接上了旋律。走音的、沙啞的、太小聲的。沒有一個是完美的。）'),
-        say('rinne', '♪ 如果世界安靜了，別害怕——'), say('c8_mira', '♪ ……等妳醒來，我們再一起唱。'),
-        say('sys', '（旋律底下，似乎還有一個女人的聲音，輕輕和著。像在說對不起，又像在說謝謝。）')];
-      const a3 = [say('sys', '（米菈吐出一口氣。二十年那麼長的一口氣。）'), say('sys', '（黑色的太陽裂開了。裂縫裡，是早晨。）'),
-        say('c8_mira', '……我聽見了。爸爸的鐘。'), say('c8_mira', '姐姐，謝謝妳陪我唱完。……我要回家了。'),
-        say('ode', '……凜音。我的分區，最後一次打開了。'), say('vega', '凜音。歌唱完了。')];
-      a3.push(F.c7_listened ? say('vega', '上一次，你讓我把話說完。這一次，換我聽你唱。……很難聽。可是很好。')
-        : say('vega', '上一次你沒等我說完。沒關係。要說的，只剩這一句。'));
-      a3.push(say('vega', '往前走吧。現在，可以回頭了——有很多人，在等你回家。'), say('rinne', '……隊長。我唱完了。'),
-        say('ode', '……分區關閉了。她最後留下的，是那句沒說完的話——「記得吃早餐。」'));
+        say('rinne', '♪ 睡吧，浪會記得回家的路——'), say('c8_mira', '♪ ……天亮的時候，有人叫妳的名字。'),
+        say('sys', '（那是妳的聲音。它回來了。旋律底下，還有一個男人的聲音，很遠，很輕。像在說對不起。）')];
+      const a3 = [say('sys', '（厄蕾絲吐出一口氣。這輩子的第一口氣。）'), say('sys', '（黑色的太陽裂開了。裂縫裡，是早晨。）'),
+        say('c8_mira', '……門，開了。'), say('c8_mira', '小妹。把水帶上去。……他在等妳。'),
+        say('ode', '……燈裡的那一位，要走了。'), say('vega', '……走到底了呢。')];
+      a3.push(F.c7_listened ? say('vega', '上一次，妳讓我把話說完。這一次，換我聽妳唱。……很難聽。可是很好。')
+        : say('vega', '上一次妳沒等我說完。沒關係。要說的，只剩這一句。'));
+      a3.push(say('vega', '回去吧。現在，可以回頭了——有很多人，在等妳回家。'), say('rinne', '……六姊。我走到了。'),
+        say('ode', '……她走了。最後留下的，是那句沒說完的話——「早飯要吃。」'));
       DD.c8_endA3 = a3;
     } else if (kind === 'solo') {
-      DD.c8_endB1 = [say('rinne', '把它給我。'), say('c8_mira', '……什麼？'), say('rinne', '那口氣。接下來，我替妳憋。'),
-        say('c8_mira', '可是……那樣，姐姐就再也不能說話了。再也不能唱歌了。'), say('rinne', '我本來就唱得不好。'),
-        say('ode', '凜音——'), say('rinne', '歐德。回去告訴大家：歌，我唱完了。')];
-      DD.c8_endB2 = [say('sys', '（影子離開了米菈，像一件太大的大衣，落在凜音肩上。很重。比止弦還重。）'), say('c8_mira', '姐姐……'),
-        say('rinne', '回家吧。巴洛在敲鐘。'), say('sys', '（從這一刻起，凜音再也沒有發出任何聲音。）')];
-      const b3 = [say('ode', '……錨點，轉移了。世界之歌，重新開始。')];
-      if (F.c2_quest_done) b3.push(say('talia', '凜音？鐘響了……大家都在唱。可是你那邊，怎麼這麼安靜？……凜音？'));
-      if (F.c6_spared) b3.push(say('c6_cantor', '晚禱七號。……我們會替你唱。每一天，每一個早晨。'));
-      b3.push(F.c7_listened ? say('vega', '傻孩子。我教你往前走，可沒教你停在這裡。……可是，我懂。我也是這樣的人。')
-        : say('ode', '……隊長的分區，沒有回應。我想，她是不忍心說話。'));
-      b3.push(say('barrow', '……米菈？是米菈嗎？……歡迎回家。歡迎回家……'));
-      b3.push(say('ode', '我留下來。總得有人替你數拍子。一、二、三、四……'));
+      DD.c8_endB1 = [say('rinne', '（妳伸出手。）'), say('c8_mira', '……妳要什麼？'), say('rinne', '（妳指了指她身後的影子，再指了指自己。）'),
+        say('c8_mira', '那樣，妳就再也回不去了。再也看不到夕陽。'), say('rinne', '（妳笑了一下。夕陽是什麼顏色，妳早就忘了。）'),
+        say('ode', '……公主。'), say('rinne', '（妳把水瓶，放進燈火裡。）')];
+      DD.c8_endB2 = [say('sys', '（影子離開了厄蕾絲，像一件太大的斗篷，落在妳的腳下。很重。妳又有了影子。）'), say('c8_mira', '……小妹。'),
+        say('rinne', '（妳替她把圍巾繫好，指了指上面。）'), say('sys', '（從這一刻起，每一個走下冥界的人，都會在門口看見一盞燈。）')];
+      const b3 = [say('ode', '……門，開了。死去的人，有地方去了。')];
+      if (F.c2_quest_done) b3.push(say('talia', '……燈台的火，全亮了。可是妳那邊，怎麼這麼安靜？……還在嗎？'));
+      if (F.c6_spared) b3.push(say('c6_cantor', '渡魂船，聽候妳的吩咐。每一天，每一個黃昏。'));
+      b3.push(F.c7_listened ? say('vega', '傻孩子。我要妳走到底，可沒要妳留在底下。……可是，我懂。我也是這樣的人。')
+        : say('ode', '……燈裡的那一位，沒有說話。我想，她是不忍心。'));
+      b3.push(say('barrow', '……妳是誰家的孩子？……天黑了。跟我回家吧。'));
+      b3.push(say('ode', '我把水帶上去，再回來。總得有人替妳提燈。'));
       DD.c8_endB3 = b3;
     } else {
-      DD.c8_endC1 = [say('sys', '（凜音跪下，把止弦橫放在舞台上。刀身碰到地板，沒有聲音。）'), say('c8_mira', '……姐姐不走嗎？'),
-        say('rinne', '不走了。'), say('rinne', '妳一個人憋了二十年。接下來，我陪妳。'), say('c8_mira', '可是，外面的人……'), say('rinne', '他們會等。'),
-        say('ode', '……那我也留下。這裡的拍子，全是休止。')];
-      const c2 = [say('sys', '（音樂盒的發條轉到了盡頭。最後一個音停在半空，沒有落下。）'), say('c8_mira', '姐姐的手……好暖。')];
-      c2.push(F.c7_listened ? say('vega', '……這樣也好。至少，你們都不是一個人了。')
-        : say('ode', '……分區沒有回應。像有人在裡面，靜靜睡著了。'));
-      if (F.c2_quest_done) c2.push(say('talia', '……凜音？今天的鐘，我也有敲喔。……聽得到嗎？'));
-      if (F.c6_spared) c2.push(say('c6_cantor', '晚禱七號。頻段上，很安靜。四萬兩千人，還在等你的拍子。'));
-      c2.push(say('sys', F.gave_musicbox ? '（很遠、很遠的地方，灰港的鐘響了一聲。然後，是很長、很長的安靜。）' : '（很遠、很遠的地方，有一口鐘響了一聲。然後，是很長、很長的安靜。）'));
+      DD.c8_endC1 = [say('sys', '（妳跪下，把生命之水倒進乾涸的冥河。水碰到河床，沒有聲音。）'), say('c8_mira', '……妳不帶回去？'),
+        say('rinne', '（妳搖頭。）'), say('rinne', '（河床上，寂裔排成很長的隊。他們等了十八年。）'), say('c8_mira', '父王，也會死。'), say('rinne', '（妳點頭。）'),
+        say('ode', '……那我也留下。河邊，總要有一盞燈。')];
+      const c2 = [say('sys', '（音樂盒的發條轉到了盡頭。最後一個音停在半空，沒有落下。）'), say('sys', '（河床上，水開始流。）'), say('c8_mira', '……水的聲音。原來是這樣。')];
+      c2.push(F.c7_listened ? say('vega', '……這樣也好。我也可以走了。')
+        : say('ode', '……燈裡，很安靜。像有人睡著了。'));
+      if (F.c2_quest_done) c2.push(say('talia', '……燈台的火，一盞一盞熄了。不是壞掉。是大家都到了。'));
+      if (F.c6_spared) c2.push(say('c6_cantor', '渡魂船，最後一航。甲板上，一個空位也沒有。'));
+      c2.push(say('sys', F.gave_musicbox ? '（很遠、很遠的地方，王城的鐘響了最後一聲。然後，是很長、很長的安靜。）' : '（很遠、很遠的地方，有一口鐘響了一聲。然後，是很長、很長的安靜。）'));
       DD.c8_endC2 = c2;
     }
   }
@@ -2097,36 +2097,36 @@
     + '#ending .end-stats{grid-template-columns:repeat(4,1fr);gap:2px 10px;margin-top:6px;padding:5px 0}#ending .end-stats div{font-size:10px;line-height:1.25;letter-spacing:.12em}'
     + '#ending .end-stats b{font-size:14px}#ending .end-tbc{margin-top:6px}#ending .end-line>span{font-size:12px!important;line-height:1.42!important}#ending .pane-foot{margin-top:6px}}</style>';
   const ENDINGS = {
-    encore: { kicker: 'ENDING A — ENCORE', title: '終章　續唱', name: '終章　續唱 — ENCORE', music: 'c8_end_a', lines: (F) => [
-      '黑色的太陽裂開了。灰港的鐘響了二十一聲——一年一聲。最後一聲，是歡迎回家。',
-      '米菈回到鐘塔的屋頂。夕陽還在。這一次，她唱完了下半段。',
-      F.c2_quest_done ? '鐘樓的大鐘每天清晨都會響。塔莉亞說，那是在替凜音報時。' : '鐘樓的大鐘依然沉默。山上的人卻說，風裡開始有歌了。',
-      F.c6_spared ? '頌歌號的四萬兩千人醒了過來。他們學會的第一首新歌，是一首搖籃曲。' : '方舟仍在沉睡。在夢裡，四萬兩千人都跟著哼了那首歌。',
-      F.c4_quest_done ? '劇院的樂譜被抄了一萬份。每一份的最上方，都寫著「給米菈」。' : '散落的樂譜沒有被找回。那首歌，已經不需要紙了。',
-      '歐德的分區空了。它偶爾會在夜裡哼那首歌，連走音的地方，也照著唱。',
-      '凜音沒有回頭。她一直往前走，往有聲音的地方。',
-      '「等妳醒來，我們再一起唱。」'] },
-    solo: { kicker: 'ENDING B — SOLO', title: '終章　獨奏', name: '終章　獨奏 — SOLO', music: 'c8_end_b', lines: (F) => [
-      '世界重新開始唱歌。只是，少了一個聲音。',
-      '米菈回到了灰港。每天黃昏，她都去敲那口裂開的鐘——替一個沒能道謝的人。',
-      F.c2_quest_done ? '鐘樓的鐘每天都響。塔莉亞的頻段，每天都在呼喚同一個名字。' : '山上的鐘樓依然沉默。塔莉亞的頻段，每天都在呼喚同一個名字。',
-      F.c6_spared ? '頌歌號醒了。四萬兩千人裡，沒有人知道是誰替他們憋住了那口氣。' : '方舟仍在沉睡。寂靜退去了；總有一天，會有人去敲響它的門。',
-      '歐德留在休止的正中央。一拍、兩拍、三拍……一直數到現在。',
-      '在世界最安靜的地方，凜音握著止弦，像握著一個沒有唱出口的音。',
-      '「替我，把歌唱完。」',
-      '——她唱完了。用她自己的沉默。'] },
-    fermata: { kicker: 'ENDING C — FERMATA', title: '終章　休止', name: '終章　休止 — FERMATA', music: 'c8_end_c', lines: (F) => [
-      '那一個音被延長了。比樂譜上寫的，長得多。',
-      F.gave_musicbox ? '灰港的鐘每天黃昏都會響。巴洛抱著音樂盒，坐在鐘下等。' : '灰港的鐘每天黃昏都會響。巴洛還在等。',
-      F.c2_quest_done ? '鐘樓的大鐘還在響，聲音卻再也傳不下山。' : '鐘樓的人數著沒有回音的日子，把門窗關得更緊。',
-      F.c6_spared ? '方舟的人醒了，卻聽不見彼此的歌。四萬兩千扇窗，一直亮著。' : '方舟的燈一直亮著。沒有人知道，該不該把它關掉。',
-      '在世界的最高處，兩個人坐在一只音樂盒旁，什麼都沒有說。',
-      '米菈不再害怕了。因為她不是一個人。',
-      '「如果世界安靜了，別害怕。」',
-      '……只是，再也沒有人醒來。'] },
+    encore: { kicker: 'ENDING A — RETURN', title: '終章　歸還', name: '終章　歸還 — RETURN', music: 'c8_end_a', lines: (F) => [
+      '黑色的太陽裂開了。冥界的七道門，在同一個早晨打開。',
+      '生命之水回到溫陀。王與王后，睜開了眼睛。',
+      F.c2_quest_done ? '雪嶺的門鐘又響了。每響一聲，就有一個亡者走進山門。' : '雪嶺的門鐘依然啞著。亡者們卻自己排好了隊，一個一個走上山。',
+      F.c6_spared ? '渡魂船重新起錨。十八年份的亡者，坐滿了甲板。' : '渡魂船仍在沉睡。亡者們涉水過河，河水只到膝蓋。',
+      F.c4_quest_done ? '〈給沒有名字的孩子〉終於有了下半段。最後一行，添上了一個名字。' : '散落的樂譜沒有被找回。那首歌，已經不需要紙了。',
+      '冥界要一個人來換。國王跪在第七個女兒面前，說了對不起，第一次叫了她的名字。',
+      '然後他自己走下了冥界，去還欠大女兒的那一個名字。',
+      '「這一次，換我走下去。」'] },
+    solo: { kicker: 'ENDING B — THE GUIDE', title: '終章　引魂', name: '終章　引魂 — THE GUIDE', music: 'c8_end_b', lines: (F) => [
+      '冥界的門開了。死去的人有了去處，也有了領路的人。',
+      '寧舒把生命之水帶回溫陀。王與王后醒來時，枕邊只放著一盞燈。',
+      F.c2_quest_done ? '雪嶺的門鐘每天都響。每一聲，都是她在門口接人。' : '雪嶺的門鐘依然啞著。亡者上山時，卻總看見一盞燈在等。',
+      F.c6_spared ? '渡魂船重新起錨。船頭的燈，是她親手點的。' : '渡魂船仍在沉睡。她提著燈，一個一個把亡者牽過河。',
+      '厄蕾絲走出了冥界。她第一次看見夕陽，看了很久、很久。',
+      '有人問她叫什麼名字。她想了很久，說：「巴里。」',
+      '在冥界最深的門口，有個沒有名字的人提著燈，替每一個走下來的人，叫出他們的名字。',
+      '「別怕。我來帶路。」'] },
+    fermata: { kicker: 'ENDING C — REPOSE', title: '終章　安息', name: '終章　安息 — REPOSE', music: 'c8_end_c', lines: (F) => [
+      '生命之水流進了乾涸的冥河。沒有人醒來。',
+      F.gave_musicbox ? '老鐸敲完最後一聲，抱著音樂盒走進了河裡。諾娜在對岸等。' : '老鐸敲完最後一聲，走進了河裡。',
+      F.c2_quest_done ? '雪嶺的門鐘響了一整夜。十八年份的亡者，一個一個走進山門。' : '雪嶺的門鐘沒有響。亡者們排成很長的隊，安靜地上山。',
+      F.c6_spared ? '渡魂船載滿了寂裔，最後一次渡河。' : '渡魂船沒有醒。寂裔們涉水過河，河水第一次是暖的。',
+      '國王歐古走在隊伍的最後面。他沒有回頭。',
+      '那年冬天，溫陀的花開了。第一個嬰兒，哭得很大聲。',
+      '寧舒的燈浮在河面上，一直沒有熄。',
+      '冥河邊，兩姊妹並肩坐著。誰也沒有說話。'] },
   };
   function chapterTitles() {
-    const FALL = [[1, '一', '墜落的音符'], [2, '二', '頌歌之梯'], [3, '三', '斷層之井'], [4, '四', '沉沒的歌劇院'], [5, '五', '無重之塔'], [6, '六', '沉默方舟'], [7, '七', '休止之所'], [8, '八', '最後的樂章']];
+    const FALL = [[1, '一', '送葬之城'], [2, '二', '雪嶺山門'], [3, '三', '回頭路'], [4, '四', '溺死者的劇場'], [5, '五', '倒懸之塔'], [6, '六', '渡魂船'], [7, '七', '遺忘之庭'], [8, '八', '冥后宮殿']];
     return FALL.map(([id, zh, title]) => { const c = G.Chapters.get(id); return `第${(c && c.numZh) || zh}章「${(c && c.title) || title}」`; });
   }
 
@@ -2181,11 +2181,11 @@
   }
   function missingVoices(F) {
     const m = [];
-    if (!F.gave_musicbox) m.push('灰港的鐘，少了一只音樂盒');
-    if (!F.c2_quest_done) m.push('鐘樓的大鐘，仍然啞著');
-    if (!F.c4_quest_done) m.push('劇院的樂譜，仍然散落');
-    if (!F.c6_spared) m.push('方舟，仍在沉睡');
-    if (!F.c7_listened) m.push('隊長的話，還沒有說完');
+    if (!F.gave_musicbox) m.push('老鐸，還沒有拿回那只音樂盒');
+    if (!F.c2_quest_done) m.push('雪嶺的門鐘，仍然啞著');
+    if (!F.c4_quest_done) m.push('劇場的輓歌，仍然散落');
+    if (!F.c6_spared) m.push('渡魂船，仍在沉睡');
+    if (!F.c7_listened) m.push('六姊的話，還沒有說完');
     return m;
   }
   function chooseEnding(game) {
@@ -2194,14 +2194,14 @@
     const pick = dev('c8choose');
     if (pick === 'encore' || pick === 'solo' || pick === 'fermata') { epilogue(game, pick === 'encore' && !ok ? 'solo' : pick); return; }
     const items = [];
-    if (ok) items.push({ label: '一起唱', en: 'A　續唱 · ENCORE', action: () => epilogue(game, 'encore') });
-    items.push({ label: '由我來守住寂靜', en: 'B　獨奏 · SOLO', action: () => epilogue(game, 'solo') });
-    items.push({ label: '留下來陪她', en: 'C　休止 · FERMATA', action: () => epilogue(game, 'fermata') });
+    if (ok) items.push({ label: '帶著水回去', en: 'A　歸還 · RETURN', action: () => epilogue(game, 'encore') });
+    items.push({ label: '我留下來引路', en: 'B　引魂 · THE GUIDE', action: () => epilogue(game, 'solo') });
+    items.push({ label: '把水倒進冥河', en: 'C　安息 · REPOSE', action: () => epilogue(game, 'fermata') });
     G.UI.choice({
-      kicker: '最後的樂章　THE LAST MOVEMENT',
-      title: '「這首歌，要怎麼結束？」',
-      desc: ok ? '米菈憋了二十年的那口氣，就要到盡頭。一路上找回的聲音，都還在你身邊。'
-        : '米菈憋了二十年的那口氣，就要到盡頭。一個人，唱不完這首歌。有些聲音，還沒有趕上：' + missingVoices(F).join('；') + '。',
+      kicker: '冥后宮殿　THE PALACE OF THE DEAD QUEEN',
+      title: '「生命之水，要給誰？」',
+      desc: ok ? '大姊關了十八年的門，就要打開。一路上替妳記住的東西，都還在妳身邊。'
+        : '大姊關了十八年的門，就要打開。一個人，帶不回所有人。有些東西，還沒有跟上：' + missingVoices(F).join('；') + '。',
       items,
     });
   }
@@ -2268,8 +2268,8 @@
     F['ch_done_' + ((CH8 && CH8.id) || 8)] = true;
     G.UI.creditsExtra = [
       { h: 'CHAPTERS · 章節', p: chapterTitles() },
-      { h: 'THE UNVOICED · 失聲者', p: ['卡菈修女 — 第二降臨隊', '鑽井王・哈德爾 — 第三降臨隊', '最後的詠嘆・露塞特 — 第四降臨隊', '斷錨船長・伊德里斯 — 第五降臨隊', '第六隊長・洛克 — 第六降臨隊', '旗手・鼓盾手・鳴鐘者 — 第一降臨隊'] },
-      { h: 'AND · 以及', p: ['頌者 — 頌歌號的中樞', '米菈 — 守鐘人的女兒'] },
+      { h: 'THE GATEKEEPERS · 守門人', p: ['送葬司儀・瑪格 — 溫陀王城', '守鐘尼・卡菈 — 第一道門', '掘路王・哈德爾 — 第二道門', '提線歌姬・露塞特 — 第三道門', '錨長・伊德里斯 — 第四道門', '渡魂船之心・伊莉絲 — 第五道門', '六公主的殘影 — 第六道門', '三判官 — 第七道門'] },
+      { h: 'AND · 以及', p: ['冥后・厄蕾絲 — 溫陀王的第一個女兒', '寧舒 — 魂燈侍靈'] },
       { h: 'ENDING', p: [E.name] },
     ];
     if (CH8) CH8.outro = ls[ls.length - 1];
@@ -2470,13 +2470,13 @@
      REGISTER
      ========================================================================================= */
   CH8 = G.Chapters.register({
-    id: 8, key: 'ch8', num: 'VIII', numZh: '八', title: '最後的樂章', en: 'THE LAST MOVEMENT',
+    id: 8, key: 'ch8', num: 'VIII', numZh: '八', title: '冥后宮殿', en: 'THE PALACE OF THE DEAD QUEEN',
     intro: [
-      { t: '終止線的另一邊，\n還有一座舞台。', s: 'PAST THE FINAL BARLINE, THERE IS STILL A STAGE.' },
-      { t: '有人在那裡，憋著一口氣。\n已經二十年了。', s: 'SOMEONE THERE IS HOLDING HER BREATH. FOR TWENTY YEARS.' },
+      { t: '第七道門的後面，\n沒有路了。', s: 'BEYOND THE SEVENTH GATE, THERE IS NO ROAD.' },
+      { t: '有人在那裡關著門。\n已經十八年了。', s: 'SOMEONE THERE HAS KEPT THE DOOR SHUT. FOR EIGHTEEN YEARS.' },
     ],
     enterDialog: 'c8_enter',
-    outro: '「等妳醒來，我們再一起唱。」',
+    outro: '「這一次，換我走下去。」',
     level, pal,
     sky: { sun: false, shafts: false, clouds: false, ark: false, rays: 0 },
     bg: {

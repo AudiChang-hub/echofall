@@ -9,14 +9,14 @@
       let el = $('#abyssScreen');
       if (!el) {
         el = document.createElement('section'); el.id = 'abyssScreen'; el.className = 'screen modal';
-        el.innerHTML = `<div class="abyss"><header class="gr-head"><div class="gr-title"><b>殘響深淵</b><em>THE ABYSS</em></div>
+        el.innerHTML = `<div class="abyss"><header class="gr-head"><div class="gr-title"><b>無底冥井</b><em>THE BOTTOMLESS WELL</em></div>
           <button type="button" class="x-close ab-close" aria-label="關閉">✕</button></header>
-          <p class="ab-lore">鐘聲之下還有鐘聲。往下走的人，帶著空手回來，或者不回來。</p>
-          <div class="ab-body"><div class="ab-pact"><h4>苦難契約<em>PACT OF PUNISHMENT</em></h4><div class="ab-list"></div></div>
+          <p class="ab-lore">七道門之外，還有一口井。往下走的人，空手回來，或者不回來。</p>
+          <div class="ab-body"><div class="ab-pact"><h4>苦難契約<em>PACT OF PUNISHMENT</em></h4><p class="ab-how">契約是<b>自願加上的難度</b>：點一下加一級（敵人更強），再點會循環回零。菱形是契約的等級，不是獎勵。熱度越高，守門者給的碎片越多。</p><div class="ab-list"></div></div>
           <aside class="ab-side"><div class="ab-heat"><span>熱度</span><b></b></div><p class="ab-mul"></p>
           <ul class="ab-rules"><li>每一層的獎勵顯示在門上，由你選擇下一扇門</li><li>每 5 層有守門者；擊敗後可以選擇返回地表</li>
-          <li>共鳴回響只屬於這一趟；結束後恢復原本的共鳴</li><li>死亡不會遺落碎片，找到的碎片、裝備都會保留</li></ul>
-          <p class="ab-rec"></p><button type="button" class="gb-act main ab-go">踏入深淵</button></aside></div></div>`;
+          <li>共鳴回響只屬於這一趟；結束後恢復原本的共鳴</li><li>死亡不會遺落碎片，找到的碎片、裝備都會保留</li><li>每刷新一次 5 層的最深紀錄：自選一項屬性永久 +1</li></ul>
+          <p class="ab-rec"></p><button type="button" class="gb-act main ab-go">走進冥井</button></aside></div></div>`;
         document.getElementById('ui').appendChild(el);
       }
       const pact = Object.assign({}, sv.pactLast || {});
@@ -26,7 +26,7 @@
         el.querySelector('.ab-list').innerHTML = A.PACT.map((c, k) => {
           const r = pact[c.id] || 0;
           const pips = Array.from({ length: c.max }, (_, i) => `<i class="${i < r ? 'on' : ''}"></i>`).join('');
-          return `<button type="button" class="ab-c ${k === fi ? 'focus' : ''} ${r ? 'lit' : ''}" data-k="${k}"><span class="ab-n">${c.name}</span><span class="ab-pips">${pips}</span><span class="ab-d">${r ? c.desc(r) : c.desc(1).replace(/^/, '下一級：')}</span></button>`;
+          return `<button type="button" class="ab-c ${k === fi ? 'focus' : ''} ${r ? 'lit' : ''}" data-k="${k}">${G.Icons.badge(c.icon, r ? '#ff8f9f' : 'rgba(239,233,223,.45)', 36)}<span class="ab-n">${c.name}</span><span class="ab-pips">${pips}</span><span class="ab-d">${r ? c.desc(r) : c.desc(1).replace(/^/, '下一級：')}</span></button>`;
         }).join('');
         el.querySelector('.ab-heat b').textContent = heat;
         el.querySelector('.ab-heat').classList.toggle('hot', heat > 0);

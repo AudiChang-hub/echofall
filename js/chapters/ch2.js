@@ -1,5 +1,5 @@
 'use strict';
-/* ECHOFALL — Chapter II 頌歌之梯 THE CANTATA LADDER (world, story, music).
+/* ECHOFALL — Chapter II 雪嶺山門 THE SNOW GATE (world, story, music).
    The Belfry (a cliffside village around a colossal silent bell) → the Frostwind Trail → the Old Cableway →
    Ladderwatch Cliff (vista + avalanche) → the Ladder's frozen Anchor Station → the Counterweight (Sister Calla).
    Foes live in ch2_foes.js / ch2_boss.js and are referenced by id. See docs/CHAPTER_API.md + docs/STORY.md. */
@@ -1110,8 +1110,8 @@
       for (const px of [x0, x1]) { g.fillStyle = STEEL.dark; g.fillRect(px - 10, -280, 20, 280); g.fillStyle = STEEL.lit; g.fillRect(px + 3, -280, 4, 280); g.beginPath(); g.rect(px - 10, -280, 20, 280); inkS(g, 2); }
       g.fillStyle = '#262a42'; g.fillRect(x0 - 30, -300, x1 - x0 + 60, 40); g.beginPath(); g.rect(x0 - 30, -300, x1 - x0 + 60, 40); inkS(g, 2);
       g.fillStyle = SNOW.lit; g.fillRect(x0 - 32, -304, x1 - x0 + 64, 5);
-      g.fillStyle = '#ffd38a'; g.font = '900 20px "Noto Serif TC", serif'; g.textAlign = 'center'; g.fillText('梯 基 錨 站', (x0 + x1) / 2, -274);
-      g.fillStyle = 'rgba(255,211,138,0.8)'; g.font = '600 10px Rajdhani, sans-serif'; g.fillText('CANTATA LADDER — ANCHOR STATION 01', (x0 + x1) / 2, -264);
+      g.fillStyle = '#ffd38a'; g.font = '900 20px "Noto Serif TC", serif'; g.textAlign = 'center'; g.fillText('山 門 纜 站', (x0 + x1) / 2, -274);
+      g.fillStyle = 'rgba(255,211,138,0.8)'; g.font = '600 10px Rajdhani, sans-serif'; g.fillText('THE SNOW GATE — CABLE STATION', (x0 + x1) / 2, -264);
       // chain-link fence segment (bent open)
       g.strokeStyle = 'rgba(40,44,70,0.85)'; g.lineWidth = 1;
       for (let xx = x0 - 120; xx < x0; xx += 8) { g.beginPath(); g.moveTo(xx, -140); g.lineTo(xx + 8, 0); g.moveTo(xx + 8, -140); g.lineTo(xx, 0); g.stroke(); }
@@ -1249,7 +1249,7 @@
       g.beginPath(); g.rect(11480, -700, 1240, 36); inkS(g, 2.4);
       g.fillStyle = '#d9a12e'; for (let xx = 11480; xx < 12720; xx += 24) g.fillRect(xx, -670, 12, 6);
       g.fillStyle = SNOW.lit; g.fillRect(11476, -704, 1248, 5);
-      g.fillStyle = 'rgba(240,200,120,0.9)'; g.font = '700 16px Rajdhani'; g.textAlign = 'center'; g.fillText('COUNTERWEIGHT CRADLE  —  DO NOT STAND BENEATH', 12100, -676);
+      g.fillStyle = 'rgba(240,200,120,0.9)'; g.font = '700 16px Rajdhani'; g.textAlign = 'center'; g.fillText('THE GATE BELL  —  THE LIVING STAND BACK', 12100, -676);
       // chains down to where the bell hung
       g.strokeStyle = '#1c1e30'; g.lineWidth = 5;
       for (const ch of [11900, 12300]) { g.beginPath(); g.moveTo(ch, -664); g.quadraticCurveTo(ch + 20, -480, ch - 10, -330); g.stroke(); }
@@ -1653,51 +1653,50 @@
      ========================================================================================= */
   const DATA = {
     speakers: {
-      c2_calla: { name: '卡菈修女', en: 'SISTER CALLA', color: '#d9c2ff' },
+      c2_calla: { name: '卡菈', en: 'KARA', color: '#d9c2ff' },
       c2_olin: { name: '歐林', en: 'OLIN', color: '#ffc27a' },
       c2_elder: { name: '葛蘿婆婆', en: 'GRANNY GRO', color: '#e8c9a0' },
     },
     dialog: {
       c2_enter: [
-        { who: 'ode', text: '……方舟，這裡是第七降臨隊。請回應。……沒有。連雜訊都沒有。' },
-        { who: 'rinne', text: '再試一次。' },
-        { who: 'ode', text: '……第四十七次了。' },
-        { who: 'talia', text: '——喂！那邊那個，穿長大衣的！' },
-        { who: 'talia', text: '你是凜音吧？我是塔莉亞，碑文頻段上那個。……你本人，比聲音高。' },
-        { who: 'rinne', text: '你在雪裡等了多久？' },
-        { who: 'talia', text: '從方舟的頻段斷掉那天起。要回天上，只剩頌歌之梯——上梯子，一定會經過這裡。' },
-        { who: 'talia', text: '歡迎來到鐘樓。三百一十二個人，和一口十七年沒響過的鐘。' },
-        { who: 'talia', text: '先到碑那邊吧。這次，我能親手替你調刀。' },
+        { who: 'ode', text: '……山上的燈，都還亮著。' },
+        { who: 'rinne', text: '有人在點。' },
+        { who: 'talia', text: '——喂！那邊那個，從海上來的！' },
+        { who: 'talia', text: '妳是巴里吧？我是妲莉，燈裡的那個。……妳本人，比聲音高。' },
+        { who: 'rinne', text: '妳在雪裡等了多久？' },
+        { who: 'talia', text: '從門關上那天起。要進冥界，只能走山門——往裡走的人，一定會經過這裡。' },
+        { who: 'talia', text: '歡迎來到鐘樓。三百一十二個排隊的人，和一口十八年沒響過的鐘。' },
+        { who: 'talia', text: '先到燈那邊吧。這次，我能親手替妳磨刀。' },
       ],
       c2_pylonTalia: [
-        { who: 'talia', text: '把止弦放上來。……六條弦。方舟的鍛造師，都是瘋子。' },
-        { who: 'talia', text: '第三弦跟第五弦在互相拉扯。你在灰港，擋了很多次吧。' },
-        { who: 'talia', text: '……你們是怎麼活下來的。' },
-        { who: 'talia', text: '從今天起，每一座碑都找得到我。不過，還是親手調比較好。' },
+        { who: 'talia', text: '把刀放上來。……六條弦。打這把刀的人，一定很想念誰。' },
+        { who: 'talia', text: '第三弦跟第五弦在互相拉扯。妳在王城，擋了很多次吧。' },
+        { who: 'talia', text: '……活人的手，原來是熱的。' },
+        { who: 'talia', text: '從今天起，每一盞燈都找得到我。不過，還是親手磨比較好。' },
       ],
       c2_taliaQuest: [
-        { who: 'talia', text: '凜音……能拜託你一件事嗎。一件很大的事。' },
-        { who: 'talia', text: '廣場上那口大鐘。鐘樓是為它蓋的。它響著的時候，寂裔不上山。' },
-        { who: 'talia', text: '十七年前，第二降臨隊從這裡下山，往錨站去。那一夜之後，鐘錘就不見了。' },
+        { who: 'talia', text: '巴里……能拜託妳一件事嗎。一件很大的事。' },
+        { who: 'talia', text: '廣場上那口大鐘。以前，山門每放一個人進去，它就跟著響一聲。' },
+        { who: 'talia', text: '鐘一響，排隊的人就會想起自己的名字。十八年前那一夜，鐘錘不見了。從那以後，大家一個一個……忘了。' },
         { who: 'rinne', text: '在哪裡。' },
-        { who: 'talia', text: '錨站。有人在凍住的貨運車廂裡，看過一根發光的銅錘。我去過一次……被白色的狗追了回來。' },
+        { who: 'talia', text: '山門纜站。有人在凍住的貨運車廂裡，看過一根發光的銅錘。我去過一次……被白色的狗追了回來。' },
         { who: 'talia', text: '那裡有條舊貨運纜線還連著鐘樓。把鐘錘綁上絞盤，我這邊就收得到。……拜託了。' },
       ],
       c2_taliaWait: [
-        { who: 'talia', text: '錨站在山的另一頭，順著舊纜車線往下。鐘錘在凍住的貨運車廂裡。' },
-        { who: 'talia', text: '找到了，就用錨站的絞盤送上來。……路上小心。那些狗一叫，就會有更多的狗。' },
+        { who: 'talia', text: '纜站在山的另一頭，順著舊纜車線往下。鐘錘在凍住的貨運車廂裡。' },
+        { who: 'talia', text: '找到了，就用纜站的絞盤送上來。……那些白色的狗，以前也在排隊。別讓牠們叫太久。' },
       ],
       c2_taliaDone: [
         { who: 'rinne', text: '是這個嗎。' },
-        { who: 'talia', text: '……就是它。這麼重，你是怎麼扛回來的……' },
+        { who: 'talia', text: '……就是它。這麼重，妳是怎麼扛回來的……' },
         { who: 'talia', text: '大家，過來幫忙！葛蘿婆婆，掃把先放下！' },
       ],
       c2_bellRing: [
-        { who: 'talia', text: '聽好了，鐘樓。十七年了——' },
+        { who: 'talia', text: '聽好了，大家。十八年了——' },
         { who: 'sys', text: '（大鐘響了。一聲，兩聲，三聲。聲音沿著山谷滾下去，像一口憋了很久的氣，終於吐了出來。）' },
         { who: 'talia', text: '……它在響。它真的在響。' },
-        { who: 'talia', text: '鐘錘裡卡著一顆共鳴核。我把它磨成了護符……就叫它「鐘樓之心」吧。' },
-        { who: 'talia', text: '謝謝你，凜音。不管你走到哪裡，鐘聲都在你身後。' },
+        { who: 'talia', text: '鐘錘裡卡著一塊碎片，不知道是誰的聲音。我把它磨成了護符……就叫它「鐘樓之心」吧。' },
+        { who: 'talia', text: '謝謝妳，巴里。不管妳走到哪裡，鐘聲都在妳身後。' },
       ],
       c2_sendClapper: [
         { who: 'rinne', text: '……綁上去。' },
@@ -1707,47 +1706,49 @@
         { who: 'rinne', text: '……綁上去。' },
       ],
       c2_bellBand: [
-        { who: 'talia', text: '凜音？貨運纜線在動……這是——鐘錘！' },
-        { who: 'talia', text: '大家，過來幫忙！……好，裝上了。聽好了，鐘樓。十七年了——' },
-        { who: 'sys', text: '（山的另一頭，大鐘響了。一聲，兩聲，三聲。聲音順著纜線傳下來，連腳下的鋼板都在共鳴。）' },
-        { who: 'talia', text: '……它在響。凜音，你聽得到嗎？' },
-        { who: 'talia', text: '鐘錘裡有顆共鳴核，我磨成護符了，用回程的吊籃送下去。就叫它「鐘樓之心」。' },
-        { who: 'talia', text: '謝謝你。不管你走到哪裡，鐘聲都在你身後。' },
+        { who: 'talia', text: '巴里？貨運纜線在動……這是——鐘錘！' },
+        { who: 'talia', text: '大家，過來幫忙！……好，裝上了。聽好了，大家。十八年了——' },
+        { who: 'sys', text: '（山的另一頭，大鐘響了。一聲，兩聲，三聲。聲音順著纜線傳下來，連腳下的鋼板都在震。）' },
+        { who: 'talia', text: '……它在響。巴里，妳聽得到嗎？' },
+        { who: 'talia', text: '鐘錘裡卡著一塊碎片，我磨成護符了，用回程的吊籃送下去。就叫它「鐘樓之心」。' },
+        { who: 'talia', text: '謝謝妳。不管妳走到哪裡，鐘聲都在妳身後。' },
       ],
       c2_taliaAfter: [
-        { who: 'talia', text: '大鐘每天傍晚都會響一次。我親手敲的。……小艾說，白色的狗都不來了。' },
+        { who: 'talia', text: '大鐘每天傍晚都會響一次。我親手敲的。……小艾說，她想起自己姓什麼了。' },
       ],
       c2_askBelfry: [
-        { who: 'talia', text: '三百一十二個人，兩百頭山羊，一台會唱歌的發電機。還有我。' },
-        { who: 'talia', text: '大寂靜那年，大家從山下逃上來。這裡夠高、夠冷、夠吵——寂裔不喜歡吵的地方。' },
-        { who: 'talia', text: '至少，以前是這樣。鐘不響之後，白色的狗一年比一年近。' },
+        { who: 'talia', text: '三百一十二個人。每個人都是揹著自己的棺木走上山的，現在拿來當床睡。' },
+        { who: 'talia', text: '他們都是門關上以後才走到這裡的。這裡夠高、夠冷，離門最近。' },
+        { who: 'talia', text: '以前，鐘還會響。鐘不響之後，白色的狗一年比一年多。' },
       ],
       c2_askArk: [
-        { who: 'talia', text: '方舟上的人……真的每天都有熱水可以洗澡嗎？' },
-        { who: 'rinne', text: '每人每天，三分鐘。' },
-        { who: 'talia', text: '……三分鐘。我們燒一桶雪，可以洗半個小時。' },
-        { who: 'talia', text: '那上面……是什麼樣子？' },
-        { who: 'rinne', text: '……很安靜。' },
+        { who: 'talia', text: '外面的花……長什麼樣子？' },
+        { who: 'rinne', text: '……十八年沒開了。' },
+        { who: 'talia', text: '……這樣啊。' },
+        { who: 'talia', text: '那妳見過的最後一朵呢？是什麼顏色？' },
+        { who: 'rinne', text: '……白的。在島上，海邊。' },
       ],
       c2_askDescent: [
-        { who: 'talia', text: '第二降臨隊？我那時才剛出生。都是聽大人說的。' },
-        { who: 'talia', text: '帶隊的是一位修女，叫卡菈。她在大鐘下唱了一整夜，替這座山祈禱，然後帶著隊員下山，去搭升降梯。' },
-        { who: 'talia', text: '升降梯沒有上去。他們也沒有回來。那一夜，錨站整個凍住了，鐘錘也不見了。' },
+        { who: 'talia', text: '守門的是一位尼姑，叫卡菈。每放一個人進門，她就敲一下門鐘。' },
+        { who: 'talia', text: '十八年前那一夜，門鐘敲完最後一下，就再也沒有響過。纜站整個凍住了，鐘錘也不見了。' },
+        { who: 'talia', text: '最後那一下，是替誰敲的……沒有人知道。' },
         { who: 'rinne', text: '……我去看看。' },
       ],
       c2_askFather: [
-        { who: 'rinne', text: '錨站的線務員日誌。最後一頁，是寫給你的。' },
+        { who: 'rinne', text: '纜站的值班日誌。最後一頁，是寫給妳的。' },
         { who: 'talia', text: '……喬納・瓦斯克。那是我爸。' },
-        { who: 'talia', text: '我出生那天，他在錨站值班。他答應我媽，下班會帶一個會叫的鐘回來。……他一直沒有下班。' },
-        { who: 'talia', text: '「爸爸會晚一點回去」……晚了十七年。笨蛋。' },
-        { who: 'talia', text: '……謝謝你告訴我。我沒事。去吧，我還有一堆碑要修。' },
+        { who: 'talia', text: '每年我走的那天，他都值夜班，把燈一路點到門口。我就沿著燈走出來，在門邊看他一眼。' },
+        { who: 'talia', text: '那一夜也是。門在我身後關上了。他……沒有走到門口。' },
+        { who: 'talia', text: '「爸爸晚一點過去」……晚了十八年。笨蛋。' },
+        { who: 'talia', text: '……謝謝妳告訴我。我沒事。去吧，我還有一堆燈要點。' },
       ],
       c2_elderTalk: [
-        { who: 'c2_elder', text: '方舟來的孩子。那丫頭在雪裡等了你好幾天，怎麼叫都不肯進屋。' },
-        { who: 'c2_elder', text: '我掃了五十年的雪。鐘不響的這十七年，雪特別重。' },
+        { who: 'c2_elder', text: '活著的孩子。好久沒見過了。那丫頭在雪裡等了妳好幾天，怎麼叫都不肯進屋。' },
+        { who: 'c2_elder', text: '我掃了五十年的雪。鐘不響的這十八年，雪特別重。' },
       ],
       c2_elderAfter: [
         { who: 'c2_elder', text: '聽見了嗎。鐘一響，連雪都輕了。' },
+        { who: 'c2_elder', text: '……我想起來了。我叫葛蘿。' },
       ],
       c2_hounds: [
         { who: 'rinne', text: '……雪裡有東西。' },
@@ -1756,55 +1757,56 @@
         { who: 'rinne', text: '……山寺的敲鐘人。曾經是。' },
       ],
       c2_tetherling: [
-        { who: 'ode', text: '頭頂的斷纜在動。……不是風。' },
+        { who: 'ode', text: '頭頂的斷索在動。……不是風。' },
       ],
       c2_vista: [
-        { who: 'sys', text: '（雲層裂開。一根線，從山谷筆直地升進天空。）' },
-        { who: 'rinne', text: '頌歌之梯。' },
-        { who: 'ode', text: '……頻段上，有聲音。' },
-        { who: 'sys', text: '（有人在哼歌。一個孩子的聲音，很輕，像怕吵醒誰。）' },
+        { who: 'sys', text: '（雲層裂開。一條鋼索從山谷筆直地升進天空，沒入雲裡。）' },
+        { who: 'rinne', text: '……門在上面。' },
+        { who: 'ode', text: '……有聲音。' },
+        { who: 'sys', text: '（有人在哼歌。一個女人的聲音，很輕，像怕吵醒誰。）' },
         { who: 'rinne', text: '……這首歌。' },
-        { who: 'ode', text: '米菈的音樂盒。瑪絲緹娜。……同一首。' },
-        { who: 'ode', text: '方舟沒有壞，凜音。它只是……安靜了下來。但上面，有人在唱。' },
+        { who: 'ode', text: '溫陀的搖籃曲。……只有前半段。' },
         { who: 'rinne', text: '那就上去。' },
       ],
       c2_station: [
-        { who: 'ode', text: '梯基錨站。……整座站，停在同一個瞬間。' },
+        { who: 'ode', text: '……整座站，停在同一個時辰。' },
       ],
       c2_linesmen: [
-        { who: 'rinne', text: '……方舟的防寒服。他還在巡線。' },
+        { who: 'rinne', text: '……纜夫。他還在巡索。' },
       ],
       c2_chapel: [
-        { who: 'rinne', text: '門框上畫著一口鐘。……她在這裡祈禱過。' },
+        { who: 'rinne', text: '……門框上，刻滿了名字。' },
       ],
       c2_eliteIntro: [
         { who: 'c2_olin', text: '（嗚————）' },
-        { who: 'c2_olin', text: '站住。第二降臨隊，信號手歐林。集合號，我吹了十七年。沒有一個人回來。' },
-        { who: 'c2_olin', text: '你是第幾隊的……第七？已經那麼久了。' },
-        { who: 'c2_olin', text: '那你也聽聽。我的號角，還能讓誰停下腳步。' },
+        { who: 'c2_olin', text: '站住。纜夫頭，歐林。這號，我吹了十八年。纜車一次也沒動過。' },
+        { who: 'c2_olin', text: '活人？……活人上山做什麼。' },
+        { who: 'c2_olin', text: '那妳也聽聽。我的號，還能讓什麼動起來。' },
       ],
       c2_eliteDefeat: [
-        { who: 'c2_olin', text: '……啊。這一次……有人聽見了。' },
-        { who: 'c2_olin', text: '修女還在平衡錘那裡。她說……只要繼續唱，升降梯就會來。' },
-        { who: 'c2_olin', text: '號角，給你。替我……吹最後一聲。' },
+        { who: 'c2_olin', text: '……啊。這一次……有東西動了。' },
+        { who: 'c2_olin', text: '尼姑還在門鐘那裡。她說……只要繼續等，門會開。' },
+        { who: 'c2_olin', text: '號角，給妳。替我……吹最後一聲。' },
       ],
       c2_bossIntro: [
         { who: 'c2_calla', text: '（……）' },
-        { who: 'ode', text: '她在唱。……沒有聲音。' },
-        { who: 'c2_calla', text: '（她抬手指向天空，再指向你。嘴唇在動——「回去」。）' },
-        { who: 'rinne', text: '我要上去。' },
+        { who: 'ode', text: '她在數。……沒有聲音。' },
+        { who: 'c2_calla', text: '（她抬手指向門，再緩緩搖頭。嘴唇在動——「回去」。）' },
+        { who: 'rinne', text: '我要進去。' },
       ],
       c2_bossDefeat: [
         { who: 'c2_calla', text: '（裂開的鐘裡，第一次傳出了聲音。很輕，像一句禱詞。）' },
-        { who: 'c2_calla', text: '……孩子……我們……沒能上去……' },
-        { who: 'c2_calla', text: '上面……很冷。她一個人……在唱……替我們……抱抱她……' },
-        { who: 'sys', text: '（平衡錘鬆開了。升降梯，緩緩上升。）' },
-        { who: 'ode', text: '……凜音，看上面。方舟的燈，是亮的。' },
+        { who: 'c2_calla', text: '……活著的孩子……把名字……留下……' },
+        { who: 'rinne', text: '巴里。' },
+        { who: 'c2_calla', text: '……收下了。' },
+        { who: 'sys', text: '（門鐘響了一聲。十八年來的第一聲。）' },
+        { who: 'c2_calla', text: '門後面……很冷。她一個人……替我……抱抱她……' },
+        { who: 'ode', text: '……我記得妳。只是，叫不出來了。' },
       ],
       c2_liftSnap: [
-        { who: 'sys', text: '（纜線發出一聲長長的、走了調的鳴響。）' },
-        { who: 'sys', text: '（一聲巨響。整座升降梯猛地一沉。）' },
-        { who: 'ode', text: '……我們在往下掉。' },
+        { who: 'sys', text: '（鋼索發出一聲長長的、走了調的鳴響。）' },
+        { who: 'sys', text: '（一聲巨響。整座纜站猛地一沉。）' },
+        { who: 'ode', text: '……門，是往下開的。' },
       ],
     },
     barks: {
@@ -1812,12 +1814,12 @@
       c2_rumbleWarn: { who: 'ode', text: '……山在響。' },
       c2_clapper: { who: 'ode', text: '……鐘錘。握柄上，刻著「鐘樓」。' },
       c2_bellFar: { who: 'ode', text: '……鐘聲。從山的那一頭。' },
-      c2_safe: { who: 'ode', text: '……停了。呼吸，凜音。' },
+      c2_safe: { who: 'ode', text: '……停了。呼吸，巴里。' },
     },
     hints: {
       c2_jump: '<b class="r">震波</b> 會沿著地面推進——按 {jump} 跳過去',
       c2_glob: '飛來的 <b class="w">白光</b> 彈體：命中前一瞬按 {guard} 完美格擋，就能 <b>彈回去</b>',
-      c2_hook: '<b class="r">紅光</b> 鉤索會把你拉近，用 {dodge} 閃開；地上閃爍的信標附近會放電，遠離它',
+      c2_hook: '<b class="r">紅光</b> 鉤索會把妳拉近，用 {dodge} 閃開；地上閃爍的信標附近會放電，遠離它',
       c2_tower: '大鐘塔的鷹架似乎爬得上去……按 {jump} 跳上木台，空中再按一次可二段跳',
       c2_upper: '上方的貨運棧橋似乎有路……有號角聲從那裡傳來',
       c2_runHint: '<b class="r">雪崩！</b> 按住 {move} 一直往右跑，遇到倒木就按 {jump}',
@@ -1825,28 +1827,28 @@
     codex: {
       people: [
         {
-          id: 'c2_calla', name: '卡菈修女', en: 'SISTER CALLA — THE TONGUELESS BELL', portrait: 'c2_boss', unlock: 'c2_boss_seen',
-          tag: '失聲者｜第二降臨隊隊長',
+          id: 'c2_calla', name: '卡菈', en: 'KARA — THE GATE-BELL NUN', portrait: 'c2_boss', unlock: 'c2_boss_seen',
+          tag: '守門人｜冥界第一道門',
           body: [
-            '第二降臨隊隊長，隨軍修女。她相信歌聲是人類最後的祈禱，帶著隊員在鐘樓的大鐘下唱了一整夜，然後下山前往梯基錨站。',
-            '升降梯沒有上去。她把自己的聲音交給了寂靜，換一個「它會來」的承諾。十七年後，她仍與平衡錘熔在一起，無聲地唱著。',
-            '「上面有個孩子在唱歌。我不能停下來。」',
+            '雪嶺山門的守門人。很久以前，她把自己的舌頭交給了門鐘，從此只用鐘聲說話：放一個亡者進門，就敲一下。',
+            '十八年前，門後的人要她停下。她停了。排隊的人在門外等成了雪，她在鐘裡，一下也沒有敲。',
+            '「我沒有舌頭，所以我記。」',
           ],
         },
         {
-          id: 'c2_olin', name: '歐林', en: 'OLIN — THE FROZEN BUGLER', portrait: 'c2_elite', unlock: 'c2_elite_seen',
-          tag: '第二降臨隊｜信號手',
+          id: 'c2_olin', name: '歐林', en: 'OLIN — THE FROZEN HAULER', portrait: 'c2_elite', unlock: 'c2_elite_seen',
+          tag: '山門纜站｜纜夫頭',
           body: [
-            '第二降臨隊的信號手。鐘樓的孩子們至今還記得，十七年前有個高大的士兵為他們吹了一首集合號。',
-            '他在錨站的貨運棧橋上守了十七年，每天吹一次「我在這裡，跟著聲音走」。沒有任何人跟上來。',
+            '山門纜站的纜夫頭。鐘樓的孩子們還記得，他會在送棺上山之前，替他們吹一段號。',
+            '纜車停了十八年。他每天仍吹一次「一長，不停」。纜索一次也沒有動過。',
           ],
         },
         {
           id: 'c2_jonah', name: '喬納・瓦斯克', en: 'JONAH VASK', portrait: null, unlock: 'note_c2_n4',
-          tag: '梯基錨站｜線務第三班',
+          tag: '山門纜站｜夜班纜夫',
           body: [
-            '頌歌之梯地面錨站的線務員，塔莉亞的父親。錨站凍結的那一刻，他正在值班。',
-            '他答應過，下班要帶一個「會叫的鐘」回家。',
+            '山門纜站的纜夫，妲莉的父親。纜站凍結的那一刻，他正在值夜班。',
+            '那天是他女兒的忌日。他在日誌的最後寫：晚一點過去。',
           ],
         },
       ],
@@ -1854,46 +1856,46 @@
         {
           id: 'c2_bell', name: '鐘樓大鐘', en: 'THE GREAT BELL', unlock: 'c2_met_talia',
           body: [
-            '鐘樓聚落正中央的青銅巨鐘，鐘身鑄著四個字：「鳴則不寂」。聚落的人相信，只要它還在響，寂裔就不敢上山。',
-            '十七年前的那一夜，鐘錘在寂靜中消失，大鐘從此只剩風吹過鐘口的聲音。',
+            '鐘樓聚落正中央的青銅巨鐘，鐘身鑄著四個字：「鳴則不寂」。山門每放一個亡者進去，它就跟著響一聲，排隊的人便知道，隊伍還在往前走。',
+            '十八年前那一夜，鐘錘消失了。從那以後，排隊的人開始一個一個忘記自己的名字。',
           ],
         },
         {
-          id: 'c2_ladder', name: '頌歌之梯', en: 'THE CANTATA LADDER', unlock: 'c2_vista_seen',
+          id: 'c2_ladder', name: '送棺索', en: 'THE COFFIN LINE', unlock: 'c2_vista_seen',
           body: [
-            '連接地表與軌道方舟「頌歌號」的軌道電梯。錨纜全長三萬六千公里，從地面看去像一根插進天空的針。',
-            '大寂靜之後，升降梯只為降臨作戰運行。第二降臨隊之後，它再也沒有往上開過。',
+            '從山門纜站筆直升進雲裡的鋼索。亡者的棺木掛在索上，一副一副被拉上去，送進門。',
+            '十八年前那一夜之後，它再也沒有往上拉過。',
           ],
         },
         {
-          id: 'c2_anchor', name: '梯基錨站', en: 'ANCHOR STATION', unlock: 'c2_station_seen',
+          id: 'c2_anchor', name: '山門纜站', en: 'THE GATE STATION', unlock: 'c2_station_seen',
           body: [
-            '頌歌之梯的地面錨點，位於鐘樓山下的冰谷。平衡錘、貨運棧橋與升降梯月台都在這裡。',
-            '十七年前，錨站在一瞬間凍結。值班人員的日誌停在同一分鐘，像是有人按下了暫停鍵。',
+            '送棺索的地面站，位於鐘樓山下的冰谷。門鐘、貨運棧橋與送棺的月台都在這裡。',
+            '十八年前，纜站在一瞬間凍結。值班纜夫的日誌停在同一分鐘，像是有人按住了鐘擺。',
           ],
         },
         {
-          id: 'c2_humming', name: '頻段上的哼唱', en: 'THE HUMMING ON THE BAND', unlock: 'c2_vista_seen',
+          id: 'c2_humming', name: '雲上的哼唱', en: 'THE HUMMING ABOVE THE CLOUDS', unlock: 'c2_vista_seen',
           body: [
-            '方舟通訊頻段完全靜默之後，偶爾會出現一段孩子的哼唱。旋律與米菈的音樂盒、與瑪絲緹娜的主題完全一致。',
-            '她每次都停在同一個地方，像是不知道下一個音是什麼。',
+            '山門關上以後，偶爾會從雲裡傳下一段哼唱。旋律是溫陀的搖籃曲。',
+            '她每次都停在同一個地方，像是從來沒有人教過她後面。',
           ],
         },
       ],
       items: [
-        { id: 'c2_horn', name: '號角殘片', en: "OLIN'S HORN", unlock: 'relic_c2_horn', relic: true, body: ['冰封號手歐林的號角碎片。吹口仍有一點溫度。', '十七年來，它只吹過一種號令：一長，不停——我在這裡，跟著聲音走。', '遺物效果：完美格擋時回復 4 生命。'] },
-        { id: 'c2_clapper', name: '鐘樓之心', en: 'HEART OF THE BELFRY', unlock: 'relic_c2_clapper', relic: true, body: ['塔莉亞用鐘錘裡的共鳴核磨成的護符。握著它，能聽見很遠的地方有鐘聲。', '她磨了一整夜。磨完之後，才想起自己的父親也曾答應過，要帶一口鐘回家。', '遺物效果：調和劑 +1。'] },
-        { id: 'c2_frostbead', name: '霜念珠', en: 'FROST ROSARY', unlock: 'relic_c2_frostbead', relic: true, body: ['掛在大鐘塔頂的念珠。每一顆珠子都結著霜，卻不冰手。', '鐘樓的人說，是一位修女下山前掛上去的。她說，鐘不響的時候，總得有什麼替它祈禱。', '遺物效果：最大耐力 +15。'] },
-        { id: 'c2_bellclapper', name: '大鐘的鐘錘', en: 'THE GREAT CLAPPER', unlock: 'c2_got_clapper', body: ['一根比人還長的青銅鐘錘，握柄刻著「鐘樓」。十七年來，它一直躺在錨站的貨運車廂裡，微微發光。'] },
+        { id: 'c2_horn', name: '號角殘片', en: "OLIN'S HORN", unlock: 'relic_c2_horn', relic: true, body: ['纜夫頭歐林的號角碎片。吹口仍有一點溫度。', '十八年來，它只吹過一種號令：一長，不停——拉，有人要上山了。', '遺物效果：完美格擋時回復 4 生命。'] },
+        { id: 'c2_clapper', name: '鐘樓之心', en: 'HEART OF THE BELFRY', unlock: 'relic_c2_clapper', relic: true, body: ['妲莉用鐘錘裡的碎片磨成的護符。握著它，能聽見很遠的地方有鐘聲。', '她磨了一整夜。磨完之後，才想起父親也說過，晚一點就過去。', '遺物效果：調和劑 +1。'] },
+        { id: 'c2_frostbead', name: '霜念珠', en: 'FROST ROSARY', unlock: 'relic_c2_frostbead', relic: true, body: ['掛在大鐘塔頂的念珠。每一顆珠子都結著霜，卻不冰手。', '鐘樓的人說，是一位上山的公主留下的。她說，鐘不響的時候，總得有什麼替它數。', '遺物效果：最大耐力 +15。'] },
+        { id: 'c2_bellclapper', name: '大鐘的鐘錘', en: 'THE GREAT CLAPPER', unlock: 'c2_got_clapper', body: ['一根比人還長的青銅鐘錘，握柄刻著「鐘樓」。十八年來，它一直躺在纜站的貨運車廂裡，微微發光。'] },
       ],
       notes: [
-        { id: 'c2_n1', name: '第二降臨隊 行軍日誌', en: 'DESCENT II — MARCH LOG', body: ['【第二降臨隊・隊長 卡菈修女】', '第十二日。鐘樓的人給了我們熱湯和一夜的屋簷。孩子們圍著號手歐林，要他吹一首歌。他吹了集合號，孩子們笑得像那是世界上最好聽的曲子。', '明天下山去錨站。升降梯若還能動，我們就能回方舟報告：地表上還有人在唱歌。', '願鐘聲護佑這座山。願我們的歌，比寂靜更長。'] },
-        { id: 'c2_n2', name: '鐘樓孩子的信', en: 'A LETTER FROM THE BELFRY', body: ['給方舟上的人：', '我叫小艾，九歲。我們這裡很冷，可是大家都很好。塔莉亞姊姊會修所有的東西，除了大鐘。', '大人說大鐘不響了，所以白色的狗會靠過來。我晚上會在被子裡小聲唱歌，這樣牠們就聽不到大鐘沒有響。', '如果你們看到這封信，可以下來幫我們把鐘修好嗎？我可以把我的手套借你。'] },
-        { id: 'c2_n3', name: '卡菈修女的禱詞', en: "CALLA'S PRAYER", body: ['主啊，若祢也聽不見了，', '就讓我替祢聽。', '若寂靜是祢的休止符，', '求祢讓我們成為下一個小節。', '——', '（背面以顫抖的字跡寫著：）', '我把聲音交給了它，換升降梯再動一次。它沒有來。它不會來的。', '可是我不能停下來。上面有個孩子在唱歌。'] },
-        { id: 'c2_n4', name: '線務員的最後一班', en: 'LAST SHIFT — LINE TECHNICIAN', body: ['【梯基錨站・線務第三班　喬納・瓦斯克】', '04:12　纜線張力正常，平衡錘正常。我女兒今天早上出生了。我答應她媽，下班帶一個會叫的鐘回去。', '04:18　方舟頻段出現異常靜默。總部說是太陽風。', '04:31　同事們停止說話了。不是不想說，是發不出聲音。我的鉤桿在發抖。', '04:33　如果有人讀到這裡——鐘樓的塔莉亞，生日快樂。爸爸會晚一點回去。'] },
-        { id: 'c2_n5', name: '頻段上的哼唱', en: 'HUMMING ON THE BAND', body: ['【鐘樓無線電站・值班紀錄　塔莉亞】', '凌晨三點十二分。方舟頻段又出現了。不是說話，是哼歌。', '一個小女孩的聲音，很輕，好像怕吵醒誰。同一段旋律，一遍又一遍，每次都停在同一個地方，像是不知道下一個音是什麼。', '我試著用口琴接下一個音。她停了一下。然後……她又從頭開始了。', '不知道為什麼，我哭了。'] },
-        { id: 'c2_n6', name: '塔莉亞的待修清單', en: "TALIA'S REPAIR LIST", body: ['□ 共鳴碑三號：換電容（偷拿雜貨店老闆的收音機零件，記得還）', '□ 葛蘿婆婆的暖爐：又壞了，第六次', '■ 方舟來的共鳴者：到了。（她的刀有六條弦。不要一直盯著看。）', '□ 大鐘：缺鐘錘。十七年。跟我一樣老。', '□ 學會不要在暴風雪裡等人'] },
-        { id: 'c2_n7', name: '歐林的號譜', en: "OLIN'S SIGNAL CALLS", body: ['【第二降臨隊・信號手 歐林】', '短、短、長：集合。', '長、長：撤退。', '三短：有人倒下。', '一長，不停：我在這裡，跟著聲音走。', '——修女要我吹最後那一種。她說只要還有人在吹，迷路的人就找得到方向。我已經吹了十七年。'] },
+        { id: 'c2_n1', name: '無署名的旅記', en: 'AN UNSIGNED JOURNAL', body: ['第十二日。鐘樓的人給了我熱湯，和一夜的屋簷。一個叫小艾的孩子問我，外面的花還開不開。我說不出口。', '明天上山門。他們說，守門的尼姑要收一樣東西。', '我帶了一盞燈。它一路上都沒有說話，只是亮著。', '願鐘聲護佑這座山。願我回來的時候，還記得回來的路。'] },
+        { id: 'c2_n2', name: '鐘樓孩子的信', en: 'A LETTER FROM THE BELFRY', body: ['給門裡面的人：', '我叫小艾，九歲。去年也是九歲。我們在外面排隊排了很久，可是大家都很好。妲莉姊姊會點所有的燈，除了大鐘。', '大人說大鐘不響了，所以白色的狗會靠過來。我晚上會在被子裡小聲唱歌，這樣牠們就聽不到大鐘沒有響。', '如果你們看到這封信，可以開一下門嗎？我可以把我的手套借你。'] },
+        { id: 'c2_n3', name: '守鐘尼的禱詞', en: "KARA'S PRAYER", body: ['冥后啊，若您不再開門，', '就讓我替您守著。', '若寂靜是您的旨意，', '求您讓我，記得每一個沒能進門的名字。', '——', '（背面以顫抖的字跡寫著：）', '我沒有舌頭，所以我記。三萬一千二百零七個。', '可是我不能敲。門後面，她一個人在哭。'] },
+        { id: 'c2_n4', name: '纜夫的最後一班', en: "LAST SHIFT — THE HAULER'S LOG", body: ['【山門纜站・夜班纜夫　喬納・瓦斯克】', '04:12　索況正常，門鐘正常。今天是妲莉走的日子。照例值夜班，把燈一路點到門口。', '04:18　門鐘停了。上面說是風雪。', '04:31　排隊的人停止說話了。不是不想說，是發不出聲音。我的鉤桿在發抖。', '04:33　如果有人讀到這裡——燈裡的妲莉，別怕黑。爸爸晚一點過去。'] },
+        { id: 'c2_n5', name: '雲上的哼唱', en: 'HUMMING ABOVE THE CLOUDS', body: ['【鐘樓第三盞燈・點燈紀錄　妲莉】', '半夜，燈芯又自己晃了。雲裡有人在哼歌。', '一個女人的聲音，很輕，好像怕吵醒誰。同一段旋律，一遍又一遍，每次都停在同一個地方，像是不知道下一個音是什麼。', '我試著用口哨接下一個音。她停了一下。然後……她又從頭開始了。', '不知道為什麼，我想哭。可是死掉的人，哭不出來。'] },
+        { id: 'c2_n6', name: '妲莉的點燈清單', en: "DALI'S LAMP LIST", body: ['□ 鐘樓第三盞燈：換燈芯（偷拿葛蘿婆婆的毛線，記得還）', '□ 葛蘿婆婆的暖爐：又熄了，第六次（死掉的人也會冷嗎？）', '■ 從海上來的活人：到了。（她的刀有六條弦。不要一直盯著看。）', '□ 大鐘：缺鐘錘。十八年。跟我被關在外面一樣久。', '□ 學會不要在暴風雪裡等人'] },
+        { id: 'c2_n7', name: '纜夫的號令', en: "THE HAULERS' CALLS", body: ['【山門纜站・纜夫頭 歐林】', '短、短、長：上索。', '長、長：停車。', '三短：有棺落索。', '一長，不停：拉——有人要上山了。', '——尼姑要我吹最後那一種。她說只要還有人在吹，排隊的人就知道，還輪得到。我已經吹了十八年。'] },
       ],
     },
     relics: {
@@ -1979,9 +1981,9 @@
       { x: 9720, y: -180, w: 170 }, { x: 9830, y: -360, w: 150 },
     ],
     pylons: [
-      { id: 'c2_p1', x: 930, y: 0, name: '鐘樓共鳴碑', dialog: 'c2_pylonTalia', flag: 'c2_pylon1' },
-      { id: 'c2_p2', x: 5990, y: -230, name: '望梯崖共鳴碑' },
-      { id: 'c2_p3', x: 10880, y: 0, name: '平衡錘共鳴碑' },
+      { id: 'c2_p1', x: 930, y: 0, name: '鐘樓魂燈台', dialog: 'c2_pylonTalia', flag: 'c2_pylon1' },
+      { id: 'c2_p2', x: 5990, y: -230, name: '望門崖魂燈台' },
+      { id: 'c2_p3', x: 10880, y: 0, name: '門鐘魂燈台' },
     ],
     notes: [
       { id: 'c2_n6', x: 640, y: 0 },
@@ -1997,7 +1999,7 @@
       { id: 'c2_bellclapper', x: 10345, y: 0, flag: 'c2_got_clapper', name: '大鐘的鐘錘', kind: 'key', sfx: 'pickup', onTake(game) {
         G.SFX.play('c2_tollFar'); game.shake(0.2);
         game.bark('c2_clapper');
-        G.UI.journal(game.save.flags.c2_quest_given ? '支線任務：鐘樓的心跳' : '大鐘的鐘錘', '用錨站的貨運絞盤送回鐘樓');
+        G.UI.journal(game.save.flags.c2_quest_given ? '支線任務：鐘樓的心跳' : '大鐘的鐘錘', '用纜站的貨運絞盤送回鐘樓');
       } },
     ],
     npcs: [talia, elder],
@@ -2035,9 +2037,9 @@
       { x: -1e9, name: '鐘樓聚落', en: 'THE BELFRY', tint: 0, music: 'c2_explore', amb: 'c2_village' },
       { x: 2980, name: '霜嘯山徑', en: 'THE FROSTWIND TRAIL', tint: 0.15, music: 'c2_explore', amb: 'c2_trail' },
       { x: 5120, name: '舊纜車站', en: 'THE OLD CABLEWAY', tint: 0.3, music: 'c2_explore', amb: 'c2_trail' },
-      { x: 5960, name: '望梯崖', en: 'LADDERWATCH CLIFF', tint: 0.35, music: 'c2_explore', amb: 'c2_trail' },
-      { x: 7420, name: '梯基錨站', en: 'THE ANCHOR STATION', tint: 0.6, music: 'c2_explore2', amb: 'c2_station' },
-      { x: 11160, name: '平衡錘', en: 'THE COUNTERWEIGHT', tint: 1, music: 'c2_explore2', amb: 'c2_tether' },
+      { x: 5960, name: '望門崖', en: 'GATEWATCH CLIFF', tint: 0.35, music: 'c2_explore', amb: 'c2_trail' },
+      { x: 7420, name: '山門纜站', en: 'THE GATE STATION', tint: 0.6, music: 'c2_explore2', amb: 'c2_station' },
+      { x: 11160, name: '門鐘', en: 'THE GATE BELL', tint: 1, music: 'c2_explore2', amb: 'c2_tether' },
     ],
     tintAt(x) {
       if (x < 3000) return 0;
@@ -2095,21 +2097,21 @@
     // carrying the clapper home (asked or not): she recognises it at once
     if (F.c2_got_clapper && !F.c2_clapper_sent && !F.c2_quest_done) { F.c2_quest_given = true; ringInPerson(game); return; }
     if (!F.c2_quest_given) {
-      game.dialog('c2_taliaQuest', () => { F.c2_quest_given = true; G.UI.journal('支線任務：鐘樓的心跳', '從梯基錨站找回大鐘的鐘錘'); });
+      game.dialog('c2_taliaQuest', () => { F.c2_quest_given = true; G.UI.journal('支線任務：鐘樓的心跳', '從山門纜站找回大鐘的鐘錘'); });
       return;
     }
     // a small dialogue tree: topics unlock with what you have seen
     const items = [
       { label: '關於鐘樓', en: 'THE BELFRY', action: () => game.dialog('c2_askBelfry', () => { F.c2_asked_belfry = true; }) },
-      { label: '關於方舟', en: 'THE ARK', action: () => game.dialog('c2_askArk', () => { F.c2_asked_ark = true; }) },
-      { label: '關於第二降臨隊', en: 'DESCENT II', action: () => game.dialog('c2_askDescent', () => { F.c2_asked_descent = true; }) },
+      { label: '關於外面', en: 'OUTSIDE', action: () => game.dialog('c2_askArk', () => { F.c2_asked_ark = true; }) },
+      { label: '關於山門', en: 'THE GATE', action: () => game.dialog('c2_askDescent', () => { F.c2_asked_descent = true; }) },
     ];
-    if (F.note_c2_n4 && !F.c2_told_father) items.push({ label: '線務員的日誌', en: "THE TECHNICIAN'S LOG", action: () => game.dialog('c2_askFather', () => { F.c2_told_father = true; }) });
+    if (F.note_c2_n4 && !F.c2_told_father) items.push({ label: '纜夫的日誌', en: "THE HAULER'S LOG", action: () => game.dialog('c2_askFather', () => { F.c2_told_father = true; }) });
     if (F.c2_quest_done) items.unshift({ label: '大鐘', en: 'THE BELL', action: () => game.dialog('c2_taliaAfter') });
     else items.unshift({ label: '鐘錘的事', en: 'THE CLAPPER', action: () => game.dialog('c2_taliaWait') });
     items.push({ label: '沒事了', en: 'LEAVE', action: () => { game.control = true; } });
     game.control = false; game.player.vx = 0;
-    G.UI.choice({ kicker: '塔莉亞 TALIA', title: '「要聊什麼？」', desc: '鐘樓的機械師一邊轉著扳手，一邊等你開口。', items });
+    G.UI.choice({ kicker: '妲莉 DALI', title: '「要聊什麼？」', desc: '點燈的女孩一邊剪著燈芯，一邊等妳開口。', items });
   }
   // the bell rings: shared by both endings of the quest (in person at the Belfry, or via the freight cable)
   const ST = { bellAng: 0, bellV: 0, ring: 0, pod: null, aval: null };
@@ -2261,13 +2263,13 @@
      REGISTER
      ========================================================================================= */
   G.Chapters.register({
-    id: 2, key: 'ch2', num: 'II', numZh: '二', title: '頌歌之梯', en: 'THE CANTATA LADDER',
+    id: 2, key: 'ch2', num: 'II', numZh: '二', title: '雪嶺山門', en: 'THE SNOW GATE',
     intro: [
-      { t: '大地之上，只剩一條路通往天空。', s: 'ONE ROAD LEFT TO THE SKY.' },
-      { t: '天上的方舟，三天沒有聲音。', s: 'THE ARK HAS BEEN SILENT FOR THREE DAYS.' },
+      { t: '亡者上山，是為了進門。', s: 'THE DEAD CLIMB THE MOUNTAIN TO REACH THE GATE.' },
+      { t: '門關了十八年。\n他們還在排隊。', s: 'THE GATE HAS BEEN SHUT FOR EIGHTEEN YEARS. THEY ARE STILL WAITING.' },
     ],
     enterDialog: 'c2_enter',
-    outro: '「……我們在往下掉。」',
+    outro: '從此，沒有人叫得出她的名字。',
     level: LEVEL,
     pal: {
       skyTop: ['#18204a', '#0d1230'], skyMid: ['#46598f', '#2a3263'], skyLow: ['#c39fc4', '#8a76ae'], horizon: ['#ffd6b8', '#f0b4d0'],

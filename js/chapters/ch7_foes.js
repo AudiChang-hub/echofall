@@ -228,7 +228,7 @@
     blocked(P) {
       const g = G.game;
       if (g.realTime - this.fxT > 0.9) { this.fxT = g.realTime; G.FX.text(P.x, P.y - 150, '— 靜 默 —', '#f2dca0', 15, 0.8); G.SFX.play('c7_mute'); }
-      if (!this.told) { this.told = true; g.toast('無聲詩班封住了你的共鳴', 'warn'); }
+      if (!this.told) { this.told = true; g.toast('無聲詩班封住了妳的共鳴', 'warn'); }
     },
   };
 
@@ -1688,7 +1688,7 @@
     }
   }
   const GR = reg('c7_elite', {
-    name: '葛雷夫的回憶', en: 'GRAVES, REMEMBERED', w: 46, h: 172, hp: 820, bal: 240, col: '#ffe6a6', shards: 440, elite: true, scale: 1.3, spawnT: 1.0,
+    name: '掘墓人的殘影', en: 'THE GRAVEDIGGER, REMEMBERED', w: 46, h: 172, hp: 820, bal: 240, col: '#ffe6a6', shards: 440, elite: true, scale: 1.3, spawnT: 1.0,
     defeatDialog: 'c7_eliteDefeat', defeatRelic: 'c7_oath', music: 'c7_elite',
     portrait: [1.75, 0.94],
     init(e) { e.seed = seedOf(); e.cape = new Rig.Chain(9, 9, 0.05, 0.9); e.plume = new Rig.Chain(7, 6.5, 0.06, 0.9); e.facing = -1; e.lastMoves = []; e.gaitP = 0; e.drawF = -1; e.parryFx = 0; },
@@ -1813,11 +1813,11 @@
 
   /* ================================ data: codex, relic, barks ================================ */
   const pushOnce = (arr, en) => { if (!arr.some((q) => q.id === en.id)) arr.push(en); };
-  D.barks.c7_eliteP2 = { who: 'graves', text: '……很好。第二樂章。' };
+  D.barks.c7_eliteP2 = { who: 'graves', text: '……很好。第二支舞。' };
   // the chapter's world file owns these; they are only a safety net (its register() overwrites them)
-  if (!D.dialog.c7_eliteIntro) D.dialog.c7_eliteIntro = [{ who: 'graves', text: '方舟的劍。……不，現在是你的劍了。' }, { who: 'graves', text: '來吧。讓我聽聽，這首歌你唱到哪裡了。' }];
-  if (!D.dialog.c7_eliteDefeat) D.dialog.c7_eliteDefeat = [{ who: 'graves', text: '……好劍。這一次，換你帶著它走。' }, { who: 'graves', text: '替我把歌唱完。我會在休止符裡聽。' }];
-  D.relics.c7_oath = D.relics.c7_oath || { name: '斷弦之誓', desc: '生命高於 70% 時，劍擊傷害 +15%' };
+  if (!D.dialog.c7_eliteIntro) D.dialog.c7_eliteIntro = [{ who: 'graves', text: '王的女兒。……在這裡，我還沒拿起鏟子。' }, { who: 'graves', text: '來吧。讓我用劍，把這支舞跳完。' }];
+  if (!D.dialog.c7_eliteDefeat) D.dialog.c7_eliteDefeat = [{ who: 'graves', text: '……好劍。這誓言，換妳帶著走。' }, { who: 'graves', text: '往下走。別讓那扇門關著。' }];
+  D.relics.c7_oath = D.relics.c7_oath || { name: '騎士之誓', desc: '生命高於 70% 時，劍擊傷害 +15%' };
   // 斷弦之誓: while she stands above 70 % HP her blade hits 15 % harder. Implemented as a thin per-instance wrap of
   // doHits that raises dmgMul only for the duration of the call; inert (and self-removing) once the relic is unequipped.
   const oathOn = (P) => !!(G.game && G.game.save && (G.game.save.equipped || []).includes('c7_oath')) && P.hp > P.maxHp * 0.7;
@@ -1833,14 +1833,14 @@
     },
   };
   pushOnce(D.codex.items, {
-    id: 'c7_oath', name: '斷弦之誓', en: 'OATH OF THE BROKEN STRING', unlock: 'relic_c7_oath', relic: true,
-    body: ['葛雷夫留在休止之所裡的誓言。第一次，他求人斬斷它；這一次，他只求你帶著它往前走。', '斷過一次的弦，再也不會在同一處斷。', '遺物效果：生命高於 70% 時，劍擊傷害 +15%。'],
+    id: 'c7_oath', name: '騎士之誓', en: "THE KNIGHT'S OATH", unlock: 'relic_c7_oath', relic: true,
+    body: ['掘墓人放下劍、拿起鏟子之前，以騎士之名發的誓：替王送完最後一程。', '王沒有死，誓言也就一直沒有完成。他把它交給了一個要走到門後面的人。', '遺物效果：生命高於 70% 時，劍擊傷害 +15%。'],
   });
   const HB = D.codex.hushborn;
   pushOnce(HB, {
     id: 'c7_mirror', name: '回聲殘像', en: 'ECHO SELF', portrait: 'c7_mirror', unlock: 'seen_c7_mirror', tag: '寂裔｜中階・殘響',
     body: [
-      '休止之所會記住每一個聲音——包括你的。它用墨水把你剛才揮出的每一劍重描一遍，再原封不動地還給你。',
+      '遺忘之庭會記住每一個走過的人——包括你。它用墨水把你剛才揮出的每一劍重描一遍，再原封不動地還給你。在你忘記之前。',
       '攻擊模式：模仿你最近的一段連擊（白光，可格擋或完美格擋，節奏會比你慢半拍）／你用過蓄力重擊或衝刺之後，它會以紅光突刺收尾（無法格擋，閃避）。',
       '弱點：它只會模仿。少出手、多格擋，它就只剩最基本的兩段斬。',
     ],
@@ -1848,7 +1848,7 @@
   pushOnce(HB, {
     id: 'c7_restmark', name: '休止符', en: 'REST MARK', portrait: 'c7_restmark', unlock: 'seen_c7_restmark', tag: '寂裔｜低階・符號',
     body: [
-      '從樂譜上剝落的四分與八分休止符，身上還帶著一小段五線譜。它們想讓每一個小節都安靜下來。',
+      '從譜上剝落的四分與八分休止符，身上還帶著一小段五線譜。它們經過的地方，字就會被擦掉——亡者就是這樣忘記的。',
       '攻擊模式：白色音符（會追蹤，完美格擋可彈回）／紅色「擦除」——紅色劃痕一筆一筆劃過你附近的平台，約一秒後那段平台會被抹去三秒／沒有平台可擦時，會化成一道紅色筆劃穿過你（閃避）。',
       '弱點：劃到一半時打斷它，平台就不會消失。',
     ],
@@ -1856,7 +1856,7 @@
   pushOnce(HB, {
     id: 'c7_choir', name: '無聲詩班', en: 'VOICELESS CHOIR', portrait: 'c7_choir', unlock: 'seen_c7_choir', tag: '寂裔｜低階・支援',
     body: [
-      '眼睛被金線縫起來的唱詩者，總是兩三個一起，圍成一圈。牠們張著嘴，卻沒有聲音——牠們唱的就是「靜默」本身。',
+      '眼睛被金線縫起來的唱詩者，總是兩三個一起，圍成一圈。牠們張著嘴，卻沒有聲音——生前唱過的每一首歌，都已經忘了。',
       '特性：只要詩班還有一個活著，你的共鳴就無法累積。',
       '攻擊模式：緩慢擴散的白色聲環（可格擋；完美格擋會把聲音送回去）／貼近時用樂譜甩打（白光）。',
       '弱點：近身後幾乎毫無抵抗力。先打散圓圈裡離你最近的那一個。',
@@ -1865,16 +1865,16 @@
   pushOnce(HB, {
     id: 'c7_fermata', name: '延長記號', en: 'FERMATA', portrait: 'c7_fermata', unlock: 'seen_c7_fermata', tag: '寂裔｜高階・巨像',
     body: [
-      '樂譜上的延長記號，意思是「在這裡，停久一點」。它把這句話當成了命令。',
+      '譜上的延長記號，意思是「在這裡，停久一點」。它把這句話當成了命令——想把每一個快要忘記的人，留在最後一刻。',
       '攻擊模式：時間泡（金色穹頂罩住你，待在裡面時腳步只剩一半）／眼球擺盪（白光，掃過拱門下方與前方）／整座拱門向前傾倒（紅光，範圍很長，閃避）。',
       '弱點：倒下之後，它得花很久才能重新站起來——那顆眼睛就落在你腳邊。',
     ],
   });
   pushOnce(HB, {
-    id: 'c7_elite', name: '葛雷夫的回憶', en: 'GRAVES, REMEMBERED', portrait: 'c7_elite', unlock: 'seen_c7_elite', tag: '菁英｜第一降臨隊・副隊長（殘響）',
+    id: 'c7_elite', name: '掘墓人的殘影', en: 'THE GRAVEDIGGER, REMEMBERED', portrait: 'c7_elite', unlock: 'seen_c7_elite', tag: '菁英｜溫陀王城的掘墓人（殘影）',
     body: [
-      '灰港聖堂前那位斷弦騎士，留在休止之所裡的回憶。這裡的他不再疲憊，鎧甲潔白，劍也還是完整的——像二十年前那樣。',
-      '他不是來阻止你的。他只是想知道，你能不能把歌唱完。',
+      '王城的掘墓人葛雷夫，掉進遺忘之庭的殘影。這裡的他還沒拿起鏟子：鎧甲潔白，劍也還是完整的——像他還是王的騎士時那樣。',
+      '他不是來阻止你的。他只是想知道，你能不能把那扇門打開。',
       '攻擊模式：三步圓舞（三連白光，第三步旋身橫掃）／靜候（劍立於面前——此時從正面出手會被看穿，並立刻以紅光反刺回應）／斷弦突刺（中距離紅光突進）。',
       '第二階段：圓舞多出第四步的紅光突刺；會揮出可彈回的金色劍氣。',
       '弱點：看見他立劍時——等。靜候結束時他會收劍行禮，那是最大的破綻。從背後出手不會被看穿。',

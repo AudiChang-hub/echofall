@@ -1077,7 +1077,7 @@
 
   /* ------------------------------------------------------------------ the type */
   const T = TYPES.c4_boss = {
-    name: '最後的詠嘆・露塞特', en: 'LUCETTE, THE LAST ARIA',
+    name: '提線歌姬・露塞特', en: 'LUCETTE, THE PUPPETEER DIVA',
     w: 120, h: 280, hp: 2100, bal: 320, col: '#ff8cc0', boss: true, shards: 700, spawnT: 2.6, poise: true,
     defeatDialog: 'c4_bossDefeat', phase2Bark: 'c4_bossP2', phase2Music: 'c4_boss2',
     portrait: [1.5, 0.95],
@@ -1283,10 +1283,10 @@
   D.barks.c4_bossP2 = { who: 'c4_lucette', text: '……安可。下一段，是二重唱。' };
   if (!D.codex.hushborn.some((c) => c.id === 'c4_boss')) {
     D.codex.hushborn.push({
-      id: 'c4_boss', name: '最後的詠嘆・露塞特', en: 'LUCETTE, THE LAST ARIA', portrait: 'c4_boss', unlock: 'seen_c4_boss',
-      tag: '失聲者｜第四降臨隊隊長',
+      id: 'c4_boss', name: '提線歌姬・露塞特', en: 'LUCETTE, THE PUPPETEER DIVA', portrait: 'c4_boss', unlock: 'seen_c4_boss',
+      tag: '頭目｜第三道門・溺死者的劇場',
       body: [
-        '第四降臨隊的隊長，萊拉大歌劇院最後的首席女高音。十九歲那年，她的聲音在最高音消失。多年後，她回到同一座舞台，對著空席日復一日地唱——直到寂靜把她的聲音，連同那件禮服，一起封進玻璃。',
+        '潮音大劇院最後的首席女高音，第三道門的守門人。她收下溺死者的聲音，繫上絲線，用他們的喉嚨唱戲。門關上的十八年裡，同一齣戲唱了一遍又一遍——只有她自己的聲音，始終停在大潮那晚的最高音上。',
         '她的每一個動作都踩在樂曲的拍點上。扇舞三連（白光，可格擋，第三擊會晚半拍）／詠嘆之牆（白光，完美格擋可震碎並削減她的平衡）／聚光燈（站到光圈外）／墜落吊燈、玻璃高音（紅光，必須閃避）。',
         '第二幕：她的影子會從玻璃裡走出來，站到你的背後唱第二聲部。影子的扇擊也能格擋——但你得先轉身。最後那一下兩人同時揮落，只能閃。',
         '弱點：每一段樂句結束後的換氣。跟著節拍呼吸，就能找到她的空檔。',

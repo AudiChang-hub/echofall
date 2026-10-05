@@ -1830,7 +1830,7 @@
   function plumeRoot(e, J) { const a = J.ha, r = { x: J.head.x + Math.cos(a) * -2 - Math.sin(a) * -14, y: J.head.y + Math.sin(a) * -2 + Math.cos(a) * -14 }; return { x: e.x + e.facing * r.x * LNS, y: e.y + r.y * LNS }; }
 
   const LN = reg('c8_elite', {
-    name: '第一降臨隊', en: 'THE FIRST DESCENT', w: 40, h: 150, hp: 420, bal: 240, col: '#fffaf0', shards: 420, elite: true, scale: LNS, spawnT: 1.1,
+    name: '三判官', en: 'THE THREE JUDGES', w: 40, h: 150, hp: 420, bal: 240, col: '#fffaf0', shards: 420, elite: true, scale: LNS, spawnT: 1.1,
     reachPad: 200, topPad: 80, portrait: [1.9, 0.9], defeatDialog: 'c8_eliteDefeat', defeatRelic: 'c8_banner', music: 'c8_elite', kbMul: 0.5,
     init(e) {
       e.seed = seedOf(); e.gaitP = 0; e.chargeCd = 2.5; e.kneel = false; e.squad = [];
@@ -2012,7 +2012,7 @@
   }
 
   const SH = reg('c8_elite_shield', {
-    name: '鼓盾手', en: 'THE DRUMSHIELD', w: 46, h: 146, hp: 300, bal: 150, col: '#fffaf0', shards: 60, scale: SHS, spawnT: 1.1, kbMul: 0.35,
+    name: '執鼓判官', en: 'THE JUDGE OF THE DRUM', w: 46, h: 146, hp: 300, bal: 150, col: '#fffaf0', shards: 60, scale: SHS, spawnT: 1.1, kbMul: 0.35,
     reachPad: 120, topPad: 70, portrait: [2.0, 0.9],
     init(e) {
       e.seed = seedOf(); e.gaitP = 0; e.braceCd = 2.5; e.cd = 1.2 + Math.random() * 0.5;
@@ -2177,7 +2177,7 @@
   }
 
   const BL = reg('c8_elite_bell', {
-    name: '鳴鐘者', en: 'THE BELL-RINGER', w: 36, h: 140, hp: 230, bal: 110, col: '#fffaf0', shards: 60, scale: BLS, spawnT: 1.1, kbMul: 0.8,
+    name: '執鐘判官', en: 'THE JUDGE OF THE BELL', w: 36, h: 140, hp: 230, bal: 110, col: '#fffaf0', shards: 60, scale: BLS, spawnT: 1.1, kbMul: 0.8,
     reachPad: 110, topPad: 90, portrait: [2.0, 0.9],
     init(e) {
       e.seed = seedOf(); e.gaitP = 0; e.chimeCd = 3; e.bellA = 0; e.bellV = 0; e.cd = 1.6 + Math.random() * 0.5;
@@ -2250,29 +2250,29 @@
   const pushOnce = (arr, en) => { if (arr && !arr.some((q) => q.id === en.id)) arr.push(en); };
   D.barks = D.barks || {}; D.hints = D.hints || {}; D.dialog = D.dialog || {}; D.relics = D.relics || {};
   D.barks.c8_eliteKneel = { who: 'ode', text: '……他跪在旗下。旗，不肯倒。' };
-  D.barks.c8_eliteAlone = { who: 'ode', text: '只剩旗手了。……他的旗在發抖。' };
+  D.barks.c8_eliteAlone = { who: 'ode', text: '只剩執旗的那一位了。……他的旗在發抖。' };
   D.hints.c8_cling = '噤聲童影抱住你時會吸走耐力、拖慢腳步——按 {dodge} 閃避，把牠們全部甩下來。';
   // the chapter's world file owns these; they are only a safety net (its register() overwrites them)
   if (!D.dialog.c8_eliteIntro) D.dialog.c8_eliteIntro = [
-    { who: 'ode', text: '三個識別訊號……是降臨隊的。第一降臨隊，二十年前的。' },
-    { who: 'rinne', text: '……他們還在行軍。' },
-    { who: 'ode', text: '面具底下已經沒有人了，凜音。只剩下步伐。' },
+    { who: 'ode', text: '……三道目光。是判官。' },
+    { who: 'rinne', text: '（妳握緊了刀。）' },
+    { who: 'ode', text: '面具底下，已經沒有人了。只剩下判決。' },
   ];
   if (!D.dialog.c8_eliteDefeat) D.dialog.c8_eliteDefeat = [
-    { who: 'rinne', text: '第一降臨隊……任務結束。' },
+    { who: 'rinne', text: '（三道目光，同時垂了下去。）' },
     { who: 'ode', text: '……旗留下了。' },
   ];
-  D.relics.c8_banner = D.relics.c8_banner || { name: '第一降臨隊的軍旗', desc: '最大生命 +25、最大耐力 +15' };
+  D.relics.c8_banner = D.relics.c8_banner || { name: '判官之旗', desc: '最大生命 +25、最大耐力 +15' };
   G.Relics.c8_banner = G.Relics.c8_banner || { apply(P) { P.maxHp += 25; P.maxSta += 15; } };
   pushOnce(D.codex.items, {
-    id: 'c8_banner', name: '第一降臨隊的軍旗', en: "THE FIRST DESCENT'S BANNER", unlock: 'relic_c8_banner', relic: true,
-    body: ['第一降臨隊的隊旗。象牙色的布上繡著緋紅的冠冕與五線譜——她的顏色。', '它在甲板上飄了二十年，等一個不會回來的人。如今，終於可以放下了。', '遺物效果：最大生命 +25、最大耐力 +15。'],
+    id: 'c8_banner', name: '判官之旗', en: "THE JUDGES' BANNER", unlock: 'relic_c8_banner', relic: true,
+    body: ['三判官的判旗。象牙色的布上繡著緋紅的冠冕——冥后的顏色。', '十八年來，它每天升起，卻沒有一次宣過判決。最後一次，判的是一個沒有名字的女孩。如今，終於可以放下了。', '遺物效果：最大生命 +25、最大耐力 +15。'],
   });
   const HB = D.codex.hushborn;
   pushOnce(HB, {
     id: 'c8_hushling', name: '噤聲童影', en: 'HUSHLING', portrait: 'c8_hushling', unlock: 'seen_c8_hushling', tag: '寂裔｜低階・群體',
     body: [
-      '休止之心裡，米菈害怕時記得的那些孩子——被剪成紙娃娃的模樣，沒有臉，雙手死死摀著嘴。他們在憋氣：誰先出聲，誰就會被找到。',
+      '冥后宮殿裡，那些沒能出生的孩子。十八年來沒有死亡，也就沒有新生；他們被剪成紙娃娃的模樣，沒有臉，雙手死死摀著嘴。誰先出聲，誰就會被找到。',
       '攻擊模式：白色低身撲撞（可格擋；完美格擋會讓它暈眩）／張開雙臂跳上來抱住你（白光）。抱住時打不到它，它會吸走你的耐力、拖慢你的腳步。',
       '弱點：閃避一次，就能把身上所有童影甩下來，被甩下的會跌坐片刻。牠們一次最多只有兩隻同時出手——數清楚再動。',
     ],
@@ -2280,7 +2280,7 @@
   pushOnce(HB, {
     id: 'c8_conductor', name: '指揮殘影', en: 'CONDUCTOR WRAITH', portrait: 'c8_conductor', unlock: 'seen_c8_conductor', tag: '寂裔｜中階・支援',
     body: [
-      '瑪絲緹娜的指揮棒留下的回音：一件沒有人穿的燕尾服、一雙白手套，和那支緋紅的指揮棒。它還在替誰打著拍子。',
+      '替冥后宮殿打拍子的司儀留下的回音：一件沒有人穿的燕尾服、一雙白手套，和一支緋紅的指揮棒。十八年來，它只打過一種拍子——等待。',
       '特性：只要它還在，附近的寂裔都會跟著它的拍子——腳下浮現緋紅節拍環，出手的間隔明顯縮短。',
       '攻擊模式：俯衝三連揮（白光，踩著拍子，第三下最寬）／高舉指揮棒的「下拍」（紅光）：一道緋紅直線標出巨刃的落點，先追著你，再停住，接著巨刃筆直落下——離開那條線。',
       '弱點：先打它。它一倒，整首曲子就散了拍。',
@@ -2289,7 +2289,7 @@
   pushOnce(HB, {
     id: 'c8_cadence', name: '終止騎士', en: 'CADENCE KNIGHT', portrait: 'c8_cadence', unlock: 'seen_c8_cadence', tag: '寂裔｜高階・重甲',
     body: [
-      '黑漆鎧甲上刻滿象牙色的五線譜，頭盔頂著終止線，大盾上畫著樂曲的最後一小節。它負責替每一個樂句收尾。',
+      '黑漆鎧甲上刻滿象牙色的五線譜，頭盔頂著終止線，大盾上畫著一生的最後一小節。它負責替每一個走進宮殿的人收尾。門關了十八年，它一直站著。',
       '攻擊模式：三段終止式——白、白，然後是紅色的「解決」：高舉長劍劈進地面（閃避），劍會卡在地上片刻。／盾牆：舉起大盾緩步逼近，正面的攻擊全被彈開；盾牆結束時以盾猛撞（白光）。',
       '弱點：完美格擋那一記盾撞，能直接擊潰它的架勢；或繞到背後連砍兩下，打亂盾牆。它轉身很慢。輕擊打不斷它的劍勢。',
     ],
@@ -2297,33 +2297,33 @@
   pushOnce(HB, {
     id: 'c8_coda', name: '尾聲蛇', en: 'CODA SERPENT', portrait: 'c8_coda', unlock: 'seen_c8_coda', tag: '寂裔｜高階・潛行',
     body: [
-      '墨與金鑄成的蛇。牠盤起來的身體就是「尾聲」記號：從地面升起、繞成一圈、再筆直穿過自己的環，兩片金鰭橫越其上——「跳到結尾」。牠在舞台底下游動，像在水裡一樣。',
+      '墨與金鑄成的蛇。牠盤起來的身體就是「尾聲」記號：從地面升起、繞成一圈、再筆直穿過自己的環，兩片金鰭橫越其上——「跳到結尾」。牠在宮殿的地板底下游動，像在乾涸的冥河裡找水。',
       '攻擊模式：潛入地板後，一片金鰭劃開地面朝你游來，你腳下會浮現紅色的尾聲記號——先跟著你、再停住，然後牠從那裡破土而出（紅光，閃避）。／尾巴橫掃（白光，膝蓋高度，也能跳過）／仰首吟唱，吐出螺旋音符（白光，完美格擋可彈回）。',
       '弱點：在地底時無法攻擊。破土之後牠會停頓片刻——那就是出手的時機。',
     ],
   });
   pushOnce(HB, {
-    id: 'c8_elite', name: '第一降臨隊・旗手', en: 'THE FIRST DESCENT — STANDARD-BEARER', portrait: 'c8_elite', unlock: 'seen_c8_elite', tag: '菁英｜第一降臨隊（失聲者）',
+    id: 'c8_elite', name: '三判官・執旗判官', en: 'THE THREE JUDGES — THE BANNER', portrait: 'c8_elite', unlock: 'seen_c8_elite', tag: '菁英｜三判官（冥后宮殿）',
     body: [
-      '二十年前，與瑪絲緹娜一起走入沉默的第一降臨隊。如今面具底下什麼也沒有，大衣胸口破了一個洞，洞裡只有白色的寂靜。他們仍然三人一列，踩著同一個步伐。',
-      '旗手：扛著隊旗的長槍兵。長槍突刺（白光，很長）／旗槍橫掃（白光）／衝鋒（紅光，筆直衝過地面——跳過或閃避）。衝鋒時，鼓盾手會在前方架起鼓盾，旗手從他身旁直衝而過。',
-      '特性：只要還有隊友站著，旗就不會倒——旗手倒下時會跪在旗下，什麼都碰不到他，直到最後一名隊友倒下，他才會跟著倒下；反過來，若兩名隊友先倒下，落單的旗手會失去一半的氣力。上方的血條是整支小隊的。',
-      '弱點：先擊倒鳴鐘者，她會治療並加快其他人。',
+      '坐在第七道門後的三位判官。面具底下什麼也沒有，眼睛是「死亡之眼」：被看一眼的人，就會死。門關了十八年，他們一個人也沒有判過，卻仍然三人一列，踩著同一個步伐。',
+      '執旗判官：扛著判旗的長槍兵。長槍突刺（白光，很長）／旗槍橫掃（白光）／衝鋒（紅光，筆直衝過地面——跳過或閃避）。衝鋒時，執鼓判官會在前方架起鼓盾，執旗判官從他身旁直衝而過。',
+      '特性：只要還有同伴站著，旗就不會倒——執旗判官倒下時會跪在旗下，什麼都碰不到他，直到最後一名同伴倒下，他才會跟著倒下；反過來，若兩名同伴先倒下，落單的執旗判官會失去一半的氣力。上方的血條是三人共有的。',
+      '弱點：先擊倒執鐘判官，她會治療並加快其他人。',
     ],
   });
   pushOnce(HB, {
-    id: 'c8_elite_shield', name: '鼓盾手', en: 'THE DRUMSHIELD', portrait: 'c8_elite_shield', unlock: 'seen_c8_elite_shield', tag: '第一降臨隊（失聲者）・鼓手',
+    id: 'c8_elite_shield', name: '執鼓判官', en: 'THE JUDGE OF THE DRUM', portrait: 'c8_elite_shield', unlock: 'seen_c8_elite_shield', tag: '三判官・執鼓',
     body: [
-      '第一降臨隊的鼓手。他把戰鼓綁在手臂上當盾，拿毛氈鼓槌當武器。二十年來，他一直站在隊友前面。',
+      '三判官之一。他把判鼓綁在手臂上當盾，拿毛氈鼓槌當武器。判決落下之前，要先擊鼓三聲——十八年來，他一聲也沒有擊過。',
       '攻擊模式：鼓盾猛撞（白光）／重擊鼓面，一圈聲波沿著地面滾來（紅光，跳過或閃避）／架鼓：架起鼓盾時正面攻擊無效，站在他身後的隊友也一起受到掩護。',
-      '弱點：他總是擋在鳴鐘者前面。繞過去，或等他把鼓放下。',
+      '弱點：他總是擋在執鐘判官前面。繞過去，或等他把鼓放下。',
     ],
   });
   pushOnce(HB, {
-    id: 'c8_elite_bell', name: '鳴鐘者', en: 'THE BELL-RINGER', portrait: 'c8_elite_bell', unlock: 'seen_c8_elite_bell', tag: '第一降臨隊（失聲者）・鳴鐘手',
+    id: 'c8_elite_bell', name: '執鐘判官', en: 'THE JUDGE OF THE BELL', portrait: 'c8_elite_bell', unlock: 'seen_c8_elite_bell', tag: '三判官・執鐘',
     body: [
-      '第一降臨隊的鳴鐘手，兜帽下是瓷面具與一層薄紗。她的鐘聲曾經替整支小隊報時；現在，它只替寂靜報時。',
-      '攻擊模式：鳴鐘——高舉鐘杖搖響，治療並加快隊友，還會讓其中一人（通常是旗手）的下一擊變成紅光。／鐘聲環（白光，沿地面推進；完美格擋可彈回）／貼身時揮動鐘杖（白光）。',
+      '三判官之一，兜帽下是瓷面具與一層薄紗。她的鐘聲曾經替每一個走進門的亡者報名；現在，它只替空蕩的門口報時。',
+      '攻擊模式：鳴鐘——高舉鐘杖搖響，治療並加快同伴，還會讓其中一人（通常是執旗判官）的下一擊變成紅光。／鐘聲環（白光，沿地面推進；完美格擋可彈回）／貼身時揮動鐘杖（白光）。',
       '弱點：搖鐘需要一點時間——在鐘響之前打中她，就能打斷。',
     ],
   });

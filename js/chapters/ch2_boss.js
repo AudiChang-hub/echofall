@@ -1,6 +1,6 @@
 'use strict';
-/* ECHOFALL — Chapter II boss: 失聲者・卡菈修女 SISTER CALLA, THE TONGUELESS BELL (docs/STORY.md §3 II)
-   Descent II's leader, fused into the anchor station's great counterweight bell: a towering nun whose skirt IS the bell,
+/* ECHOFALL — Chapter II boss: 守鐘尼・卡菈 KARA, THE GATE-BELL NUN (docs/STORY_V3.md §3 II)
+   The first gate's keeper, fused into the gate bell (it hangs as the coffin line's counterweight): a towering nun whose skirt IS the bell,
    still hanging from the station's chains. She has no tongue; the bell sings for her.
    Phase 1  鐘擺橫掃 pendulum sweep (white, white) · 裙擺重擊 skirt slam (red → frost quake-waves along the floor, jump them)
             鎖鏈鞭笞 chain lash (white, long reach — step inside it and the chain whips over your head)
@@ -666,7 +666,7 @@
 
   /* ------------------------------------------------------------------ the type ---------------------------------- */
   TYPES.c2_boss = {
-    name: '失聲者・卡菈修女', en: 'SISTER CALLA, THE TONGUELESS BELL', w: 170, h: 340, hp: 1700, bal: 300, col: ICE, shards: 700,
+    name: '守鐘尼・卡菈', en: 'KARA, THE GATE-BELL NUN', w: 170, h: 340, hp: 1700, bal: 300, col: ICE, shards: 700,
     boss: true, poise: true, spawnT: 2.8, kbMul: 0.2, portrait: [0.82, 0.94],
     defeatDialog: 'c2_bossDefeat', phase2Bark: 'c2_bossP2', phase2Music: 'c2_boss2',
     sweep, sweep3, slam, lash, lash2, toll, rings, hail, summon,
@@ -909,15 +909,15 @@
 
   /* ------------------------------------------------------------------ data -------------------------------------- */
   const D = G.DATA;
-  D.speakers.c2_calla = D.speakers.c2_calla || { name: '卡菈修女', en: 'SISTER CALLA', color: '#9fe6ff' };
-  D.barks.c2_bossP2 = D.barks.c2_bossP2 || { who: 'c2_calla', text: '（鐘聲裡，有她的聲音。）……沒關係。這口鐘……會替我唱完。' };
+  D.speakers.c2_calla = D.speakers.c2_calla || { name: '卡菈', en: 'KARA', color: '#9fe6ff' };
+  D.barks.c2_bossP2 = D.barks.c2_bossP2 || { who: 'c2_calla', text: '（鐘身裂開。裂縫裡，有她的聲音。）……一個……也不放。' };
   if (!D.codex.hushborn.some((c) => c.id === 'c2_boss')) {
     D.codex.hushborn.push({
-      id: 'c2_boss', name: '失聲者・卡菈修女', en: 'SISTER CALLA, THE TONGUELESS BELL', portrait: 'c2_boss', unlock: 'seen_c2_boss',
-      tag: '頭目｜梯基錨站・第二降臨隊隊長',
+      id: 'c2_boss', name: '守鐘尼・卡菈', en: 'KARA, THE GATE-BELL NUN', portrait: 'c2_boss', unlock: 'seen_c2_boss',
+      tag: '頭目｜雪嶺山門・第一位守門人',
       body: [
-        '第二降臨隊隊長，方舟的隨軍修女。下山前，她在鐘樓的大鐘下唱了一整夜，說：「梯子的盡頭，也該有人唱歌。」',
-        '寂靜在錨站追上了她們。為了換升降梯再動一次，她把自己的聲音獻給了寂靜，再把自己鎖進錨站的配重巨鐘——如今鐘是她的裙擺，鐘聲是她的聲音。',
+        '冥界第一道門的守門人。很久以前，她把舌頭交給了門鐘，當作鐘舌。從此她只用鐘聲說話：放一個亡者進門，就敲一下。',
+        '十八年前，門後的人要她停下。她停了，把自己鎖進門鐘裡，一下也不敲。門外的人排成了雪，她記下每一個名字——如今鐘是她的裙擺，沉默是她的回答。',
         '第一樂章：鐘擺橫掃（白・白）；裙擺重擊（紅）——落地後冰浪沿地面擴散，跳過去；鎖鏈鞭笞（白，遠距離）——貼近她，鎖鏈會從頭頂掠過。',
         '第二樂章：鐘身碎裂。召喚喪鐘僧；連續鳴鐘（白×3 接紅色重擊）；冰凌墜落（紅）——看地上的紅色標記，站到上一輪落下的位置；共鳴環（白）——完美格擋能大幅削減她的平衡。',
         '弱點：每次重擊之後，巨鐘會卡在雪裡一秒多。那就是出刀的時候。',

@@ -55,7 +55,7 @@
       let el = $('#tradeScreen');
       if (!el) {
         el = document.createElement('section'); el.id = 'tradeScreen'; el.className = 'screen modal';
-        el.innerHTML = '<div class="trade"><header class="gr-head"><div class="gr-title"><b>交易</b><em>TALIA\'S SUPPLY</em></div><div class="gr-wallet"><span><i class="shard-ico"></i><b class="tr-shards"></b><em>殘響碎片</em></span><span><i class="stone-ico"></i><b class="tr-stones"></b><em>鍛造石</em></span></div><button type="button" class="x-close tr-close" aria-label="關閉">✕</button></header><p class="tr-talia">「碎片多到用不完？交給我。我從鐘樓幫你寄東西下去。」— 塔莉亞</p><div class="tr-list"></div></div>';
+        el.innerHTML = '<div class="trade"><header class="gr-head"><div class="gr-title"><b>交易</b><em>無長丞的交易</em></div><div class="gr-wallet"><span><i class="shard-ico"></i><b class="tr-shards"></b><em>殘響碎片</em></span><span><i class="stone-ico"></i><b class="tr-stones"></b><em>鍛造石</em></span></div><button type="button" class="x-close tr-close" aria-label="關閉">✕</button></header><p class="tr-talia">「碎片多到用不完？交給我。我從鐘樓幫你寄東西下去。」— 塔莉亞</p><div class="tr-list"></div></div>';
         document.getElementById('ui').appendChild(el);
       }
       const ch = (G.Chapters.cur && G.Chapters.cur.id) || 1;
@@ -110,8 +110,8 @@
         }
         const list = open(ci);
         pi = Math.min(pi, list.length - 1);
-        host.innerHTML = `<h4>共鳴碑</h4>${list.map((py, i) => `<button type="button" class="tv-p ${i === pi ? 'on' : ''}" data-i="${i}"><i class="tv-dot"></i>${py.name || py.id}${ci === here && sv.checkpoint === py.id ? '<em>上次休息</em>' : ''}</button>`).join('')}
-          <p class="tv-note">${Ch.pylonsOf(ci).length > list.length ? '還沒造訪的共鳴碑不會顯示。' : ''}</p>
+        host.innerHTML = `<h4>魂燈台</h4>${list.map((py, i) => `<button type="button" class="tv-p ${i === pi ? 'on' : ''}" data-i="${i}"><i class="tv-dot"></i>${py.name || py.id}${ci === here && sv.checkpoint === py.id ? '<em>上次休息</em>' : ''}</button>`).join('')}
+          <p class="tv-note">${Ch.pylonsOf(ci).length > list.length ? '還沒點亮的魂燈台不會顯示。' : ''}</p>
           <button type="button" class="gb-act main tv-go">前往「${(list[pi] && (list[pi].name || list[pi].id)) || ''}」</button>`;
         host.querySelectorAll('.tv-p').forEach((b) => { b.onclick = () => { pi = +b.dataset.i; G.SFX.play('ui'); renderPy(); }; });
         host.querySelector('.tv-go').onclick = go;
@@ -180,7 +180,7 @@
       const clearSeen = () => { for (const it of sv.inv) if (seen.has(it.uid)) delete it.n; seen.clear(); };
       // open on the first slot that has something better waiting
       { const k = SLOTS.findIndex(([key]) => GR.betterCount(sv, key.startsWith('tal') ? 'talisman' : key) > 0); if (k >= 0) si = k; }
-      el.querySelector('.gr-mode').textContent = forge ? '共鳴碑 · 可強化與分解' : '';
+      el.querySelector('.gr-mode').textContent = forge ? '魂燈台 · 可強化與分解' : '';
       const slotKey = () => SLOTS[si][0];
       const slotType = () => (slotKey().startsWith('tal') ? 'talisman' : slotKey());
       const worn = (k) => (k.startsWith('tal') ? GR.get(sv, sv.gear.tal[+k.slice(3)]) : GR.get(sv, sv.gear[k]));
@@ -227,6 +227,7 @@
         host.innerHTML = `<p class="gd-k">${R.name} ${R.en} · ${GR.slotName[it.slot]}${it.il > 1 ? ` · 第 ${it.il} 章` : ''}</p>
           <h3><i class="gi">${GR.icon(it)}</i>${esc(GR.name(it))}</h3>
           <p class="gd-desc">${esc(GR.desc(it))}${it.q && it.slot !== 'talisman' ? `　｜　品質 <b class="${it.q >= 1.05 ? 'q-hi' : it.q <= 0.95 ? 'q-lo' : ''}">${Math.round(it.q * 100)}%</b>` : ''}</p>
+          ${it.slot === 'weapon' && G.DnD ? G.DnD.weaponHtml(GR.def(it).cls) : ''}
           <ul class="gd-lines">${lines.map((l) => lineHtml(l, cmpWith !== undefined)).join('')}</ul>
           ${cmpWith ? `<p class="gd-vs">▲▼ 與目前裝備的「${esc(GR.name(cmpWith))}」比較</p>` : cmpWith === null && !isW ? '<p class="gd-vs">此欄位目前是空的</p>' : ''}
           <p class="gd-lore">${esc(GR.lore(it))}</p>
@@ -317,7 +318,7 @@
       const up = GR.anyBetter(sv);
       el.querySelector('.bd-body').innerHTML = `
         <section><h4>共鳴回響 <em>ECHOES</em></h4><ul class="bd-list">${echoes}</ul></section>
-        <section><h4>遺物 <em>RELICS · ${(sv.equipped || []).length}/2</em></h4><ul class="bd-list">${relics}</ul><p class="bd-hint">遺物要在共鳴碑 →「遺物」更換。</p></section>
+        <section><h4>遺物 <em>RELICS · ${(sv.equipped || []).length}/2</em></h4><ul class="bd-list">${relics}</ul><p class="bd-hint">遺物要在魂燈台 →「遺物」更換。</p></section>
         <section><h4>裝備 <em>EQUIPMENT</em></h4><ul class="bd-gear">${gear}</ul>
           <button type="button" class="gb-act main bd-go">${up ? '▲ 有更強的裝備，前往裝備' : '前往裝備'}</button>
           <ul class="bd-stats"><li><span>攻擊倍率</span><b>×${P.dmgMul.toFixed(2)}</b></li><li><span>受到傷害</span><b>${Math.round((P.dmgTaken || 1) * 100)}%</b></li>

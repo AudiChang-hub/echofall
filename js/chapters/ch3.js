@@ -1,5 +1,5 @@
 'use strict';
-/* ECHOFALL — Chapter III 斷層之井 THE FAULTWELL: level, inked cavern art, live atmosphere, story, music.
+/* ECHOFALL — Chapter III 回頭路 THE WAY BACK (formerly THE FAULTWELL): level, inked cavern art, live atmosphere, story, music.
    Spec: docs/STORY.md §3 (III) · API: docs/CHAPTER_API.md. Foes/boss live in ch3_foes.js / ch3_boss.js (referenced by id). */
 (function (G) {
   const WK = G.WorldKit, U = G.U, L = G.LEVEL, PI = Math.PI, TAU = PI * 2;
@@ -853,7 +853,7 @@
       g.fillStyle = '#0a0d14'; g.fillRect(X + 196, TOP + 22, 36, 54);
       g.strokeStyle = 'rgba(200,240,255,0.55)'; g.lineWidth = 0.9; g.beginPath(); g.moveTo(X + 200, TOP + 26); g.lineTo(X + 214, TOP + 48); g.lineTo(X + 230, TOP + 40); g.moveTo(X + 214, TOP + 48); g.lineTo(X + 208, TOP + 74); g.stroke();
       g.fillStyle = '#2a2e38'; g.font = '700 22px Rajdhani, sans-serif'; g.textAlign = 'left'; g.fillText('L-07', X + 44, TOP + 50);
-      g.font = '600 11px "Noto Sans TC", sans-serif'; g.fillText('頌歌之梯 貨運', X + 44, TOP + 64);
+      g.font = '600 11px "Noto Sans TC", sans-serif'; g.fillText('雪嶺 渡亡纜車', X + 44, TOP + 64);
       g.strokeStyle = '#2a2e38'; g.lineWidth = 2; g.beginPath(); g.arc(X + 158, TOP + 40, 12, 0, TAU); g.stroke(); g.beginPath(); g.moveTo(X + 138, TOP + 40); g.lineTo(X + 178, TOP + 40); g.stroke();
       for (let k = 0; k < 5; k++) { const dx = X + 20 + r() * (W - 40), dy = TOP + 20 + r() * 110; g.strokeStyle = 'rgba(5,3,10,0.5)'; g.lineWidth = 1.4; g.beginPath(); g.arc(dx, dy, 8 + r() * 10, PI * (1 + r() * 0.3), PI * (1.7 + r() * 0.3)); g.stroke(); }
       const sc = g.createRadialGradient(X + W - 20, TOP + 60, 0, X + W - 20, TOP + 60, 70); sc.addColorStop(0, 'rgba(10,6,8,0.75)'); sc.addColorStop(1, 'rgba(10,6,8,0)'); g.fillStyle = sc; g.fillRect(X + W - 90, TOP, 120, 150);
@@ -886,7 +886,7 @@
       g.fillStyle = '#3b4652'; g.fillRect(-58, -18, 116, 38); g.fillStyle = '#56636f'; g.fillRect(-58, -18, 116, 5);
       g.strokeStyle = INK; g.lineWidth = 2; g.strokeRect(-58, -18, 116, 38);
       g.fillStyle = '#e8803a'; g.fillRect(-54, -10, 22, 26); g.fillStyle = '#1a1416'; g.font = '700 16px Rajdhani, sans-serif'; g.textAlign = 'center'; g.fillText('III', -43, 9);
-      g.fillStyle = '#e9e4d8'; g.font = '700 12px "Noto Sans TC", sans-serif'; g.textAlign = 'left'; g.fillText('第三降臨隊', -26, 0); g.font = '600 11px "Noto Sans TC", sans-serif'; g.fillText('鑽井營 →', -26, 14);
+      g.fillStyle = '#e9e4d8'; g.font = '700 12px "Noto Sans TC", sans-serif'; g.textAlign = 'left'; g.fillText('掘路隊', -26, 0); g.font = '600 11px "Noto Sans TC", sans-serif'; g.fillText('掘路營 →', -26, 14);
       g.fillStyle = '#1a1e26'; g.fillRect(-55, -15, 2, 2); g.fillRect(53, -15, 2, 2); g.fillRect(-55, 16, 2, 2); g.fillRect(53, 16, 2, 2);
       g.restore();
       g.fillStyle = '#c4672a'; poly(g, [[x + 4, y - 96], [x + 30, y - 86], [x + 22, y - 70], [x + 4, y - 84]]); g.fill(); ink(g, 1.2);
@@ -959,7 +959,7 @@
       g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + 80, by); g.lineTo(bx + 76, by + 120); g.lineTo(bx + 40, by + 104); g.lineTo(bx + 4, by + 122); g.closePath();
       g.fillStyle = '#b8582a'; g.fill(); g.save(); g.clip(); g.fillStyle = '#7a3418'; g.fillRect(bx, by, 22, 130); g.fillStyle = '#e8803a'; g.fillRect(bx + 62, by, 18, 130); g.restore(); ink(g, 2);
       g.fillStyle = '#f0e4cc'; g.font = '700 34px Rajdhani, sans-serif'; g.textAlign = 'center'; g.fillText('III', bx + 40, by + 52);
-      g.font = '600 10px "Noto Sans TC", sans-serif'; g.fillText('第三降臨隊', bx + 40, by + 72);
+      g.font = '600 10px "Noto Sans TC", sans-serif'; g.fillText('掘路隊', bx + 40, by + 72);
       for (const [lx, ly] of [[x + 50, -260], [x + w - 50, -260], [x + 110, -520]]) { g.fillStyle = '#2a2e36'; g.fillRect(lx - 8, ly - 6, 16, 12); g.strokeStyle = INK; g.lineWidth = 1.5; g.strokeRect(lx - 8, ly - 6, 16, 12); g.fillStyle = '#5a5040'; g.fillRect(lx - 6, ly - 4, 12, 8); }
     } });
     glowAt(x + 110, -520, 60, '#ffb85c', 0.5, { sp: 9 });
@@ -1415,7 +1415,7 @@
         game.dialog('c3_breath', () => {
           BR.phase = 2; BR.t = 0; game.focus = null; game.save.flags.c3_breath_seen = true;
           G.SFX.play('c3_breathOut'); game.shake(0.7); game.hitstop(0.05);
-          G.UI.journal('檔案庫更新', '休止 THE REST');
+          G.UI.journal('檔案庫更新', '屏息 THE HELD BREATH');
         });
       }
     } else if (BR.phase === 2) {
@@ -1428,21 +1428,21 @@
   /* ============================== story ============================== */
   const flags = () => (G.game && G.game.save && G.game.save.flags) || {};
   const PYLON2 = [
-    { who: 'talia', text: '……喂？……凜音？凜音——是妳嗎？' },
-    { who: 'rinne', text: '嗯。' },
-    { who: 'talia', text: '我看著貨梯從雲裡掉下去。在鐘樓頂上……坐了一整夜。' },
-    { who: 'rinne', text: '梯基下面。三公里。' },
-    { who: 'talia', text: '第三降臨隊的線路……十年前的事了。那一年，山裡一直在震。' },
-    { who: 'talia', text: '我下不去。可是妳的刀，我在這裡也調得了。碎片帶來就好。' },
-    { who: 'rinne', text: '我會爬上去。' },
-    { who: 'talia', text: '……嗯。謝謝妳還活著。' },
+    { who: 'talia', text: '……是妳嗎？……奇怪。妳的名字，我想不起來了。' },
+    { who: 'rinne', text: '沒關係。' },
+    { who: 'talia', text: '妳過第一道門的時候，燈台的火暗了一下。我守著它……守了一整夜。' },
+    { who: 'rinne', text: '第二道門，在下面。' },
+    { who: 'talia', text: '這一帶的燈，是掘路的人留下的。他們往回挖，挖了十八年。' },
+    { who: 'talia', text: '我走不遠。可是妳的刀，我在燈台這裡也調得了。碎片帶來就好。' },
+    { who: 'rinne', text: '我會回來。' },
+    { who: 'talia', text: '……嗯。妳還在，真好。' },
   ];
   const BRANN_DONE = [
     { who: 'c3_brann', text: '……燈。我的……燈。' },
-    { who: 'c3_brann', text: '（布蘭顫抖著，從懷裡摸出最後一點燈油。火光亮起的那一瞬，他臉上的晶體，退了一些。）' },
-    { who: 'c3_brann', text: '……想起來了。布蘭・歐卡。第三降臨隊，礦工。' },
-    { who: 'c3_brann', text: '方舟上，有個女兒。今年……該十九歲了。' },
-    { who: 'c3_brann', text: '燈，妳帶著。下面更暗。……隊長不需要燈。他只需要鑽。' },
+    { who: 'c3_brann', text: '（布蘭顫抖著，從懷裡摸出最後一點燈油。火光亮起的那一瞬，他臉上的石殼，退了一些。）' },
+    { who: 'c3_brann', text: '……想起來了。布蘭・歐卡。溫陀東坑的礦工。死在第三次塌方。' },
+    { who: 'c3_brann', text: '上面，有個女兒。我跟著頭兒往回挖……是想再看她一眼。' },
+    { who: 'c3_brann', text: '燈，妳帶著。前面更暗。……頭兒不需要燈。他只需要挖。' },
     { who: 'c3_brann', text: '我留在這裡。現在……我可以數到天亮了。' },
   ];
   const D3 = {
@@ -1453,29 +1453,29 @@
     },
     dialog: {
       c3_enter: [
-        { who: 'ode', text: '……凜音。' },
-        { who: 'rinne', text: '……多深？' },
-        { who: 'ode', text: '三千一百公尺。四周……一點聲音都沒有。' },
-        { who: 'rinne', text: '那就從底下開始。' },
+        { who: 'ode', text: '……還聽得見嗎。' },
+        { who: 'rinne', text: '……第二道門呢？' },
+        { who: 'ode', text: '在更下面。這裡……一點聲音都沒有。' },
+        { who: 'rinne', text: '那就往下走。' },
       ],
       c3_pylon1: [
-        { who: 'ode', text: '第三降臨隊的碑。……頻段上，沒有人。' },
-        { who: 'rinne', text: '……少了她的聲音。' },
+        { who: 'ode', text: '掘路的人留下的燈台。……火是冷的。' },
+        { who: 'rinne', text: '……他們往回走了。' },
       ],
       c3_pylon2: PYLON2,
       c3_pylon2b: PYLON2.slice(0, 7).concat([
-        { who: 'talia', text: '鐘樓的大鐘，每天傍晚都會響。是妳找回鐘錘的那口。' },
-        { who: 'talia', text: '我每天都去敲。……也許，妳在下面聽得見。' },
-        { who: 'rinne', text: '聽得見。' },
+        { who: 'talia', text: '山上那口鐘，又響了。是妳送回鐘錘的那口。' },
+        { who: 'talia', text: '在這裡也聽得見。……好久，沒有聽見鐘聲了。' },
+        { who: 'rinne', text: '嗯。' },
         PYLON2[7],
       ]),
       c3_pylon3: [
-        { who: 'talia', text: '凜音，訊號又斷斷續續的……那個震動，連鐘樓的地板都在響。' },
-        { who: 'ode', text: '每秒十一次。十年來，沒有停過。' },
-        { who: 'talia', text: '哈德爾隊長……小時候，我聽過他的故事。' },
-        { who: 'talia', text: '他說要把寂靜挖出來，帶回方舟，給大家看。' },
-        { who: 'rinne', text: '他挖到了。' },
-        { who: 'talia', text: '……等妳上來，我煮湯給妳。鐘樓的湯很難喝，但是熱的。' },
+        { who: 'talia', text: '那個震動……連燈台的火，都在抖。' },
+        { who: 'ode', text: '每秒十一次。十八年，沒有停過。' },
+        { who: 'talia', text: '掘路王，哈德爾。他要把大家，挖回上面去。' },
+        { who: 'talia', text: '可是在這裡……每一條路，都是往下的。' },
+        { who: 'rinne', text: '他知道嗎。' },
+        { who: 'talia', text: '……等妳回來，我煮湯給妳。燈台的湯很難喝，但是熱的。' },
       ],
       c3_bats: [
         { who: 'sys', text: '（頭頂的黑暗裡，有什麼正豎起耳朵。）' },
@@ -1485,7 +1485,7 @@
       ],
       c3_organ: [
         { who: 'rinne', text: '……牆在響。' },
-        { who: 'ode', text: '空心的石柱，排得像一座管風琴。比人類還老。' },
+        { who: 'ode', text: '空心的石柱，排得像一座管風琴。比死亡還老。' },
         { who: 'rinne', text: '前面那個……沒有眼睛。' },
       ],
       c3_borer: [
@@ -1496,30 +1496,30 @@
         { who: 'rinne', text: '水滴下去，也沒有聲音。' },
       ],
       c3_breath: [
-        { who: 'rinne', text: '……歐德。水面上。' },
-        { who: 'ode', text: '什麼都沒有。……連我自己的風扇聲，都聽不見了。' },
-        { who: 'rinne', text: '是個孩子。圍著紅色的圍巾。' },
+        { who: 'rinne', text: '……寧舒。水面上。' },
+        { who: 'ode', text: '什麼都沒有。……連燈芯燒的聲音，都聽不見了。' },
+        { who: 'rinne', text: '是個孩子。很小。裹著一塊白布。' },
         { who: 'ode', text: '……可是我聽見了。音樂盒。' },
-        { who: 'rinne', text: '她在憋氣。好像一出聲，什麼就會碎掉。' },
+        { who: 'rinne', text: '她在憋氣。像是……從來沒有學會呼吸。' },
         { who: 'sys', text: '（整座洞窟，吐出了一口氣。）' },
       ],
       c3_camp: [
-        { who: 'rinne', text: '……第三降臨隊。' },
-        { who: 'ode', text: '一個熱源。很冷。……好像在數數。' },
+        { who: 'rinne', text: '……掘路的人。' },
+        { who: 'ode', text: '有一個人。很冷。……好像在數數。' },
       ],
       c3_eliteIntro: [
-        { who: 'c3_mog', text: '站住。……妳不是布蘭。身上有方舟的味道。' },
-        { who: 'c3_mog', text: '隊長在下面鑽，我在上面守。誰都不准靠近井口。' },
-        { who: 'rinne', text: '他十年沒有上來了。' },
-        { who: 'c3_mog', text: '那就再守十年。' },
+        { who: 'c3_mog', text: '站住。……妳不是布蘭。妳身上，有海的味道。' },
+        { who: 'c3_mog', text: '頭兒在前面挖，我在後面守。路通之前，誰都不准靠近掘面。' },
+        { who: 'rinne', text: '他十八年沒有回頭了。' },
+        { who: 'c3_mog', text: '那就再守十八年。' },
       ],
       c3_eliteDefeat: [
-        { who: 'c3_mog', text: '……炸了一輩子石頭。最後，被一把會唱歌的刀拆了。' },
+        { who: 'c3_mog', text: '……炸了十八年的石頭。路，一寸也沒有往上。' },
         { who: 'c3_mog', text: '布蘭去拿燈油，就沒再回來。……見到他，說引信我留給他了。' },
-        { who: 'c3_mog', text: '隊長……已經不是人了。別讓他的鑽頭，停在半路上。' },
+        { who: 'c3_mog', text: '頭兒……已經停不下來了。別讓他一個人，挖到最後。' },
       ],
       c3_mine: [
-        { who: 'sys', text: '（礦道裡沒有光。只有止弦，微微亮著。）' },
+        { who: 'sys', text: '（礦道裡沒有光。只有妳的刀，微微亮著。）' },
       ],
       c3_rest: [
         { who: 'rinne', text: '……牆在呼吸。' },
@@ -1527,30 +1527,30 @@
       ],
       c3_bossIntro: [
         { who: 'sys', text: '（震動，每秒十一次。穩得像心跳。）' },
-        { who: 'c3_hadal', text: '…………誰。誰在上面走動。' },
-        { who: 'c3_hadal', text: '就差一層。最後一層。……我不會停。' },
-        { who: 'rinne', text: '下面沒有源頭。只有一個停住的拍子。' },
-        { who: 'c3_hadal', text: '那就……鑽穿它。' },
+        { who: 'c3_hadal', text: '…………誰。誰在後面走動。' },
+        { who: 'c3_hadal', text: '就差一層。最後一層。……上面，就是溫陀。' },
+        { who: 'rinne', text: '這條路，是往下的。' },
+        { who: 'c3_hadal', text: '那就……挖穿它。' },
       ],
       c3_bossDefeat: [
         { who: 'c3_hadal', text: '……鑽頭……停了。' },
-        { who: 'c3_hadal', text: '原來……停下來的時候，是這種聲音。' },
-        { who: 'c3_hadal', text: '它不是沉默……是在換氣。像一個孩子……憋著氣……' },
-        { who: 'rinne', text: '……有風。往上吹。' },
-        { who: 'sys', text: '（沿著鑽頭打穿的豎井，向上。很久，很久。）' },
-        { who: 'ode', text: '……月光。是一座泡在水裡的城。' },
+        { who: 'c3_hadal', text: '原來……停下來，是這種聲音。' },
+        { who: 'c3_hadal', text: '告訴上面的人……我們，在路上了。' },
+        { who: 'rinne', text: '……坑道，往上走。' },
+        { who: 'sys', text: '（沿著他挖了十八年的坑道，向上。很久，很久。回頭看時，來時的路已經不在了。）' },
+        { who: 'ode', text: '……第二道門，收下了妳的歸途。' },
         { who: 'rinne', text: '有人在唱歌。' },
       ],
       c3_brannMeet: [
         { who: 'c3_brann', text: '……三百零七。三百零八。……誰？' },
-        { who: 'rinne', text: '第七降臨隊。凜音。' },
-        { who: 'c3_brann', text: '第三……隊。布蘭。我是……布蘭。礦工。' },
-        { who: 'c3_brann', text: '燈……掉了。下面。暗的地方。' },
+        { who: 'rinne', text: '……過路的。' },
+        { who: 'c3_brann', text: '布蘭。我是……布蘭。掘路的。' },
+        { who: 'c3_brann', text: '燈……掉了。前面。暗的地方。' },
         { who: 'c3_brann', text: '沒有燈……就數數。數到天亮。……這裡，沒有天亮。' },
         { who: 'c3_brann', text: '有光……就有聲音。' },
       ],
       c3_brannWait: [
-        { who: 'c3_brann', text: '……四百一十二。燈……在下面。莫格的炸藥……過去。暗的地方。' },
+        { who: 'c3_brann', text: '……四百一十二。燈……在前面。莫格的火藥……過去。暗的地方。' },
       ],
       c3_brannDone: [{ who: 'rinne', text: '是這盞嗎？' }].concat(BRANN_DONE),
       c3_brannDoneNew: [
@@ -1558,21 +1558,21 @@
         { who: 'rinne', text: '礦道裡撿到的。刻著「布蘭」。' },
       ].concat(BRANN_DONE),
       c3_brannHadal: [
-        { who: 'c3_brann', text: '隊長……是個好人。他說，寂靜從地底來，那就挖出來，帶回去給大家看。' },
-        { who: 'c3_brann', text: '後來，鑽頭碰到了「那個」。大家開始……不說話。一個接一個。' },
-        { who: 'c3_brann', text: '隊長把自己焊上鑽台。他說，鑽頭不停，就沒有人會被吞掉。' },
+        { who: 'c3_brann', text: '頭兒……是個好人。門關上那年，上面不再有人下來。他說，那就我們上去。' },
+        { who: 'c3_brann', text: '挖到第三年，鑽頭碰到了「那個」。大家開始……不說話。一個接一個，長進了牆裡。' },
+        { who: 'c3_brann', text: '頭兒用鐵鏈把自己鎖上鑽架。他說，鑽頭不停，就沒有人會被留下。' },
         { who: 'c3_brann', text: '……鑽頭，從來沒有停過。' },
       ],
       c3_brannHum: [
         { who: 'c3_brann', text: '井底……有人在哼歌。很小聲。' },
-        { who: 'c3_brann', text: '像小孩子。哼到一半……就停了。好像忘了下一個音。' },
+        { who: 'c3_brann', text: '像小孩子。哼到一半……就停了。好像沒有人，教過她後半段。' },
         { who: 'c3_brann', text: '聽過的人……就不太想說話了。' },
-        { who: 'ode', text: '……那段旋律。是瑪絲緹娜的歌。' },
+        { who: 'ode', text: '……那首搖籃曲。後半段，在更下面。' },
       ],
     },
     barks: {
       c3_lampMet: { who: 'ode', text: '布蘭的燈。……他循著妳的腳步聲，往前走了。' },
-      c3_lampNew: { who: 'ode', text: '刻著「布蘭」。……前面，有一個很弱的熱源。' },
+      c3_lampNew: { who: 'ode', text: '刻著「布蘭」。……前面，有人在數數。' },
     },
     hints: {
       c3_listen: '<b>深聽者</b>只靠聲音獵食：奔跑、跳躍、攻擊都會驚動牠，被驚動時會閃 <b class="r">紅光</b> 猛撲 —— 放慢腳步靠近，或從背後出手',
@@ -1581,38 +1581,38 @@
     },
     codex: {
       people: [
-        { id: 'c3_brann', name: '老布蘭', en: 'OLD BRANN — DESCENT III MINER', portrait: 'c3_brann', unlock: 'c3_met_brann',
-          tag: 'NPC｜第三降臨隊・礦工',
-          body: ['第三降臨隊的礦工，本名布蘭・歐卡。十年前為了替營地取燈油走進礦道，從此再也找不到回去的路。', '他的半張臉已經被寂裔晶體覆蓋。為了不讓自己忘記怎麼說話，他一直在數數——從一數到天亮，再從頭數起。', '「有光……就有聲音。」'] },
-        { id: 'c3_hadal', name: '哈德爾', en: 'HADAL — THE BORE-KING', portrait: 'c3_boss', unlock: 'c3_boss_seen',
-          tag: '失聲者｜第三降臨隊隊長',
-          body: ['第三降臨隊隊長。十年前帶著一座鑽井塔、四十噸炸藥與十二名隊員來到梯基之下，發誓要「把寂靜挖出來」。', '當隊員一個接一個陷入沉默，他把自己焊進了鑽台。只要鑽頭不停，就沒有人會被吞掉——他是這麼相信的。', '十年來，鑽頭一次也沒有停過。'] },
+        { id: 'c3_brann', name: '老布蘭', en: 'OLD BRANN — A DIGGER OF THE WAY BACK', portrait: 'c3_brann', unlock: 'c3_met_brann',
+          tag: 'NPC｜掘路隊・礦工',
+          body: ['溫陀東坑的礦工，本名布蘭・歐卡，死於第三次塌方。門關上後，他跟著哈德爾往回挖；某天替營地取燈油走進礦道，從此再也找不到回去的路。', '他的半張臉已經長出了石殼。為了不讓自己忘記怎麼說話，他一直在數數——從一數到天亮，再從頭數起。', '「有光……就有聲音。」'] },
+        { id: 'c3_hadal', name: '哈德爾', en: 'HADAL — THE DIGGER KING', portrait: 'c3_boss', unlock: 'c3_boss_seen',
+          tag: '頭目｜第二道門・掘路王',
+          body: ['溫陀礦坑的老工頭，死後走進了冥界。十八年前門關上，上面再也沒有人下來——他便帶著四十個亡者、一座鑽架與莫格的火藥，往回挖。', '同伴一個接一個沉默、長進岩壁，他用鐵鏈把自己鎖上了鑽架。只要鑽頭不停，就沒有人會被留下——他是這麼相信的。', '十八年來，鑽頭一次也沒有停過。坑道也一次都沒有往上。'] },
         { id: 'c3_mog', name: '莫格', en: 'MOG — THE SAPPER', portrait: 'c3_elite', unlock: 'c3_elite_seen',
-          tag: '菁英｜第三降臨隊・爆破手',
-          body: ['第三降臨隊的爆破手。出發前，他說炸藥帶得不夠；十年後，他還守著剩下的那些。', '隊長下令「誰都不准靠近井口」，他就真的守了十年。礦道的岩壁上，留著他用粉筆畫下的三千多道記號。'] },
+          tag: '菁英｜掘路隊・爆破手',
+          body: ['掘路隊的爆破手。出發前，他說火藥帶得不夠；十八年後，他還守著剩下的那些。', '他相信只要炸得夠響，上面的人就會聽見。礦道的岩壁上，留著他用粉筆畫下的六千多道記號。'] },
       ],
       world: [
-        { id: 'c3_faultwell', name: '斷層之井', en: 'THE FAULTWELL', unlock: 'c3_entered',
-          body: ['頌歌之梯的梯基正下方、深達三千公尺的巨大裂縫。大寂靜最初，就是從這裡湧上地表的。', '這裡的背景雜訊是零。不是很安靜——是「零」。'] },
+        { id: 'c3_faultwell', name: '回頭路', en: 'THE WAY BACK', unlock: 'c3_entered',
+          body: ['冥界第二道門前的礦道。亡者在這裡往回挖，想挖出一條回人間的路。', '第二道門的守門人從不收金銀。它收的，是回去的路。'] },
         { id: 'c3_organs', name: '化石管風琴', en: 'THE RESONANCE ORGANS', unlock: 't_c3_t_organ',
-          body: ['斷層之井深處成片的空心石柱與巨大肋骨。排列方式與管風琴完全一致，年代比人類文明還要古老。', '瑪絲緹娜在手記中寫道：「這座洞窟是一具樂器。很久很久以前，大地在這裡唱歌。」'] },
-        { id: 'c3_rest', name: '休止', en: 'THE REST', unlock: 'c3_breath_seen',
-          body: ['寂靜不是怪物，而是世界之歌裡的一個「休止符」——一段被寫進樂譜的停頓。', '正常的休止會結束，歌會繼續。但這一個沒有。它每六秒「呼吸」一次，像是有人一直憋著氣，不敢讓下一個音落下。', '在鏡湖上，凜音看見了一個圍著紅圍巾的孩子。'] },
-        { id: 'c3_descent3', name: '第三降臨隊', en: 'DESCENT SQUAD III', unlock: 't_c3_t_camp',
-          body: ['十年前由頌歌方舟派出的第三支降臨隊。與其他隊伍不同，他們的任務不是戰鬥，而是挖掘：找到寂靜的源頭，並帶一塊樣本回去。', '十二名隊員。方舟最後收到的訊息是：「鑽頭不會停。」'] },
+          body: ['回頭路深處成片的空心石柱與巨大肋骨，排列得像一座管風琴。年代比冥界的第一道門還要古老。', '一份無署名的手記寫道：「這座洞窟是一具樂器。很久很久以前，有人在這裡唱過歌。」'] },
+        { id: 'c3_rest', name: '屏息', en: 'THE HELD BREATH', unlock: 'c3_breath_seen',
+          body: ['洞窟深處的寂靜，每六秒「呼吸」一次，像是有人一直憋著氣，不敢讓下一個音落下。', '冥界的門關上那一年，這口氣就沒有再吐出來過。', '鏡湖上，有人看見過一個裹著白布的孩子。她沒有哭。她好像從來不知道，該怎麼哭。'] },
+        { id: 'c3_descent3', name: '掘路隊', en: 'THE DIGGERS', unlock: 't_c3_t_camp',
+          body: ['冥界的門關上之後，一群死於溫陀礦坑的亡者聚到哈德爾身邊。他們不肯在冥界等，要挖一條路回去。', '四十個人。如今還醒著的，不到十個。其餘的，嵌在自己挖的岩壁裡，臉都朝著上方。'] },
       ],
       items: [
-        { id: 'c3_reed', name: '化石簧片', en: 'FOSSIL REED', unlock: 'relic_c3_reed', relic: true, body: ['從化石管風琴的音管裡掉出來的石質簧片。對著它吹氣，會發出一個比人類耳朵能聽見的更低的音。', '遺物效果：最大耐力 +15。'] },
-        { id: 'c3_lamp', name: '礦燈', en: "BRANN'S LAMP", unlock: 'relic_c3_lamp', relic: true, body: ['老布蘭用最後一點燈油重新點亮的礦燈。光很小，但很暖。', '「有光，就有聲音。」', '遺物效果：擊破寂裔獲得的殘響碎片 +15%。'] },
+        { id: 'c3_reed', name: '化石簧片', en: 'FOSSIL REED', unlock: 'relic_c3_reed', relic: true, body: ['從化石管風琴的音管裡掉出來的石質簧片。對著它吹氣，會發出一個比亡者的耳朵還低的音。掘路的人把它含在嘴裡，免得忘了怎麼呼氣。', '遺物效果：最大耐力 +15。'] },
+        { id: 'c3_lamp', name: '礦燈', en: "BRANN'S LAMP", unlock: 'relic_c3_lamp', relic: true, body: ['老布蘭用最後一點燈油重新點亮的礦燈。光很小，但很暖。他原本想帶著它，一路照回女兒的門口。', '「有光，就有聲音。」', '遺物效果：擊破寂裔獲得的殘響碎片 +15%。'] },
         { id: 'c3_brannlamp', name: '熄滅的礦燈', en: 'AN UNLIT LAMP', unlock: 'c3_got_lamp', body: ['礦道深處撿到的舊式礦燈，燈罩上刻著「布蘭」。燈油已經乾了。'] },
       ],
       notes: [
-        { id: 'c3_n1', name: '鑽井日誌 #001', en: 'DRILL LOG #001 — HADAL', body: ['【第三降臨隊・隊長 哈德爾】', '梯基錨站正下方，岩盤有一道裂縫。方舟想知道寂靜從哪裡來——答案就在我們腳底下。', '我們帶了一座鑽井塔、四十噸炸藥、十二個人。莫格說炸藥太少。莫格永遠說炸藥太少。', '目標：挖到源頭，帶一塊回去。預計工期：三週。'] },
-        { id: 'c3_n2', name: '瑪絲緹娜的手記・一', en: "MAESTRINA'S NOTES — I", body: ['（工整的五線譜紙，邊角泛黃。署名：第一降臨隊 瑪絲緹娜。日期：二十年前。）', '這座洞窟是一具樂器。石柱是音管，地下湖是共鳴箱。很久很久以前，大地在這裡唱歌。', '然後歌停了。不是結束——是停頓。樂譜上的一個「休止符」。', '寂裔不是怪物。牠們只是困在休止符裡，忘記怎麼呼吸的音符。'] },
-        { id: 'c3_n3', name: '鑽井日誌 #117', en: 'DRILL LOG #117', body: ['鑽頭在深度三千一百公尺碰到了「空洞」。不是空氣，也不是岩石。儀器上什麼都沒有——連雜訊都沒有。', '那天之後，隊員開始不說話。不是不能，是不想。羅森昨天整天坐在湖邊，盯著水面。', '我下令：鑽頭不准停。只要還有聲音，就還有人醒著。'] },
-        { id: 'c3_n4', name: '瑪絲緹娜的手記・二', en: "MAESTRINA'S NOTES — II", body: ['（這一頁被摺了好幾次，像是不想被任何人讀到。）', '我在休止裡聽見了呼吸。很輕，很小，像是一個孩子在憋氣——怕自己一出聲，什麼東西就會碎掉。', '休止不是自然的停頓。是有人「撐著」它。', '如果我找得到她，我想告訴她：可以呼吸了。', '葛雷夫說我瘋了。也許吧。'] },
-        { id: 'c3_n5', name: '莫格的粉筆記號', en: "MOG'S CHALK MARKS", body: ['（礦道的岩壁上，用粉筆畫滿了密密麻麻的記號。）', '第 3 號炸點：成功。第 4 號：成功。第 5 號：羅森沒回來。', '布蘭去拿燈油，說一下就回來。燈先放這裡——暗的地方要有光，他才找得到路。', '……第 3,650 天。布蘭還沒回來。燈的油，也乾了。'] },
-        { id: 'c3_n6', name: '鑽井日誌・最後一頁', en: 'DRILL LOG — FINAL PAGE', body: ['（字跡被焊接的高溫燒焦了一半。）', '我把自己焊在操控台上了。這樣我就不會停下來，也不會想停下來。', '如果有人讀到這裡：別關掉鑽頭。只要它還在轉，寂靜就不會贏。', '……可是最近，我開始覺得，是寂靜在推著鑽頭轉。'] },
+        { id: 'c3_n1', name: '掘路日誌 #001', en: 'DIGGING LOG #001 — HADAL', body: ['【掘路隊・頭兒 哈德爾】', '門關上了。上面再也沒有人下來。……那就我們上去。', '一座鑽架、十二把鎬、四十個不肯等的人。莫格說火藥太少。莫格永遠說火藥太少。', '目標：挖回溫陀。預計：一個冬天。'] },
+        { id: 'c3_n2', name: '無署名的手記・一', en: 'UNSIGNED NOTES — I', body: ['（工整的字跡，紙角泛黃。每一頁的角落，都寫著同一個數字：六。）', '這座洞窟是一具樂器。石柱是音管，地下湖是共鳴箱。很久很久以前，有人在這裡唱過歌。', '然後歌停了。不是結束——是屏住了氣。', '挖路的人說，他們要回家。我沒有告訴他們，我也是。'] },
+        { id: 'c3_n3', name: '掘路日誌 #117', en: 'DIGGING LOG #117', body: ['鑽頭碰到了「空」。不是空氣，也不是岩石。那裡什麼都沒有——連回聲都沒有。', '那天之後，大夥開始不說話。不是不能，是不想。羅森昨天整天坐在湖邊，盯著水面。今天，他的手長進了岩壁。', '我下令：鑽頭不准停。只要還有聲音，就還有人醒著。'] },
+        { id: 'c3_n4', name: '無署名的手記・二', en: 'UNSIGNED NOTES — II', body: ['（這一頁被摺了好幾次，像是不想被任何人讀到。）', '我在湖上看見一個孩子在憋氣。很小，裹著白布，像是從來沒有學會呼吸。', '燈裡的那位叫我別看。祂說，那不是孩子，是一口吐不出來的氣。', '如果我找得到她，我想告訴她：可以呼吸了。', '……我是為了什麼下來的？我得把它寫下來。我得——'] },
+        { id: 'c3_n5', name: '莫格的粉筆記號', en: "MOG'S CHALK MARKS", body: ['（礦道的岩壁上，用粉筆畫滿了密密麻麻的記號。）', '第 3 號炸點：成功。第 4 號：成功。第 5 號：羅森沒回來。', '布蘭去拿燈油，說一下就回來。燈先放這裡——暗的地方要有光，他才找得到路。', '……第 6,570 天。布蘭還沒回來。燈的油，也乾了。'] },
+        { id: 'c3_n6', name: '掘路日誌・最後一頁', en: 'DIGGING LOG — FINAL PAGE', body: ['（字跡磨得幾乎看不清。紙上壓著鐵鏈的鏽痕。）', '我把自己鎖在鑽架上了。這樣我就不會停下來，也不會想停下來。', '如果有人讀到這裡：別停下鑽頭。只要它還在轉，我們就還在回家的路上。', '……可是最近，我開始覺得，路是往下的。'] },
       ],
     },
     relics: {
@@ -1734,7 +1734,7 @@
       if (!F.c3_quest_done) { game.dialog('c3_brannWait'); return; }
       game.control = false;
       G.UI.choice({ kicker: '老布蘭 · OLD BRANN', title: '「……現在，我可以數到天亮了。」', desc: '要問他什麼？', items: [
-        { label: '問他關於哈德爾隊長', en: 'ABOUT HADAL', action: () => game.dialog('c3_brannHadal') },
+        { label: '問他關於哈德爾', en: 'ABOUT HADAL', action: () => game.dialog('c3_brannHadal') },
         { label: '問他井底的歌聲', en: 'ABOUT THE HUMMING', action: () => game.dialog('c3_brannHum') },
         { label: '告辭', en: 'LEAVE', action: () => { game.control = true; G.Input.clearBuffers(); } },
       ] });
@@ -1765,9 +1765,9 @@
       { x: 7880, y: -230, w: 210, skin: 'plank', post: 170 },
     ],
     pylons: [
-      { id: 'c3_p1', x: 860, y: 0, name: '井底共鳴碑', dialog: 'c3_pylon1', flag: 'c3_pylon1_seen' },
-      { id: 'c3_p2', x: 7560, y: -60, name: '鑽井營共鳴碑', get dialog() { return flags().c2_quest_done ? 'c3_pylon2b' : 'c3_pylon2'; }, flag: 'c3_pylon2_seen' },
-      { id: 'c3_p3', x: 11200, y: 0, name: '休止之息共鳴碑', dialog: 'c3_pylon3', flag: 'c3_pylon3_seen' },
+      { id: 'c3_p1', x: 860, y: 0, name: '井底魂燈台', dialog: 'c3_pylon1', flag: 'c3_pylon1_seen' },
+      { id: 'c3_p2', x: 7560, y: -60, name: '掘路營魂燈台', get dialog() { return flags().c2_quest_done ? 'c3_pylon2b' : 'c3_pylon2'; }, flag: 'c3_pylon2_seen' },
+      { id: 'c3_p3', x: 11200, y: 0, name: '屏息之底魂燈台', dialog: 'c3_pylon3', flag: 'c3_pylon3_seen' },
     ],
     notes: [
       { id: 'c3_n1', x: 1090, y: 0 },
@@ -1812,12 +1812,12 @@
       c3_boss: { manual: true, boss: true, arena: [BOSS_X0, BOSS_X1], waves: [[{ t: 'c3_boss', x: BOSS_X0 + 950 }]] },
     },
     zones: [
-      { x: -1e9, name: '斷層之井・井底', en: 'THE FAULTWELL — SHAFT FLOOR', tint: 0, music: 'c3_explore', amb: 'c3_drip' },
+      { x: -1e9, name: '回頭路・井底', en: 'THE WAY BACK — SHAFT FLOOR', tint: 0, music: 'c3_explore', amb: 'c3_drip' },
       { x: Z.B, name: '化石管風琴窟', en: 'THE ORGAN CAVERNS', tint: 0.05, music: 'c3_explore', amb: 'c3_organ' },
       { x: Z.C, name: '鏡湖', en: 'THE STILL LAKE', tint: 0.15, music: 'c3_explore', amb: 'c3_lake' },
-      { x: Z.D, name: '第三降臨隊・鑽井營', en: 'DESCENT III DRILL CAMP', tint: 0.3, music: 'c3_explore', amb: 'c3_camp' },
+      { x: Z.D, name: '掘路營', en: "THE DIGGERS' CAMP", tint: 0.3, music: 'c3_explore', amb: 'c3_camp' },
       { x: Z.M, name: '無光礦道', en: 'THE LIGHTLESS ADIT', tint: 0.55, music: 'c3_explore2', amb: 'c3_mine' },
-      { x: Z.E, name: '休止之息', en: "THE REST'S BREATH", tint: 1, music: 'c3_explore2', amb: 'c3_breath' },
+      { x: Z.E, name: '屏息之底', en: 'THE HELD BREATH', tint: 1, music: 'c3_explore2', amb: 'c3_breath' },
     ],
     tintAt,
   };
@@ -1829,13 +1829,13 @@
 
   /* ============================== register ============================== */
   G.Chapters.register({
-    id: 3, key: 'ch3', num: 'III', numZh: '三', title: '斷層之井', en: 'THE FAULTWELL',
+    id: 3, key: 'ch3', num: 'III', numZh: '三', title: '回頭路', en: 'THE WAY BACK',
     intro: [
-      { t: '墜落之後，是更深的墜落。', s: 'AFTER THE FALL, A DEEPER ONE.' },
-      { t: '梯基之下，有一道從未被聽見的裂縫。\n大寂靜，是從這裡開始的。', s: 'BENEATH THE LADDER LIES A CRACK NO ONE HAS EVER HEARD. THE HUSH BEGAN HERE.' },
+      { t: '亡者在這裡往回挖。\n挖了十八年。', s: 'HERE THE DEAD DIG BACK THE WAY THEY CAME. EIGHTEEN YEARS NOW.' },
+      { t: '第二道門不收金銀。\n它收的，是回去的路。', s: 'THE SECOND GATE TAKES NO GOLD. IT TAKES THE WAY BACK.' },
     ],
     enterDialog: 'c3_enter',
-    outro: '「……月光。是一座泡在水裡的城。」',
+    outro: '「……出口，在更下面。」',
     level,
     pal: {
       skyTop: ['#04050b', '#07030d'], skyMid: ['#0a1422', '#150920'], skyLow: ['#0d2c38', '#33103c'], horizon: ['#1a5a60', '#6a2478'],

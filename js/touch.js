@@ -4,7 +4,7 @@
    right : 4 core buttons in a thumb arc (攻 attack/hold heavy, 跳 jump, 閃 dodge, 擋 guard)
            + 技 skill bubble that only appears when the resonance gauge can pay for it
    top   : 回復 heal (with count), ⛶ fullscreen, ☰ pause
-   interaction is contextual: tap the on-screen prompt ("互動 調諧共鳴碑"). */
+   interaction is contextual: tap the on-screen prompt ("互動 點亮魂燈台"). */
 (function (G) {
   const ACTS = [['KeyJ', '攻', 'a1'], ['Space', '跳', 'a2'], ['KeyL', '閃', 'a3'], ['KeyK', '擋', 'a4'], ['KeyU', '技', 'a5 sk']];
   const TOP = [['KeyF', '回復', 'heal'], ['FS', '⛶', 'fs'], ['Escape', '☰', 'pause']];
@@ -128,8 +128,9 @@
     if (g.save) { root._heal.textContent = g.save.tonic; root.querySelector('.heal').classList.toggle('empty', g.save.tonic <= 0); }
     if (g.player) {
       const r = g.player.res;
-      root._sk.classList.toggle('ready', r >= 25);
-      root._skb.textContent = r >= 50 ? '終止式' : r >= 25 ? '斷弦' : '';
+      const sk = G.DnD.skills();
+      root._sk.classList.toggle('ready', r >= sk.c1);
+      root._skb.textContent = r >= sk.c2 ? sk.n2 : r >= sk.c1 ? sk.n1 : '';
     }
   }, 120);
 

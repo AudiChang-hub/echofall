@@ -1,6 +1,6 @@
 'use strict';
-/* ECHOFALL — Chapter V「無重之塔」foes: Driftwatch 浮游哨, Voidling 真空寂裔, Mender 修補者, Breacher 破門者,
-   and the elite Vela, the Longshot 長射手・薇拉 (Descent V sniper). See docs/STORY.md §3-V and docs/CHAPTER_API.md §4–5.
+/* ECHOFALL — Chapter V「倒懸之塔」foes: Driftwatch 浮游哨, Voidling 虛空寂裔, Mender 縫補者, Breacher 壓艙者,
+   and the elite Vela, the Navigator 領航員・薇拉 (the spire's navigator). See docs/STORY.md §3-V and docs/CHAPTER_API.md §4–5.
    Everything here is drawn procedurally: inked contours, hard cel tones, one glowing accent per foe. */
 (function (G) {
   const K = G.EnemyKit, { TYPES, U, Rig, PI, TAU } = K;
@@ -500,7 +500,7 @@
     return tryX(-P.facing) || tryX(P.facing) || { x: e.x, y: e.y };
   }
   const VDT = reg('c5_voidling', {
-    name: '真空寂裔', en: 'VOIDLING', w: 40, h: 118, hp: 92, bal: 60, col: VOID, shards: 44, kbMul: 1.1, spawnT: 0.8,
+    name: '虛空寂裔', en: 'VOIDLING', w: 40, h: 118, hp: 92, bal: 60, col: VOID, shards: 44, kbMul: 1.1, spawnT: 0.8,
     portrait: [2.5, 0.9],
     init(e) { e.seed = seedOf(); e.tail = new Rig.Chain(6, 9, 0.06, 0.88); e.gait = 0; e.vp = null; },
     voice: () => G.SFX.play('c5_voidHiss'),
@@ -621,7 +621,7 @@
   }
   const mdReelW = (e) => ({ x: e.x - e.facing * 13, y: e.y - 48 });
   const MD = reg('c5_mender', {
-    name: '修補者', en: 'MENDER', w: 50, h: 50, hp: 62, bal: 40, col: AMBER, shards: 32, kbMul: 1.3, spawnT: 0.6,
+    name: '縫補者', en: 'MENDER', w: 50, h: 50, hp: 62, bal: 40, col: AMBER, shards: 32, kbMul: 1.3, spawnT: 0.6,
     portrait: [3.8, 0.84],
     init(e) { e.seed = seedOf(); e.gait = 0; e.reelA = 0; e.mendT = null; e.mendOn = false; e.mp = null; },
     voice: () => G.SFX.play('c5_servo'),
@@ -867,7 +867,7 @@
     e.atk = BR.vent; e.setState('atk'); e.hitsDone = {}; e.tellsDone = {}; e.evDone = {}; e.pullOn = false;
   }
   const BR = reg('c5_breacher', {
-    name: '破門者', en: 'BREACHER', w: 64, h: 150, hp: 165, bal: 110, col: MAG, shards: 60, poise: true, kbMul: 0.45, spawnT: 1.0,
+    name: '壓艙者', en: 'THE BALLAST', w: 64, h: 150, hp: 165, bal: 110, col: MAG, shards: 60, poise: true, kbMul: 0.45, spawnT: 1.0,
     portrait: [1.9, 0.92],
     init(e) { e.seed = seedOf(); e.gait = 0; e.bp = null; e.pulled = false; e.pullOn = false; },
     voice: () => G.SFX.play('c5_brVoice'),
@@ -1212,7 +1212,7 @@
     G.SFX.play('c5_grapple'); G.FX.spark(e.x, e.y - 120, 8, { col: '#ffd6ec', speed: 300 });
   }
   const VE = reg('c5_elite', {
-    name: '長射手・薇拉', en: 'VELA, THE LONGSHOT', w: 44, h: 152, hp: 700, bal: 220, col: ROSE, shards: 420, elite: true, scale: 1.22, spawnT: 1.0,
+    name: '領航員・薇拉', en: 'VELA, THE NAVIGATOR', w: 44, h: 152, hp: 700, bal: 220, col: ROSE, shards: 420, elite: true, scale: 1.22, spawnT: 1.0,
     defeatDialog: 'c5_eliteDefeat', defeatRelic: 'c5_scope', music: 'c5_elite',
     portrait: [1.85, 0.93],
     init(e) { e.seed = seedOf(); e.cape = new Rig.Chain(8, 9.5, 0.05, 0.9); e.facing = -1; e.aimAng = 0; e.lastMoves = []; e.vpose = null; e.gaitP = 0; },
@@ -1432,52 +1432,52 @@
 
   /* ============================== data: codex, relic, barks ============================== */
   if (!D.speakers.c5_vela) D.speakers.c5_vela = { name: '薇拉', en: 'VELA', color: ROSE };
-  D.barks.c5_eliteP2 = { who: 'c5_vela', text: '……風停了。這一槍，不會再偏。' };
-  D.relics.c5_scope = D.relics.c5_scope || { name: '長射手的瞄鏡', desc: '共鳴獲取 +25%' };
+  D.barks.c5_eliteP2 = { who: 'c5_vela', text: '……風停了。這一發，不會再偏。' };
+  D.relics.c5_scope = D.relics.c5_scope || { name: '薇拉的觀星鏡', desc: '共鳴獲取 +25%' };
   G.Relics.c5_scope = G.Relics.c5_scope || { apply(P) { P.resMul *= 1.25; } };
   const pushOnce = (arr, en) => { if (!arr.some((q) => q.id === en.id)) arr.push(en); };
   pushOnce(D.codex.items, {
-    id: 'c5_scope', name: '長射手的瞄鏡', en: "LONGSHOT'S SCOPE", unlock: 'relic_c5_scope', relic: true,
-    body: ['薇拉單眼瞄鏡的鏡片，邊緣結著一圈粉色的晶霜。透過它，風聲變得很遠，心跳變得很近。', '她最後一發，打偏了。', '遺物效果：共鳴獲取 +25%。'],
+    id: 'c5_scope', name: '薇拉的觀星鏡', en: "VELA'S STAR-SCOPE", unlock: 'relic_c5_scope', relic: true,
+    body: ['領航員薇拉的單眼觀星鏡，邊緣結著一圈粉色的晶霜。從前她用它讀倒懸的星，替亡者找路；後來，只用它瞄準。', '她最後一發，打偏了。', '遺物效果：共鳴獲取 +25%。'],
   });
   const HB = D.codex.hushborn;
   pushOnce(HB, {
     id: 'c5_driftwatch', name: '浮游哨', en: 'DRIFTWATCH', portrait: 'c5_driftwatch', unlock: 'seen_c5_driftwatch', tag: '寂裔｜中階・飛行哨兵',
     body: [
-      '天梯上層維修環的自動哨兵。它仍照著二十年前的巡邏表漂浮。表上要保護的人，早已不在了——於是凡是會動的，都成了入侵者。',
+      '倒懸之塔的守望之眼。從前，它繞著塔漂浮，用一道光替失了重量的亡者指路。門關上之後，再沒有人需要指路——於是凡是會動的，都成了它的目標。',
       '攻擊模式：紅色瞄準線會追著你移動，光環加速、瞄準線「閃爍鎖定」之後才擊發，無法格擋——看見閃爍就閃避／貼近時的白色震波脈衝，可格擋或完美格擋。',
       '弱點：鎖定之後它無法再修正方向——看準閃爍翻滾穿過那道光，或乾脆衝到它腳下。',
     ],
   });
   pushOnce(HB, {
-    id: 'c5_voidling', name: '真空寂裔', en: 'VOIDLING', portrait: 'c5_voidling', unlock: 'seen_c5_voidling', tag: '寂裔｜中階・刺客',
+    id: 'c5_voidling', name: '虛空寂裔', en: 'VOIDLING', portrait: 'c5_voidling', unlock: 'seen_c5_voidling', tag: '寂裔｜中階・刺客',
     body: [
-      '真空裡沒有聲音。降臨五隊的艙外作業員被寂靜「吸」了進去，回來的只剩這副空殼——碎裂的頭盔裡，是一整片星空。',
+      '放了手的亡者往天上墜，墜進塔尖那片什麼都沒有的地方。偶爾，有東西從那裡回來——只剩一副空殼，碎裂的頭顱裡是一整片星空。',
       '攻擊模式：身形閃爍、消失，從你背後的裂隙走出——紅光背刺（必須閃避），接著一記白光斜斬／近身時的雙刃連斬（白光）。',
       '弱點：閃爍的前半秒可以打斷它。聽見那陣倒抽氣般的聲音時——回頭。',
     ],
   });
   pushOnce(HB, {
-    id: 'c5_mender', name: '修補者', en: 'MENDER', portrait: 'c5_mender', unlock: 'seen_c5_mender', tag: '寂裔｜低階・支援',
+    id: 'c5_mender', name: '縫補者', en: 'MENDER', portrait: 'c5_mender', unlock: 'seen_c5_mender', tag: '寂裔｜低階・支援',
     body: [
-      '仍在執行維修協議的蜘蛛型工作機，沿著塔的支架爬行。在它眼裡，寂裔只是「需要修理的設備」。它用背上的纜索，把能量灌進它們體內——一如當年修補梯子。',
-      '攻擊模式：纜索治療（持續回復同伴生命）／焊槍突刺（白光）／焊渣彈（白色投射物，完美格擋可彈回）。',
-      '弱點：任何一擊都會扯斷纜索。它單獨存在時幾乎沒有威脅——所以，先處理它。',
+      '沿著塔的支架爬行的多足縫匠，從前用絲線縫補塔身的裂縫。在它眼裡，寂裔只是「需要縫補的東西」。它用背上的絲線，把力氣縫進它們體內——一如當年縫補這座塔。',
+      '攻擊模式：絲線治療（持續回復同伴生命）／鋼針突刺（白光）／熔蠟彈（白色投射物，完美格擋可彈回）。',
+      '弱點：任何一擊都會扯斷絲線。它單獨存在時幾乎沒有威脅——所以，先處理它。',
     ],
   });
   pushOnce(HB, {
-    id: 'c5_breacher', name: '破門者', en: 'BREACHER', portrait: 'c5_breacher', unlock: 'seen_c5_breacher', tag: '寂裔｜高階・重裝',
+    id: 'c5_breacher', name: '壓艙者', en: 'THE BALLAST', portrait: 'c5_breacher', unlock: 'seen_c5_breacher', tag: '寂裔｜高階・重裝',
     body: [
-      '焊死在磁力靴上的破門作業服。在稀薄的高空裡，它是唯一能「站穩」的東西——所以它從不需要移動得很快。',
-      '攻擊模式：磁力牽引（紅光，無法格擋；被吸過去之後會接一記白光重拳）／踏地震波（白光，沿地面向兩側擴散——跳過它，或正面完美格擋來削減它的平衡）。',
-      '弱點：牽引落空時，它必須排氣散熱，背後的氣罐會噴出白霧——那是很長的破綻。',
+      '不肯交出重量的亡者。他把鉛灌進自己的靴子，把腳釘進甲板——在這座沒有重量的塔上，他是唯一能「站穩」的東西，所以從不需要走得很快。',
+      '攻擊模式：沉重牽引（紅光，無法格擋；被拉過去之後會接一記白光重拳）／踏地震波（白光，沿地面向兩側擴散——跳過它，或正面完美格擋來削減它的平衡）。',
+      '弱點：牽引落空時，他得喘一口氣，背上的鉛罐會冒出白霧——那是很長的破綻。',
     ],
   });
   pushOnce(HB, {
-    id: 'c5_elite', name: '長射手・薇拉', en: 'VELA, THE LONGSHOT', portrait: 'c5_elite', unlock: 'seen_c5_elite', tag: '菁英｜降臨五隊・狙擊手',
+    id: 'c5_elite', name: '領航員・薇拉', en: 'VELA, THE NAVIGATOR', portrait: 'c5_elite', unlock: 'seen_c5_elite', tag: '菁英｜倒懸之塔・領航員',
     body: [
-      '降臨五隊的長射手。據說她能在天梯的強風裡，命中三公里外的訊號燈。寂靜沒有奪走她的準度，只奪走了她瞄準的理由。',
-      '攻擊模式：紅色瞄準線的長射（鎖定閃光後擊發）／白光三連射（可彈回）／屏息射擊——第一次瞄準是假的，等第二道白光／重力地雷（紅圈，離開範圍）／槍托＋刺刀連擊（白光）。',
+      '倒懸之塔的領航員。據說她能在塔頂的強風裡，看清三里外一盞燈的燈芯。寂沒有奪走她的準度，只奪走了她瞄準的理由。',
+      '攻擊模式：紅色瞄準線的長射（鎖定閃光後擊發）／白光三連射（可彈回）／屏息射擊——第一次瞄準是假的，等第二道白光／重力陷阱（紅圈，離開範圍）／槍托＋刺刀連擊（白光）。',
       '第二階段：兜帽碎裂、晶簇綻開之後，她會連續三次鎖定射擊，三連射也會變成五連射。',
       '弱點：她不擅長近戰。被逼到牆邊時會用鉤索飛越你的頭頂——落地的那一瞬間，就是機會。',
     ],

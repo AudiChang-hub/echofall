@@ -48,15 +48,19 @@
       this.rallyMul = rel.includes('dawnstring') ? 2 : 1;
       // relics added by chapters: G.Relics[id].apply(player) adjusts these same fields
       for (const id of rel) if (G.Relics && G.Relics[id] && G.Relics[id].apply) G.Relics[id].apply(this);
+      // ability scores and class (js/dnd.js)
+      if (G.DnD) G.DnD.apply(this);
       // equipment (weapon power, armor defense, talismans) — see js/gear.js
       const gt = this.gear = G.Gear ? G.Gear.totals(s) : null;
       if (gt) {
-        this.dmgMul *= gt.power / 100 * (1 + (gt.atk || 0));
+        this.dmgMul *= gt.power / 100 * (1 + (gt.atk || 0)) * (G.DnD ? G.DnD.weaponMul(gt.look && gt.look.cls) : 1);
         this.maxHp = Math.round(this.maxHp * (1 + (gt.hpPct || 0)) + (gt.hp || 0));
         this.maxSta += gt.sta || 0; this.parryWin += gt.parry || 0; this.resMul *= 1 + (gt.res || 0); this.maxTonic += gt.tonic || 0;
         this.dmgTaken = (1 - Math.min(0.5, gt.dr || 0)) * 100 / (100 + (gt.defense || 0));
       } else this.dmgTaken = 1;
+      if (G.Events) G.Events.apply(this);   // event blessings / curses until the next rest
       if (this.hp != null && this.maxHp > prevMax) this.hp += this.maxHp - prevMax;
+      if (this.hp > this.maxHp) this.hp = this.maxHp;
       if (this.game.dynScale) this.game.dyn = this.game.dynScale();
     }
     get hurtbox() {
@@ -73,6 +77,7 @@
 
     /* ------------------------------ update ------------------------------ */
     update(dt) {
+      G.DnD.update(this, dt); G.DnD.spiritUpdate(this, dt);
       const I = G.Input, g = this.game;
       const stDt = dt * (this.state === 'light' || this.state === 'heavy' || this.state === 'air' || this.state === 'counter' ? G.Boons.atkSpeed() * (this.gear ? this.gear.speed * (1 + (this.gear.spd || 0)) : 1) : 1);
       this.t += dt; this.st += stDt;
@@ -89,7 +94,7 @@
       // stamina
       this.staDelay -= dt;
       if (this.staDelay <= 0 && !ATTACK_STATES.includes(this.state) && this.state !== 'dodge') {
-        this.sta = Math.min(this.maxSta, this.sta + (this.state === 'guard' ? 22 : 48) * dt);
+        this.sta = Math.min(this.maxSta, this.sta + (this.state === 'guard' ? 22 : 48) * (this.staRegen || 1) * dt);
       }
       // rally decay
       this.rallyT += dt;
@@ -119,6 +124,7 @@
         case 'heal': this.updHeal(dt); break;
         case 'skill1': this.updSkill1(dt); break;
         case 'skill2': this.updSkill2(dt); break;
+        case 'cskill': G.DnD.skillUpdate(this, dt); break;
         case 'execute': this.updExecute(dt); break;
         case 'counter': this.updCounter(dt); break;
         case 'rest': this.vx = 0; break;
@@ -234,8 +240,10 @@
       // one skill button: the strongest technique the resonance gauge can pay for
       if (I.pressed('skill', 150)) {
         I.consume('skill');
-        if (this.res >= 50 && this.onGround) { this.res -= 50; this.startSkill2(); return; }
-        if (this.res >= 25) { this.res -= 25; this.startSkill1(); return; }
+        const c2 = G.DnD ? G.DnD.skillCost(50) : 50, c1 = G.DnD ? G.DnD.skillCost(25) : 25;
+        const cls = G.DnD.st() && G.DnD.st().cls;
+        if (this.res >= c2 && this.onGround) { this.res -= c2; if (cls === 'shaman') { this.setState('cskill', 0.04); G.DnD.skillStart(this, 'summon'); } else this.startSkill2(); return; }
+        if (this.res >= c1) { this.res -= c1; if (cls) { this.setState('cskill', 0.03); G.DnD.skillStart(this); } else this.startSkill1(); return; }
         this.game.toast('共鳴不足：攻擊與完美格擋可以累積共鳴', 'warn');
       }
       if (I.pressed('heal', 150) && this.onGround) {
@@ -256,7 +264,7 @@
       const I = G.Input;
       this.vx = U.approach(this.vx, 0, 1800 * dt);
       if (!ctl || !I.down('guard')) { this.setState('move', 0.08); return; }
-      if (mx) this.facing = mx > 0 ? 1 : -1;
+      if (mx) { G.DnD.guardWalk(this, mx, dt); if (!G.DnD.is('paladin')) this.facing = mx > 0 ? 1 : -1; }
       if (this.tryCancel(true)) return;
       if (I.pressed('jump', 100)) { this.setState('move'); }
     }
@@ -288,7 +296,7 @@
       this.vx = U.approach(this.vx, 0, (this.ci === 3 ? 900 : 1300) * dt);
       if (this.ci === 3 && this.st > 0.12 && this.st < 0.34) this.vx = this.facing * 260;
       if (this.st >= an.active[0] && this.st <= an.active[1]) {
-        if (!this.swung) { this.swung = true; G.SFX.play('slash', L.pitch, !!L.big); }
+        if (!this.swung) { this.swung = true; G.SFX.play('slash', L.pitch, !!L.big); if (this.ci === 2) G.DnD.windlet(this); }
         this.doHits(L.box, { dmg: L.dmg, bal: L.bal, big: L.big, launch: this.ci === 3 });
       } else if (this.st < an.active[0]) this.swung = false;
       if (this.ci === 3 && this.st > 0.36 && !this.slamFx) { this.slamFx = true; G.FX.dust(this.x + this.facing * 40, this.y, 14, { w: 60, speed: 220, size: 12 }); G.FX.ring(this.x + this.facing * 50, this.y, 6, 120, 0.35, '#7ff4ff', 4, { flat: 0.15 }); this.game.shake(0.25); }
@@ -358,14 +366,14 @@
       this.dodgeDir = mx ? (mx > 0 ? 1 : -1) : -this.facing;
       this.back = this.dodgeDir !== this.facing;
       this.setState('dodge', 0.03); this.spendSta(STAM.dodge * (1 - 0.25 * G.Mirror.lv('swift')));
-      this.iframes = (this.assist ? 0.36 : 0.27) + ((this.gear && this.gear.iframes) || 0) + 0.03 * G.Mirror.lv('shadow'); this.perfectUsed = false;
+      this.iframes = (this.assist ? 0.36 : 0.27) + ((this.gear && this.gear.iframes) || 0) + 0.03 * G.Mirror.lv('shadow') + (this.iframeAdd || 0); this.perfectUsed = false;
       G.SFX.play('dodge'); G.SFX.play('cloth', 1.2);
       G.Boons.onDodge(this);
       G.FX.dust(this.x, this.y, 6, { w: 20, speed: 160, dir: this.dodgeDir > 0 ? PI : 0, spread: 0.6 });
     }
     updDodge(dt) {
       const k = this.st / 0.34;
-      const sp = (this.back ? 640 : 860) * G.Boons.dodgeMul() * (1 + ((this.gear && this.gear.dodge) || 0)) * (1 - U.easeInCubic(Math.min(1, k)));
+      const sp = (this.back ? 640 : 860) * G.Boons.dodgeMul() * G.DnD.dodgeMul() * (1 + ((this.gear && this.gear.dodge) || 0)) * (1 - U.easeInCubic(Math.min(1, k)));
       this.vx = this.dodgeDir * sp;
       if (this.st >= 0.34) { this.setState('move', 0.1); return; }
       if (this.st > 0.22 && this.tryCancel(true)) return;
@@ -391,7 +399,7 @@
       this.vx = U.approach(this.vx, 0, 1500 * dt);
       if (this.st > 0.4 && !this.healed) {
         this.healed = true; const g = this.game;
-        g.save.tonic--; this.hp = Math.min(this.maxHp, this.hp + this.maxHp * 0.45 * (1 + ((this.gear && this.gear.heal) || 0) + 0.15 * G.Mirror.lv('concentrate')) + this.rally); this.rally = 0;
+        g.save.tonic--; this.hp = Math.min(this.maxHp, this.hp + this.maxHp * 0.45 * (1 + ((this.gear && this.gear.heal) || 0) + 0.15 * G.Mirror.lv('concentrate')) * (this.healMul || 1) + this.rally); this.rally = 0;
         if ((g.save.equipped || []).includes('blessing')) this.gainRes(25 / this.resMul);
         G.SFX.play('heal'); G.FX.ember(this.x, this.y - 60, 30, '#9cf7d8', { w: 40, h: 90, up: 160 });
         G.FX.ring(this.x, this.y - 60, 10, 90, 0.5, '#9cf7d8', 3);
@@ -477,7 +485,7 @@
         if (!U.rectsOverlap(b, e.box)) continue;
         this.hitSet.add(e);
         const hx = U.clamp(this.x + this.facing * 50, e.box.x, e.box.x + e.box.w), hy = U.clamp(this.y - 70, e.box.y + 10, e.box.y + e.box.h - 10);
-        const m = G.Gear.modHit(this, e, G.Boons.modHit(this, e, h));
+        const m = G.DnD.modHit(this, e, G.Gear.modHit(this, e, G.Boons.modHit(this, e, h)), h);
         const ok = e.takeHit({ dmg: m.dmg, bal: m.bal, big: h.big || m.crit, crit: m.crit, launch: h.launch, hx, hy, dir: this.facing > 0 ? -0.2 : PI + 0.2, kbx: this.facing * (h.big ? 300 : 170) });
         if (!ok) continue;
         G.Boons.afterHit(this, e, m); G.Gear.afterHit(this, e, m);
@@ -527,6 +535,7 @@
     }
     perfectParry(src, info) {
       const g = this.game;
+      G.DnD.onParry(this);
       this.setState('parried', 0.02);
       this.sta = Math.min(this.maxSta, this.sta + 15); this.gainRes(13);
       const hx = this.x + this.facing * 26, hy = this.y - 82;
@@ -544,9 +553,9 @@
     }
     block(src, info) {
       const g = this.game;
-      const d = info.dmg * g.diff.dmg * 0.65 * (this.dmgTaken || 1) * ((g.dyn && g.dyn.dmg) || 1) * (1 - ((this.gear && this.gear.guard) || 0));
+      const d = info.dmg * g.diff.dmg * 0.65 * G.DnD.blockMul() * (this.dmgTaken || 1) * ((g.dyn && g.dyn.dmg) || 1) * (1 - ((this.gear && this.gear.guard) || 0));
       this.hp -= d; this.rally += d; this.rallyT = 0;
-      this.spendSta(13 + info.dmg * 0.5);
+      this.spendSta((13 + info.dmg * 0.5) * G.DnD.blockMul());
       const hx = this.x + this.facing * 24, hy = this.y - 80;
       G.FX.spark(hx, hy, 10, { col: '#ffd8a8', speed: 500, dir: this.facing > 0 ? 0 : PI, spread: 1.4 });
       G.SFX.play('parry', false); g.shake(0.2); g.hitstop(0.04);
@@ -558,7 +567,7 @@
     }
     perfectDodge(src) {
       const g = this.game;
-      this.perfectUsed = true; this.gainRes(10); this.sta = Math.min(this.maxSta, this.sta + 10);
+      this.perfectUsed = true; this.gainRes(10); this.sta = Math.min(this.maxSta, this.sta + 10); G.DnD.onDodge(this);
       this.counterTarget = src && src.takeHit ? src : (src && src.owner) || null; this.counterT = 1.1;
       g.slowmo(0.65, 0.22); G.SFX.play('perfectDodge');
       G.FX.ring(this.x, this.y - 60, 10, 160, 0.5, '#7ff4ff', 4);
@@ -578,6 +587,8 @@
       g.stats.hitsTaken++;
       if (this.hp <= 0 && G.Boons.onLethal(this)) { this.setState('hurt', 0.03); return; }
       if (this.hp <= 0) { this.hp = 0; this.die(); return; }
+      G.DnD.onHurt(this);
+      if (G.DnD.armored(this)) { this.vx = 0; this.vy = Math.max(this.vy, 0); G.FX.ring(this.x, this.y - 70, 6, 60, 0.25, '#ff8f6b', 3); return; }
       this.setState('hurt', 0.03);
       if (this.hp < this.maxHp * 0.3) g.bark('lowhp', true);
     }
@@ -622,6 +633,7 @@
         case 'heal': return Rig.sample(A.heal, st);
         case 'skill1': return Rig.sample(A.skill1, st);
         case 'skill2': return Rig.sample(A.skill2, st);
+        case 'cskill': return G.DnD.skillPose(this, A, Rig);
         case 'execute': return Rig.sample(A.execute, st);
         case 'rest': return Rig.full(A.rest(t));
         case 'dead': return Rig.sample(A.dead, st);
@@ -683,8 +695,9 @@
       const blink = this.hurtInv > 0 && Math.floor(this.t * 30) % 2 === 0 ? 0.65 : 1;
       ctx.globalAlpha = blink;
       Rig.drawRinne(ctx, this.x, this.y, this.facing, this.pose, { hair: this.hair, rib1: this.rib1, rib2: this.rib2, coatB: this.coatB, coatF: this.coatF, scarf: this.scarf },
-        { flash: this.flash, bladeGlow: this.counterT > 0 ? 0.6 : 0, blade: this.gear && this.gear.look, outfit: this.gear && this.gear.outfit });
+        { flash: this.flash, bladeGlow: this.counterT > 0 ? 0.6 : 0, blade: this.gear && this.gear.look, offhand: G.DnD.offhand(this.gear && this.gear.look), outfit: G.DnD.outfit(this.gear && this.gear.outfit) });
       ctx.globalAlpha = 1;
+      G.DnD.drawSpirit(ctx, this);
       this.trail.draw(ctx, now, 0.12, this.state === 'execute' ? '#ffffff' : (this.gear && this.gear.look && this.gear.look.col) || '#6ff3ff', '#ffffff');
     }
   }

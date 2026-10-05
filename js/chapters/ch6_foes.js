@@ -1,6 +1,6 @@
 'use strict';
-/* ECHOFALL — Chapter VI 沉默方舟 THE SILENT ARK — foes.
-   方舟守衛 ARK WARDEN · 沉睡市民 THE HUSHED · 調律機 TUNING ENGINE · 寂翼 HUSH SERAPH · elite 第六隊長・洛克 ROOK, THE LAST SENTRY.
+/* ECHOFALL — Chapter VI 渡魂船 THE SOUL FERRY — foes.
+   渡船守衛 FERRY WARDEN · 沉睡的亡者 THE HUSHED · 調律者 THE TUNER · 寂翼 HUSH SERAPH · elite 船衛・洛克 ROOK, THE LAST SENTRY.
    Every foe is painted procedurally in the inked cel style (Rig helpers). See docs/CHAPTER_API.md §4–5 and docs/STORY.md §3 (VI). */
 (function (G) {
   const K = G.EnemyKit, { TYPES, U, Rig, PI, TAU } = K;
@@ -155,7 +155,7 @@
   });
 
   /* =====================================================================================
-     方舟守衛 ARK WARDEN — riot-armoured Ark security; riot shield + stun baton
+     渡船守衛 FERRY WARDEN — riot-armoured ferry guard; riot shield + stun baton
      ===================================================================================== */
   const WS = 1.2;
   const WP = {
@@ -179,7 +179,7 @@
   };
   const wardenShield = (e) => { const J = e.J; if (!J || !J.shc) return { x: e.x + e.facing * 50, y: e.y - 90 }; return toW(e, J.shc, WS); };
   TYPES.c6_warden = {
-    name: '方舟守衛', en: 'ARK WARDEN', w: 44, h: 146, hp: 150, bal: 110, col: CYAN, shards: 58, poise: true, scale: WS, spawnT: 0.9, kbMul: 0.8,
+    name: '渡船守衛', en: 'FERRY WARDEN', w: 44, h: 146, hp: 150, bal: 110, col: CYAN, shards: 58, poise: true, scale: WS, spawnT: 0.9, kbMul: 0.8,
     portrait: [2.1, 0.92],
     init(e) { e.guardT = 0; e.blocks = 0; e.antenna = new Rig.Chain(4, 7, 0.22, 0.8); },
     voice: () => G.SFX.play('c6_wardenVoice'),
@@ -332,7 +332,7 @@
     ctx.restore();
     blob(ctx, [[-sw2, -sh], [sw2 + 2, -sh + 1], [sw2 + 3, -sh + 10], [sw2 + 3, sh - 8], [sw2 + 1, sh], [-sw2, sh], [-sw2 - 1, 0]]); inkS(ctx, 1.4);
     ctx.strokeStyle = WC.enamel; ctx.lineWidth = 1.6; ctx.strokeRect(-sw2 + 2, -sh + 4, sw2 * 2 - 1, sh * 2 - 8);
-    // stencilled 方舟 service marks (blocks, not text)
+    // stencilled ferry service marks (blocks, not text)
     ctx.fillStyle = 'rgba(255,255,255,0.75)'; for (let i = 0; i < 4; i++) ctx.fillRect(-2, -6 + i * 5, 6, 2.6);
     lighter(ctx, () => { ctx.fillStyle = U.rgba(CYAN, 0.7); ctx.fillRect(-sw2 + 3, -sh + 26, sw2 * 2 - 3, 1.2); });
     crystalCluster(ctx, sw2 + 2, sh - 10, 0.6, 0.55, 0.35, CRIM, '#ffc2d0', t);
@@ -360,7 +360,7 @@
   }
 
   /* =====================================================================================
-     沉睡市民 THE HUSHED — citizens frozen mid-step; noise wakes them, quiet lets them sleep again
+     沉睡的亡者 THE HUSHED — dead passengers frozen mid-step; noise wakes them, quiet lets them sleep again
      ===================================================================================== */
   const HS = 0.96;
   const HV = [   // four citizens, four frozen moments
@@ -411,7 +411,7 @@
     barkOnce('c6_hushedSleep', 400);
   }
   TYPES.c6_hushed = {
-    name: '沉睡市民', en: 'THE HUSHED', w: 36, h: 118, hp: 70, bal: 52, col: FROST, shards: 34, spawnT: 0.25, kbMul: 1, scale: HS,
+    name: '沉睡的亡者', en: 'THE HUSHED', w: 36, h: 118, hp: 70, bal: 52, col: FROST, shards: 34, spawnT: 0.25, kbMul: 1, scale: HS,
     portrait: [2.4, 0.92],
     init(e) {
       e.encId = e.enc; e.enc = null; e.awake = false; e.alert = 0; e.calmT = 0;
@@ -601,7 +601,7 @@
   const floorAt = (x, y) => { const g = G.Phys.groundBelow(x, y); return g > 1e8 ? y + 260 : g; };
   function hoverTo(e, drop, dt, k = 4) { const ty = (e.homeY ?? e.y) + drop + Math.sin(e.t * 1.3) * 6; e.vy = (ty - e.y) * k; }
   TYPES.c6_tuner = {
-    name: '調律機', en: 'TUNING ENGINE', w: 84, h: 94, hp: 115, bal: 80, col: AMBER, shards: 56, fly: true, hover: true, spawnT: 0.9, kbMul: 0.25, scale: TS,
+    name: '調律者', en: 'THE TUNER', w: 84, h: 94, hp: 115, bal: 80, col: AMBER, shards: 56, fly: true, hover: true, spawnT: 0.9, kbMul: 0.25, scale: TS,
     portrait: [2.2, 0.72],
     init(e) { e.forkA = 0; e.pend = 0; e.pendV = 0; e.beam = null; e.drop = 0; },
     voice: () => G.SFX.play('c6_tune'),
@@ -1147,7 +1147,7 @@
     G.SFX.play('c6_lamp'); G.FX.flash(sp.x, sp.y, 70, 0.25, p2 ? '#ff5d7e' : TEAL);
   }
   TYPES.c6_elite = {
-    name: '第六隊長・洛克', en: 'ROOK, THE LAST SENTRY', w: 52, h: 178, hp: 760, bal: 230, col: TEAL, elite: true, shards: 420, scale: RS, spawnT: 1.1, poise: true,
+    name: '船衛・洛克', en: 'ROOK, THE LAST SENTRY', w: 52, h: 178, hp: 760, bal: 230, col: TEAL, elite: true, shards: 420, scale: RS, spawnT: 1.1, poise: true,
     defeatDialog: 'c6_eliteDefeat', defeatRelic: 'c6_badge', music: 'c6_elite', portrait: [1.75, 0.94],
     init(e) { e.facing = -1; e.guardT = 0; e.blocks = 0; e.cape = new Rig.Chain(8, 9.5, 0.05, 0.9); e.plume = new Rig.Chain(6, 6, 0.1, 0.85); e.lastPick = null; e.p2k = 0; },
     voice: (e) => G.SFX.play('c6_rookVoice', e.phase === 2 ? 1.12 : 1),
@@ -1419,43 +1419,43 @@
   D.barks = D.barks || {}; D.speakers = D.speakers || {};
   if (!D.speakers.c6_rook) D.speakers.c6_rook = { name: '洛克', en: 'ROOK', color: '#7dffcf' };
   const BK = {
-    c6_shieldHint: { who: 'ode', text: '那面盾……從正面，是打不穿的。' },
+    c6_shieldHint: { who: 'ode', text: '……那面盾，沒有縫。' },
     c6_hushedWake: { who: 'ode', text: '……他醒了。是聲音。' },
     c6_hushedSleep: { who: 'ode', text: '……又睡了。' },
-    c6_hushedKilled: { who: 'ode', text: '……那是市民。我會記得。' },
+    c6_hushedKilled: { who: 'ode', text: '……那是乘客。我會記得。' },
     c6_eliteP2: { who: 'c6_rook', text: '……還有人在睡。我不能倒下。' },
   };
   for (const k in BK) if (!D.barks[k]) D.barks[k] = BK[k];
 
   /* =========================== codex: 寂裔 =========================== */
   const CODEX = [
-    { id: 'c6_warden', name: '方舟守衛', en: 'ARK WARDEN', portrait: 'c6_warden', unlock: 'seen_c6_warden', tag: '寂裔｜中階・人型・持盾',
+    { id: 'c6_warden', name: '渡船守衛', en: 'FERRY WARDEN', portrait: 'c6_warden', unlock: 'seen_c6_warden', tag: '寂裔｜中階・人型・持盾',
       body: [
-        '方舟的治安員。休止降臨那天，他們奉命守住走廊——至今仍在執勤，只是再也分不清誰是要保護的人。頭盔裡的通訊器反覆播著同一句：「請保持安靜，原地等待。」',
-        '攻擊模式：警棍三連擊（白光，可格擋）／盾牌衝撞（紅光，無法格擋，必須閃避）／正面連續被擋下三次攻擊後，會以盾牌反推（白光）。',
+        '渡魂船的守衛。門關上那天，他們奉命守住艙道——至今仍在執勤，只是再也分不清誰是要保護的人。頭盔裡反覆傳出同一句：「請保持安靜，原地等候渡河。」',
+        '攻擊模式：短棍三連擊（白光，可格擋）／盾牌衝撞（紅光，無法格擋，必須閃避）／正面連續被擋下三次攻擊後，會以盾牌反推（白光）。',
         '弱點：站定時正面攻擊會被盾牌彈開。繞到背後、用重擊撞開盾牌，或趁衝撞落空的空檔反擊。',
       ] },
-    { id: 'c6_hushed', name: '沉睡市民', en: 'THE HUSHED', portrait: 'c6_hushed', unlock: 'seen_c6_hushed', tag: '寂裔？｜方舟市民・休眠',
+    { id: 'c6_hushed', name: '沉睡的亡者', en: 'THE HUSHED', portrait: 'c6_hushed', unlock: 'seen_c6_hushed', tag: '寂裔？｜渡船乘客・長眠',
       body: [
-        '方舟上四萬兩千名市民之一。頌者讓他們停在走到一半的那一步——買菜的、澆花的、趕著上班的、正要開演的。結晶從他們的影子裡長出來。',
-        '他們聽得見。靠近時奔跑、揮劍或翻滾都可能把人吵醒（頭上浮現聲波時就是警告）；醒來的市民會緩慢地抓人、捶打（白光，可格擋）。',
-        '觀察：保持安靜一段時間，他們會重新睡去。殺死他們不會有人責怪你。但歐德會記得。',
+        '渡魂船上的乘客之一。船心讓他們睡在走到一半的那一步——提著菜籃的、澆花的、趕著上船的、正要回頭說再見的。結晶從他們腳下長出來，像一道遲來的影子。',
+        '他們聽得見。靠近時奔跑、揮劍或翻滾都可能把人吵醒（頭上浮現聲波時就是警告）；醒來的亡者會緩慢地抓人、捶打（白光，可格擋）。',
+        '觀察：保持安靜一段時間，他們會重新睡去。殺死他們不會有人責怪妳。但寧舒會記得。',
       ] },
-    { id: 'c6_tuner', name: '調律機', en: 'TUNING ENGINE', portrait: 'c6_tuner', unlock: 'seen_c6_tuner', tag: '寂裔｜機械・懸吊式',
+    { id: 'c6_tuner', name: '調律者', en: 'THE TUNER', portrait: 'c6_tuner', unlock: 'seen_c6_tuner', tag: '寂裔｜懸吊・調弦架',
       body: [
-        '掛在方舟天花板軌道上的維修吊臂，外形像一把巨大琴頭，原本替整艘船的共鳴管調音。如今它只調一個音：休止。',
+        '掛在船艙頂軌上的調弦架，外形像一把巨大的琴頭，原本替整艘船的龍骨調音，好讓渡歌傳到每一層船艙。如今它只調一個音：休止。',
         '攻擊模式：地面掃射光束（紅光，虛線標出路徑，用翻滾穿過）／三連調音波（白光，完美格擋可反彈）／站在它正下方時，音叉會砸下來（白光）。',
         '弱點：光束掃射後必須重新校準，會降到劍能觸及的高度。反彈回去的調音波也能擊中它。',
       ] },
     { id: 'c6_seraph', name: '寂翼', en: 'HUSH SERAPH', portrait: 'c6_seraph', unlock: 'seen_c6_seraph', tag: '寂裔｜飛行・刃翼',
       body: [
-        '方舟中庭的天使像。從前每到整點，它們會展翅報時，孩子們會數羽毛。休止讓它們的羽毛變成了刀。',
+        '渡歌中庭的天使像。從前每次開船，它們會展翅領航，船上的孩子會數它們的羽毛。門關上之後，它們的羽毛變成了刀。',
         '攻擊模式：俯衝斬（紅光，無法格擋，翻滾閃避）／羽刃齊射（白光，完美格擋可將羽刃彈回）／靠得太近時會降下來以雙翼剪斬（白光）。',
         '弱點：俯衝落空後會在地面停留片刻——那是砍它的時候。',
       ] },
-    { id: 'c6_elite', name: '第六隊長・洛克', en: 'ROOK, THE LAST SENTRY', portrait: 'c6_elite', unlock: 'seen_c6_elite', tag: '菁英｜第六降臨隊',
+    { id: 'c6_elite', name: '船衛・洛克', en: 'ROOK, THE LAST SENTRY', portrait: 'c6_elite', unlock: 'seen_c6_elite', tag: '菁英｜渡魂船船衛長',
       body: [
-        '第六降臨隊隊長。他的隊伍是唯一抵達方舟的降臨隊——然後一個接一個睡去。只有洛克沒有閉眼。他站在沉睡的市民之間，提著燈，守了不知道多少年的夜。',
+        '渡魂船的船衛長。門關上之後，船衛們一個接一個睡去。只有洛克沒有閉眼。他站在沉睡的亡者之間，提著燈，守了十八年的夜。',
         '攻擊模式：長槍三連刺（白光）／高舉長槍、停頓、假動作後才落下的下劈（白光）／盾擊接貼地掃槍（白光→紅光，掃槍可以跳過）／盾牌衝鋒（紅光）。',
         '第二階段：守夜燈轉紅，盾上的燈會沿地面放出光牆（白光，完美格擋可削減架勢），並加入四連刺接紅光突進。',
         '弱點：他只在站定時舉盾。等他出手，在收招的空檔反擊；重擊能把盾撞開。',
@@ -1465,6 +1465,6 @@
   for (const c of CODEX) if (!D.codex.hushborn.some((q) => q.id === c.id)) D.codex.hushborn.push(c);
   if (!D.codex.items.some((q) => q.id === 'c6_badge')) D.codex.items.push({
     id: 'c6_badge', name: '守夜者徽章', en: "SENTRY'S BADGE", unlock: 'relic_c6_badge', relic: true,
-    body: ['洛克胸前的第六隊徽章。背面密密麻麻，刻滿細小的刻痕——每守過一夜，他就刻一道。', '最後一道只刻了一半。', '遺物效果：最大耐力 +25；格擋後以攻擊取回的可回復生命 +50%。'],
+    body: ['洛克胸前的船衛徽章。背面密密麻麻，刻滿細小的刻痕——每守過一夜，他就刻一道。', '最後一道只刻了一半。', '遺物效果：最大耐力 +25；格擋後以攻擊取回的可回復生命 +50%。'],
   });
 })(window.G);

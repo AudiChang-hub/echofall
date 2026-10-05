@@ -1,5 +1,5 @@
 'use strict';
-/* ECHOFALL — Chapter II foes: Rimehound, Knell Monk, Tetherling, Linesman, and the elite Olin, the Frozen Bugler.
+/* ECHOFALL — Chapter II foes: Rimehound, Knell Monk, Tetherling, Linesman, and the elite Olin, the Frozen Hauler.
    Everything here is drawn procedurally in the Hades-like inked cel style (see docs/CHAPTER_API.md §5). */
 (function (G) {
   const K = G.EnemyKit, { TYPES, U, Rig, PI, TAU } = K;
@@ -583,7 +583,8 @@
       if (e.mode === 'hang') {
         const dx = e.P.x - e.x;
         e.facing = dx < 0 ? -1 : 1;
-        e.vx = U.approach(e.vx, Math.abs(dx) > 30 ? Math.sign(dx) * 70 * e.speedMul : 0, 220 * dt);
+        // scuttles along its strand fast while you are far, then creeps the last stretch before it lets go
+        e.vx = U.approach(e.vx, Math.abs(dx) > 30 ? Math.sign(dx) * (Math.abs(dx) > 320 ? 230 : 70) * e.speedMul : 0, (Math.abs(dx) > 320 ? 700 : 220) * dt);
         e.vy = (e.hangY + Math.sin(e.t * 1.3) * 5 - e.y) * 3;
         if (e.cd <= 0 && Math.abs(dx) < 180 && e.P.y > e.y + 20 && e.P.y - e.y < 560) e.startAtk(TL.drop);
         return;
@@ -837,7 +838,7 @@
   };
   const LS = 1.15;
   const LM = TYPES.c2_linesman = {
-    name: '巡線兵', en: 'LINESMAN', w: 44, h: 150, hp: 95, bal: 72, col: AMBER, shards: 30, poise: false, kbMul: 0.9, spawnT: 0.9, scale: LS,
+    name: '巡索纜夫', en: 'LINESMAN', w: 44, h: 150, hp: 95, bal: 72, col: AMBER, shards: 30, poise: false, kbMul: 0.9, spawnT: 0.9, scale: LS,
     portrait: [2.0, 0.92],
     init(e) { e.ant = new Rig.Chain(5, 7, 0.2, 0.8); e.gaitP = 0; },
     voice: (e) => G.SFX.play('c2_radio', e.atk === LM.hook ? 1 : 0.6),
@@ -1151,7 +1152,7 @@
     G.FX.shards(e.cx, e.cy - 40, 30, ICE, 700); G.FX.shards(e.cx, e.cy - 40, 16, ROSE, 600);
   }
   const OL = TYPES.c2_elite = {
-    name: '冰封號手・歐林', en: 'OLIN, THE FROZEN BUGLER', w: 62, h: 206, hp: 520, bal: 190, col: '#9fd8ff', elite: true, shards: 170, scale: OS, spawnT: 1.2,
+    name: '冰封纜夫・歐林', en: 'OLIN, THE FROZEN HAULER', w: 62, h: 206, hp: 520, bal: 190, col: '#9fd8ff', elite: true, shards: 170, scale: OS, spawnT: 1.2,
     poise: true, defeatDialog: 'c2_eliteDefeat', defeatRelic: 'c2_horn', music: 'c2_elite',
     portrait: [1.55, 0.94],
     init(e) { e.coat = new Rig.Chain(5, 10, 0.07, 0.86); e.coatF = new Rig.Chain(4, 9, 0.09, 0.86); e.gaitP = 0; e.last = []; e.facing = -1; },
@@ -1439,12 +1440,12 @@
   /* ============================ data / codex / sfx ============================ */
   const D = G.DATA, hush = D.codex.hushborn = D.codex.hushborn || [];
   const codex = (o) => { if (!hush.some((q) => q.id === o.id)) hush.push(o); };
-  // Olin's phase-2 bark (his own signal call, see the note 「歐林的號譜」)
-  D.barks.c2_eliteP2 = D.barks.c2_eliteP2 || { who: 'c2_olin', text: '一長，不停……我在這裡。跟著聲音……走。' };
+  // Olin's phase-2 bark (his own signal call, see the note 「纜夫的號令」)
+  D.barks.c2_eliteP2 = D.barks.c2_eliteP2 || { who: 'c2_olin', text: '一長，不停……拉。有人……要上山了。' };
   codex({
     id: 'c2_rimehound', name: '霜鳴犬', en: 'RIMEHOUND', portrait: 'c2_rimehound', unlock: 'seen_c2_rimehound', tag: '寂裔｜低階・群獵',
     body: [
-      '鐘樓獵人說，雪夜裡聽見的狼嚎，有一半不是狼。冰晶甲片包著一具空心肋籠，裡面只剩一顆會發光的晶核在跳——像有什麼東西替牠記得怎麼呼吸。總是兩三隻一起出現。',
+      '鐘樓的人說，雪夜裡聽見的狼嚎，有一半不是狼。排隊排得太久的人，會先忘了名字，再忘了自己是人。冰晶甲片包著一具空心肋籠，裡面只剩一顆會發光的晶核在跳——像有什麼東西替牠記得怎麼呼吸。總是兩三隻一起出現。',
       '攻擊模式：伏低後撲咬（白光，可格擋）；連續兩次咬合（白、白）。抬頭長嚎時，附近的寂裔會加速數秒。',
       '弱點：撲咬落地後的空檔。先打斷正在長嚎的那一隻。',
     ],
@@ -1453,7 +1454,7 @@
   codex({
     id: 'c2_knellmonk', name: '喪鐘僧', en: 'KNELL MONK', portrait: 'c2_knellmonk', unlock: 'seen_c2_knellmonk', tag: '寂裔｜中階・人型',
     body: [
-      '鐘樓的老人說，以前每座山寺都有一口為死者敲的鐘。寂靜降臨後，敲鐘的人和鐘長成了同一個東西：頭顱是一口裂開的青銅鐘，鐘口裡吊著一顆發光的晶錘，代替他看著你。',
+      '鐘樓的老人說，以前每座山寺都有一口為死者敲的鐘。門關上以後，沒有死者可送，敲鐘的人和鐘長成了同一個東西：頭顱是一口裂開的青銅鐘，鐘口裡吊著一顆發光的晶錘，代替他看著妳。',
       '攻擊模式：高舉鐘槌後重砸（紅光，不可格擋），落地的鐘聲會沿著地面推出一道衝擊波——跳過去；橫掃鐘槌（白光，可格擋）。',
       '弱點：重砸之後鐘槌會在地上停留很久。他揮槌時不會因輕擊而退縮，切勿貪攻。',
     ],
@@ -1461,24 +1462,24 @@
   codex({
     id: 'c2_tetherling', name: '縛索蛛', en: 'TETHERLING', portrait: 'c2_tetherling', unlock: 'seen_c2_tetherling', tag: '寂裔｜低階・伏擊',
     body: [
-      '錨站的升降索斷了十七年，斷頭沒有落地，而是自己打了結、長出腳。它們倒吊在半空的索上，等腳下有東西經過。',
+      '纜站的送棺索斷了十八年，斷頭沒有落地，而是自己打了結、長出腳。它們倒吊在半空的索上，等腳下有東西經過——像在等一副永遠不來的棺木。',
       '攻擊模式：從頭頂墜落（紅光——地上的影子變深就快離開）；落地後吐出黏稠的纜絲團（白光，可格擋，完美格擋能彈回去），被打中雙腿會被纏住、跑不快——用閃避掙脫；近身時用前腳戳刺（白光）。',
       '弱點：倒吊時跳起來砍它的索——連中三下，它會自己摔下來。',
     ],
   });
   codex({
-    id: 'c2_linesman', name: '巡線兵', en: 'LINESMAN', portrait: 'c2_linesman', unlock: 'seen_c2_linesman', tag: '寂裔｜中階・人型',
+    id: 'c2_linesman', name: '巡索纜夫', en: 'LINESMAN', portrait: 'c2_linesman', unlock: 'seen_c2_linesman', tag: '寂裔｜中階・人型',
     body: [
-      '方舟升降索的維修技師。最後一班的值勤日誌停在「索體異常共振，前往檢查」。他還在巡線——護目鏡的一片鏡片裡長出了晶體，無線電裡只剩沙沙聲，他仍然每隔幾秒就回報一次「線路正常」。',
-      '攻擊模式：絕緣鉤桿全力突刺（紅光，不可格擋），鉤中會把你拖到他面前；鉤桿低掃、高掃兩連擊（白、白）。會在雪地插下中繼信標：地上亮起紅圈時離開範圍，信標會放電。',
+      '山門纜站的纜夫。最後一班的值勤紀錄停在「索體異常，前往檢查」。他還在巡索——護目鏡的一片鏡片裡長出了晶體，喉嚨裡只剩沙沙聲，他仍然每隔幾秒就喊一次「索況正常」。',
+      '攻擊模式：絕緣鉤桿全力突刺（紅光，不可格擋），鉤中會把妳拖到他面前；鉤桿低掃、高掃兩連擊（白、白）。會在雪地插下中繼信標：地上亮起紅圈時離開範圍，信標會放電。',
       '弱點：突刺落空後收桿很慢。信標會在他倒下後熄滅。',
     ],
   });
   codex({
-    id: 'c2_elite', name: '冰封號手・歐林', en: 'OLIN, THE FROZEN BUGLER', portrait: 'c2_elite', unlock: 'seen_c2_elite', tag: '菁英｜第二降臨隊・信號手',
+    id: 'c2_elite', name: '冰封纜夫・歐林', en: 'OLIN, THE FROZEN HAULER', portrait: 'c2_elite', unlock: 'seen_c2_elite', tag: '菁英｜山門纜站・纜夫頭',
     body: [
-      '第二降臨隊的信號手。他的號角曾經在暴風雪裡替整支隊伍指路——直到某一天，號角吹出的不再是聲音，而是寂靜。', '鐘樓的孩子們還記得他。他們不知道，那首集合號，他後來又吹了十七年。',
-      '他守在錨站上方的平台，背上的巨號與斧刃結成冰。號角聲會擴散成一圈聲環（白光，可完美格擋）；斧刃連擊之後，常接一記延遲的紅光劈砍。',
+      '山門纜站的纜夫頭。以前，每一副棺木掛上索之前，他都吹一聲號，山上的絞盤便開始轉。他的斧頭，是用來劈開結在索上的冰的。', '鐘樓的孩子們還記得他。他們不知道，那一聲「拉」，他後來又吹了十八年。',
+      '他守在纜站上方的平台，背上的巨號與斧刃結成冰。號角聲會擴散成一圈聲環（白光，可完美格擋）；斧刃連擊之後，常接一記延遲的紅光劈砍。',
       '第二階段：冰甲裂開，他會吹響衝鋒號、踏冰突進。號聲未歇，不可戀戰。',
     ],
   });

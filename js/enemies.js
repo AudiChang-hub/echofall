@@ -29,6 +29,8 @@
     distP() { return Math.abs(this.P.x - this.x); }
     boxW(b) { return this.facing > 0 ? { x: this.x + b.x, y: this.y + b.y, w: b.w, h: b.h } : { x: this.x - b.x - b.w, y: this.y + b.y, w: b.w, h: b.h }; }
     startAtk(def) {
+      // a crowd takes turns (js/ai.js): a third melee swing waits for an opening
+      if (G.AI && G.AI.deny(this)) { this.cd = Math.max(this.cd || 0, 0.3 + Math.random() * 0.4); return; }
       this.atk = def; this.setState('atk'); this.hitsDone = {}; this.tellsDone = {}; this.evDone = {}; def.onStart && def.onStart(this);
       if (this.T.voice && Math.abs(this.x - this.P.x) < 900) this.T.voice(this);
     }
@@ -163,6 +165,7 @@
       } else {
         this.cd -= dt;
         this.T.think(this, dt);
+        if (!this.boss && !this.elite && G.AI) G.AI.pursue(this, dt);
       }
       if (!this.fly) { this.vy = Math.min(this.vy + 2400 * (G.LEVEL.gravity || 1) * dt, 1400); }
       else if (!this.boss && this.state !== 'atk' && this.state !== 'idle') this.vy *= Math.exp(-6 * dt);
@@ -774,7 +777,7 @@
     for (let i = arr.length - 1; i >= 0; i--) {
       const p = arr[i];
       p.t += dt; p.life -= dt;
-      if (p.friendly && p.owner && !p.owner.dead) {
+      if (p.friendly && p.owner && !p.owner.dead && p.kind !== 'knife' && p.kind !== 'wind') {
         const a = Math.atan2(p.owner.cy - p.y, p.owner.cx - p.x), sp = Math.hypot(p.vx, p.vy);
         p.vx = U.lerp(p.vx, Math.cos(a) * sp, 0.12); p.vy = U.lerp(p.vy, Math.sin(a) * sp, 0.12);
       }
@@ -797,9 +800,12 @@
           if (e.dead) continue;
           const b = e.box;
           if (p.x > b.x - p.r && p.x < b.x + b.w + p.r && p.y > b.y - p.r && p.y < b.y + b.h + p.r) {
-            e.takeHit({ dmg: 26 * P.dmgMul, bal: 40, hx: p.x, hy: p.y, big: true }); dead = true;
-            G.game.hitstop(0.08); G.game.shake(0.4); G.SFX.play('hit', 1.2);
-            break;
+            if (p.pierce) { if (p.hit.has(e)) continue; p.hit.add(e); }
+            const pm = p.pdmg != null ? G.DnD.modHit(P, e, { dmg: p.pdmg * P.dmgMul, bal: p.pbal, crit: false }, { noRes: p.kind === 'wind' || p.kind === 'spirit' }) : null;
+            e.takeHit(pm ? { dmg: pm.dmg, bal: pm.bal, crit: pm.crit, hx: p.x, hy: p.y, big: pm.crit } : { dmg: 26 * P.dmgMul, bal: 40, hx: p.x, hy: p.y, big: true });
+            if (!p.pierce) dead = true;
+            if (pm) { G.game.hitstop(0.03); G.SFX.play('hit', 1.5); } else { G.game.hitstop(0.08); G.game.shake(0.4); G.SFX.play('hit', 1.2); }
+            if (!p.pierce) break;
           }
         }
       }
@@ -809,7 +815,16 @@
   G.drawProjectiles = (ctx) => {
     ctx.save(); ctx.globalCompositeOperation = 'lighter';
     for (const p of G.game.projectiles) {
-      const col = p.friendly ? '#7ff4ff' : p.col;
+      if (p.kind === 'knife') {   // 影行者's throwing knife: a spinning silver sliver
+        const a = p.t * 30; ctx.strokeStyle = 'rgba(220,255,235,.95)'; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(p.x - Math.cos(a) * 9, p.y - Math.sin(a) * 9); ctx.lineTo(p.x + Math.cos(a) * 9, p.y + Math.sin(a) * 9); ctx.stroke();
+        ctx.strokeStyle = 'rgba(141,252,176,.35)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 0.03, p.y - p.vy * 0.03); ctx.stroke(); continue;
+      }
+      if (p.kind === 'wind') {   // 巫女's spirit wind: a rolling crescent of pale violet
+        const d = Math.sign(p.vx) || 1, k = Math.min(1, p.life * 3);
+        for (let i = 0; i < 3; i++) { ctx.strokeStyle = `rgba(226,214,255,${(0.7 - i * 0.2) * k})`; ctx.lineWidth = 3 - i * 0.6; ctx.beginPath(); ctx.ellipse(p.x - d * i * 9, p.y, p.r * (0.45 - i * 0.06), p.r * (1 - i * 0.12), 0, d > 0 ? -Math.PI / 2 : Math.PI / 2, d > 0 ? Math.PI / 2 : Math.PI * 1.5); ctx.stroke(); }
+        glow(ctx, p.x, p.y, p.r * 1.6, '#c9b6ff', 0.25 * k); continue;
+      }
+      const col = p.friendly ? (p.kind === 'spirit' ? '#e2d6ff' : '#7ff4ff') : p.col;
       glow(ctx, p.x, p.y, p.r * 3.2, col, 0.55);
       ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 0.45, 0, TAU); ctx.fill();
       ctx.strokeStyle = U.rgba(col, 0.9); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (0.8 + Math.sin(p.t * 20) * 0.15), 0, TAU); ctx.stroke();
@@ -828,7 +843,7 @@
     slam: { tF: 1.0, kF: -1.6, tB: -0.6, kB: -1.0, ry: 22, torso: 0.8, head: 0.2, aF: 0.6, eF: 0.1, aB: -0.5, eB: 0.4 },
   };
   TYPES.graves = {
-    name: '斷弦騎士・葛雷夫', w: 46, h: 172, hp: 420, bal: 170, col: VIO, elite: true, shards: 180, scale: 1.32, spawnT: 1.0, defeatDialog: 'gravesDefeat', defeatRelic: 'dawnstring',
+    name: '掘墓人・葛雷夫', w: 46, h: 172, hp: 420, bal: 170, col: VIO, elite: true, shards: 180, scale: 1.32, spawnT: 1.0, defeatDialog: 'gravesDefeat', defeatRelic: 'dawnstring',
     voice: () => G.SFX.play('growl', 0.72),
     init(e) { e.cape = new Rig.Chain(8, 9, 0.05, 0.9); e.facing = -1; },
     think(e, dt) {
@@ -1034,7 +1049,7 @@
   };
 
   TYPES.maestrina = {
-    name: '首席指揮・瑪絲緹娜', w: 64, h: 190, hp: 1500, bal: 280, col: CRIM, boss: true, fly: true, shards: 600, scale: 1.4, spawnT: 2.2, defeatDialog: 'bossDefeat',
+    name: '送葬司儀・瑪格', w: 64, h: 190, hp: 1500, bal: 280, col: CRIM, boss: true, fly: true, shards: 600, scale: 1.4, spawnT: 2.2, defeatDialog: 'bossDefeat',
     voice: (e) => G.SFX.play('bossVoice', e.phase),
     init(e) {
       e.hair = [new Rig.Chain(12, 10, 0.05, 0.93), new Rig.Chain(10, 10, 0.05, 0.93), new Rig.Chain(11, 9, 0.05, 0.93)];

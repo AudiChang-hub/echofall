@@ -16,14 +16,14 @@
   // so a first visit only fetches the engine + chapter 1. META lets menus name a chapter before it is loaded.
   const LAST = 8;
   const META = {
-    1: { id: 1, num: 'I', numZh: '一', title: '墜落的音符', en: 'THE FALLEN NOTE' },
-    2: { id: 2, num: 'II', numZh: '二', title: '頌歌之梯', en: 'THE CANTATA LADDER' },
-    3: { id: 3, num: 'III', numZh: '三', title: '斷層之井', en: 'THE FAULTWELL' },
-    4: { id: 4, num: 'IV', numZh: '四', title: '沉沒的歌劇院', en: 'THE DROWNED OPERA' },
-    5: { id: 5, num: 'V', numZh: '五', title: '無重之塔', en: 'THE UNMOORED SPIRE' },
-    6: { id: 6, num: 'VI', numZh: '六', title: '沉默方舟', en: 'THE SILENT ARK' },
-    7: { id: 7, num: 'VII', numZh: '七', title: '休止之所', en: 'THE REST' },
-    8: { id: 8, num: 'VIII', numZh: '八', title: '最後的樂章', en: 'THE LAST MOVEMENT' },
+    1: { id: 1, num: 'I', numZh: '一', title: '送葬之城', en: 'THE FUNERAL CITY' },
+    2: { id: 2, num: 'II', numZh: '二', title: '雪嶺山門', en: 'THE SNOW GATE' },
+    3: { id: 3, num: 'III', numZh: '三', title: '回頭路', en: 'THE WAY BACK' },
+    4: { id: 4, num: 'IV', numZh: '四', title: '溺死者的劇場', en: 'THE THEATRE OF THE DROWNED' },
+    5: { id: 5, num: 'V', numZh: '五', title: '倒懸之塔', en: 'THE INVERTED SPIRE' },
+    6: { id: 6, num: 'VI', numZh: '六', title: '渡魂船', en: 'THE SOUL FERRY' },
+    7: { id: 7, num: 'VII', numZh: '七', title: '遺忘之庭', en: 'THE GARDEN OF FORGETTING' },
+    8: { id: 8, num: 'VIII', numZh: '八', title: '冥后宮殿', en: 'THE PALACE OF THE DEAD QUEEN' },
   };
   const loadScript = (src) => new Promise((res, rej) => {
     const s = document.createElement('script');
@@ -110,7 +110,7 @@
 
   // chapter 1: everything already lives in world.js / data.js / audio.js
   Ch.register({
-    id: 1, key: 'ch1', num: 'I', numZh: '一', title: '墜落的音符', en: 'THE FALLEN NOTE',
+    id: 1, key: 'ch1', num: 'I', numZh: '一', title: '送葬之城', en: 'THE FUNERAL CITY',
     level: Object.assign({}, CH1_LEVEL, { tintAt: CH1_TINT }),
     pal: CH1_PAL,
     music: { explore: 'explore', boss: 'boss', boss2: 'boss2', elite: 'duel', rest: 'rest' },

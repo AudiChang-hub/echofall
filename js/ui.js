@@ -199,8 +199,9 @@
         const cells = document.querySelectorAll('#resCells i');
         cells.forEach((cell, i) => { const f = U.clamp((v - i * 25) / 25, 0, 1); cell.style.setProperty('--f', f); cell.classList.toggle('full', f >= 1); });
         $('#resCells').classList.toggle('max', v >= 100);
-        $('#sk1').classList.toggle('ready', v >= 25);
-        $('#skName').textContent = v >= 50 ? '終止式' : '斷弦'; $('#skCost').textContent = v >= 50 ? '◆◆' : '◆';
+        const sk = G.DnD.skills();
+        $('#sk1').classList.toggle('ready', v >= sk.c1);
+        $('#skName').textContent = v >= sk.c2 ? sk.n2 : sk.n1; $('#skCost').textContent = v >= sk.c2 ? '◆◆' : '◆';
       });
       set('shards', Math.floor(g.save.shards), (v) => { const s = $('#shardNum'); s.textContent = v; const p = s.parentElement; p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); });
       set('gearUp', G.Gear ? G.Gear.hasNewBetter(g.save) : false, (v) => { $('#gearUp').hidden = !v; });
@@ -297,6 +298,7 @@
         { label: '繼續', en: 'RESUME', action: resume },
         ...(this._tutSkipItem ? [{ label: '跳過戰鬥訓練', en: 'SKIP TRAINING', action: () => { resume(); G.Tut.skip(); } }] : []),
         { label: '全螢幕', en: 'FULLSCREEN', action: () => G.Fullscreen.toggle() },
+        ...(g.save && g.save.dnd ? [{ label: '角色', en: 'CHARACTER', action: () => G.DnD.openSheet() }] : []),
         { label: '裝備', en: G.Gear && G.Gear.anyBetter(g.save) ? '▲ 有可替換的裝備' : 'EQUIPMENT', action: () => this.openGear() },
         { label: '殘響・遺物', en: 'BUILD', action: () => this.openBuild() },
         { label: '檔案庫', en: 'ARCHIVE', action: () => this.openCodex() },
@@ -392,7 +394,7 @@
             text.value = G.SaveCode.encode(s);
             btn.textContent = '複製存檔碼'; btn.disabled = false;
           } else {
-            info.textContent = '還沒有存檔。在遊戲中第一次調諧「共鳴碑」之後，就會產生存檔。';
+            info.textContent = '還沒有存檔。在遊戲中第一次點亮「魂燈台」之後，就會產生存檔。';
             text.value = ''; btn.textContent = '複製存檔碼'; btn.disabled = true;
           }
         } else {
@@ -476,7 +478,7 @@
         const ok = unlocked(e, cat);
         det.classList.toggle('locked', !ok);
         const tag = det.querySelector('.cd-tag'), h = det.querySelector('h3'), en = det.querySelector('.cd-en'), body = det.querySelector('.cd-body');
-        if (!ok) { tag.textContent = '尚未解鎖'; h.textContent = '？？？'; en.textContent = 'UNDISCOVERED'; body.innerHTML = '<p>繼續探索灰港，或許能找到更多線索。</p>'; det.classList.add('noimg'); return; }
+        if (!ok) { tag.textContent = '尚未解鎖'; h.textContent = '？？？'; en.textContent = 'UNDISCOVERED'; body.innerHTML = '<p>繼續往下走，或許能找到更多線索。</p>'; det.classList.add('noimg'); return; }
         tag.textContent = e.tag || (cat === 'notes' ? '拾得文書' : cat === 'world' ? '世界' : '物品');
         h.textContent = e.name; en.textContent = e.en || ''; body.innerHTML = e.body.map((p) => `<p>${p}</p>`).join('');
         det.classList.toggle('noimg', !e.portrait);
@@ -531,8 +533,8 @@
           paint(); ctx.setTransform(9, 0, 0, 9, W / 2, H / 2); G.Rig.drawOde(ctx, 0, 0, 1.2, 1, 0);
         } else if (key === 'barrow') {
           paint(); ctx.setTransform(3.6, 0, 0, 3.6, W / 2, H * 0.86); g.drawBarrow(ctx, 0, 0, 1);
-        } else if (key === 'talia') emblem('塔莉亞 · 無線電頻段 7.13', '#9cf7b0');
-        else if (key === 'vega') emblem('第七降臨隊　隊長', '#ffffff');
+        } else if (key === 'talia') emblem('妲莉 · 點燈人', '#9cf7b0');
+        else if (key === 'vega') emblem('六公主', '#ffffff');
         else {
           // chapter portraits: a custom painter, or the enemy itself framed by its size (T.portrait = [scale, yFrac])
           if (this.portraits[key]) { paint(); this.portraits[key](ctx, W, H, g); ctx.setTransform(1, 0, 0, 1, 0, 0); g.dtVis = prevDt; return; }
@@ -552,10 +554,10 @@
     openPylon(py, onLeave) {
       const g = G.game, sv = g.save, el = $('#pylon');
       $('#pyName').textContent = py.name;
-      const tabs = [['up', '調校'], ['gear', G.Gear && G.Gear.anyBetter(sv) ? '裝備・鍛造 ▲' : '裝備・鍛造'], ['abyss', '殘響深淵'], ['travel', '旅行'], ['trade', '交易'], ['relic', '遺物'], ['codex', '檔案庫']];
+      const tabs = [['up', '調校'], ['gear', G.Gear && G.Gear.anyBetter(sv) ? '裝備・鍛造 ▲' : '裝備・鍛造'], ['abyss', '無底冥井'], ['travel', '旅行'], ['trade', '交易'], ['relic', '遺物'], ['codex', '檔案庫']];
       let ti = 0;
       const info = $('#pyInfo');
-      const taliaLines = ['「止弦的第三根弦有點走音，我幫你調一下。」', '「聽說方舟的刀都是手工打的？真浪漫。」', '「別死喔。我是說真的。修共鳴碑很花時間的。」', '「鐘樓今天又有兩個小孩出生了。你在下面要加油。」'];
+      const taliaLines = ['「燈油還夠。妳慢慢來，我不趕。」', '「外面的花，是什麼顏色的？……下次再告訴我就好。」', '「妳走過的燈，我都會一盞一盞點著。迷路的時候，就往亮的地方走。」', '「妳的刀有一點缺口。坐下來，我幫妳看看。」'];
       const shards = () => { $('#pyShards').textContent = Math.floor(sv.shards); };
       G.Mirror.st(sv);
       let menu;
@@ -565,10 +567,18 @@
       const tracks = [];
       for (const slot of MR.SLOTS) if (slot.a.up) tracks.push([slot, 'a']);
       for (const slot of MR.SLOTS) for (const side of ['a', 'b']) if (!(side === 'a' && slot.a.up)) tracks.push([slot, side]);
-      const buildUp = () => tracks.map(([slot, side]) => {
+      const attrRows = () => (sv.dnd ? G.DnD.ATTRS.map((a) => ({
+        label: `${G.Icons.svg(a.id, 22, a.col)}<span>${a.name}</span>`, en: a.en, attr: a.id, cls: 'tu tu-attr',
+        val: () => `<span class="tu-score">${G.DnD.score(a.id, sv)}</span>`,
+        action: () => {
+          if (!G.DnD.buy(a.id, sv)) { G.SFX.play('uiBack'); return; }
+          g.player.recalc(); G.SFX.play('pylon'); shards(); menu.refresh(); showInfo(menu.items[menu.i]); g.persist();
+        },
+      })) : []);
+      const buildUp = () => attrRows().concat(tracks.map(([slot, side]) => {
         const f = MR.face(slot, side);
         return {
-          label: f.name, en: f.en, slot, side, cls: 'tu',
+          label: `${G.Icons.svg(f.id, 22)}<span>${f.name}</span>`, en: f.en, slot, side, cls: 'tu',
           extra: () => `<span class="lv">${pips(f.max, MR.rank(slot, side, sv))}</span>`,
           action: () => {
             if (!MR.buy(slot, side, sv)) { G.SFX.play('uiBack'); return; }
@@ -578,7 +588,7 @@
             G.SFX.play('pylon'); shards(); menu.refresh(); showInfo(menu.items[menu.i]); g.persist();
           },
         };
-      });
+      }));
       const buildRelic = () => {
         const owned = Object.keys(D.relics).filter((k) => sv.flags['relic_' + k]);
         if (!owned.length) return [{ label: '尚無遺物', en: 'NONE', none: true, action: () => {} }];
@@ -596,8 +606,19 @@
       const showInfo = (it) => {
         if (!it) return;
         if (it.locked) {
-          info.innerHTML = `<h4>殘響深淵</h4><p class="en">THE ABYSS · 尚未開放</p><p>擊倒第一章的頭目「瑪絲緹娜」之後，深淵就會開啟。</p>
-            <p>深淵是一層又一層的挑戰：每層打完選一扇門、拿門上的獎勵；每 5 層有守門者。死亡不會遺落碎片。</p>`;
+          info.innerHTML = `<h4>無底冥井</h4><p class="en">THE BOTTOMLESS WELL · 尚未開放</p><p>擊倒第一章的頭目之後，冥井就會開啟。</p>
+            <p>冥井是七道門之外、更深的地方，一層又一層的挑戰：每層打完選一扇門、拿門上的獎勵；每 5 層有守門者。死亡不會遺落碎片。</p>`;
+          return;
+        }
+        if (it.attr) {
+          const a = G.DnD.ATTRS.find((q) => q.id === it.attr), s = G.DnD.score(a.id, sv), m = G.DnD.mod(a.id, sv), c = G.DnD.cost(a.id, sv), have = Math.floor(sv.shards);
+          const nm = Math.floor((s + 1 - 10) / 2);
+          const btn = c == null ? '<button type="button" class="py-buy" disabled>已達上限 20</button>'
+            : have < c ? `<button type="button" class="py-buy" disabled>碎片不足：需要 ${c}・持有 ${have}</button>`
+            : `<button type="button" class="py-buy" data-buy>${a.name}提升到 ${s + 1}<small>－${c} 碎片</small></button>`;
+          info.innerHTML = `<div class="tu-head">${G.Icons.badge(a.id, a.col, 52)}<div><h4>${a.name}<em class="tu-sc">${s}</em></h4><p class="en">${a.en} · 修正值 ${m >= 0 ? '+' + m : m}</p></div></div>
+            <p>${a.fx(m)}</p>${nm !== m && c != null ? `<p class="tu-next">提升到 ${s + 1} 後：${a.fx(nm)}</p>` : c != null ? '<p class="tu-next">修正值每 2 點提升一次；下一點會讓修正值進位。</p>' : ''}${btn}`;
+          const bb = info.querySelector('[data-buy]'); if (bb) bb.onclick = () => { if (this.top() && this.top().id === 'pylon') menu.activate(); };
           return;
         }
         if (it.slot) {
@@ -605,7 +626,7 @@
           const btn = c == null ? '<button type="button" class="py-buy" disabled>已達最高等級</button>'
             : have < c ? `<button type="button" class="py-buy" disabled>碎片不足：需要 ${c}・持有 ${have}</button>`
             : `<button type="button" class="py-buy" data-buy>調校到 Lv ${r + 1}<small>－${c} 碎片</small></button>`;
-          info.innerHTML = `<h4>${f.name}</h4><p class="en">${f.en} · Lv ${r} / ${f.max}</p><p>${f.desc(Math.max(1, r))}</p>${r > 0 && c != null ? `<p class="tu-next">下一級：${f.desc(r + 1)}</p>` : ''}${btn}
+          info.innerHTML = `<div class="tu-head">${G.Icons.badge(f.id, 'var(--cyan)', 52)}<div><h4>${f.name}</h4><p class="en">${f.en} · Lv ${r} / ${f.max}</p></div></div><p>${f.desc(Math.max(1, r))}</p>${r > 0 && c != null ? `<p class="tu-next">下一級：${f.desc(r + 1)}</p>` : ''}${btn}
             <p class="talia">${taliaLines[(r + it.slot.id.length) % taliaLines.length]}</p>`;
           const bb = info.querySelector('[data-buy]'); if (bb) bb.onclick = () => { if (this.top() && this.top().id === 'pylon') menu.activate(); };
           return;
@@ -614,7 +635,7 @@
           const on = sv.equipped.includes(it.rk), full = !on && sv.equipped.length >= 2;
           info.innerHTML = `<h4>${D.relics[it.rk].name}</h4><p class="en">${on ? '裝備中 EQUIPPED' : '未裝備'} · 欄位 ${sv.equipped.length}/2</p><p>${c ? c.body[0] : ''}</p><p>${D.relics[it.rk].desc}</p>
             <button type="button" class="py-buy" ${full ? 'disabled' : ''}>${on ? '卸下' : full ? '遺物欄位已滿（2）' : '裝備'}</button>`;
-        } else info.innerHTML = '<h4>遺物</h4><p>在灰港探索、挑戰強敵或幫助他人，可以取得遺物。最多可同時裝備兩件。</p>';
+        } else info.innerHTML = '<h4>遺物</h4><p>在冥界探索、挑戰強敵或幫助亡者，可以取得遺物。最多可同時裝備兩件。</p>';
         const buy = info.querySelector('.py-buy'); if (buy) buy.onclick = () => { if (!buy.disabled && this.top() && this.top().id === 'pylon') menu.activate(); };
       };
       const renderTab = () => {
@@ -626,7 +647,7 @@
         const gl = (a) => `<kbd>${G.Input.glyph(a)}</kbd>`;
         $('#pyFoot').innerHTML = tabs[ti][0] === 'up'
           ? (G.Input.device === 'touch' ? '點選能力，再按「調校」升級（花費殘響碎片）' : `${gl('menuUp')}${gl('menuDown')} 選擇　${gl('confirm')} 調校　${gl('tabR')} 裝備・鍛造　${gl('back')} 離開`)
-          : `${gl('tabL')}${gl('tabR')} 切換　${gl('confirm')} 確認　${gl('back')} 離開共鳴碑`;
+          : `${gl('tabL')}${gl('tabR')} 切換　${gl('confirm')} 確認　${gl('back')} 離開魂燈台`;
         showInfo(menu.items[menu.i]);
       };
       shards(); renderTab();
@@ -652,7 +673,7 @@
     },
     relicGet(id) {
       const el = $('#relic'), r = D.relics[id];
-      el.querySelector('h3').textContent = r.name; el.querySelector('.relic-d').textContent = r.desc + (G.game.save.equipped.includes(id) ? '（已自動裝備，可於共鳴碑更換）' : '（遺物欄位已滿，可於共鳴碑更換裝備）');
+      el.querySelector('h3').textContent = r.name; el.querySelector('.relic-d').textContent = r.desc + (G.game.save.equipped.includes(id) ? '（已自動裝備，可於魂燈台更換）' : '（遺物欄位已滿，可於魂燈台更換裝備）');
       const g = G.game, prev = g.control; g.control = false;
       const close = () => { this.pop(); g.control = true; G.Input.clearBuffers(); };
       this.push({ id: 'relic', el, handle: () => { const In = I(); if (In.tap('confirm') || In.tap('back') || In.tap('interact') || In.tap('light')) close(); } });
@@ -738,7 +759,7 @@
 
     /* ---------------- death / ending / credits ---------------- */
     deathScreen(cb) {
-      const tips = ['白光攻擊可以格擋；紅光攻擊只能閃避。', '格擋損失的生命會變成灰色，立刻反擊就能取回。', '在攻擊命中前一瞬間閃避，會觸發殘響閃避，接著按攻擊可以瞬間反擊。', '敵人的失衡條滿了之後，靠近按攻擊就會自動處決。', '嘯者的聲波彈可以被完美格擋彈回去。', '遺落的殘響碎片會留在你倒下的地方。', '調諧共鳴碑會補滿調和劑，但也會讓寂裔復甦。', '屋頂上似乎藏著什麼……'];
+      const tips = ['白光攻擊可以格擋；紅光攻擊只能閃避。', '格擋損失的生命會變成灰色，立刻反擊就能取回。', '在攻擊命中前一瞬間閃避，會觸發殘響閃避，接著按攻擊可以瞬間反擊。', '敵人的失衡條滿了之後，靠近按攻擊就會自動處決。', '嘯者的聲波彈可以被完美格擋彈回去。', '遺落的殘響碎片會留在你倒下的地方。', '點亮魂燈台會補滿調和劑，但也會讓寂裔復甦。', '屋頂上似乎藏著什麼……'];
       $('#deathTip').textContent = '◆ ' + tips[Math.floor(Math.random() * tips.length)];
       this.showHud(false);
       let t = 0;
@@ -805,17 +826,17 @@
       const roll = $('#creditsRoll');
       const sec = (h, ...ps) => `<h3>${h}</h3>${ps.map((p) => `<p>${p}</p>`).join('')}`;
       const chDone = G.Chapters.list.filter((c) => G.game.save && G.game.save.flags['ch_done_' + c.id]).map((c) => `第${c.numZh || c.num}章「${c.title}」`);
-      roll.innerHTML = `<p class="big">ECHOFALL</p><p>殘響之刃${this.creditsExtra ? '' : (chDone.length > 1 ? '　' + chDone.join('・') : '　第一章「墜落的音符」')}</p>`
+      roll.innerHTML = `<p class="big">ECHOFALL</p><p>殘響之刃${this.creditsExtra ? '' : (chDone.length > 1 ? '　' + chDone.join('・') : '　第一章「送葬之城」')}</p>`
         + sec('GAME DIRECTION · 遊戲總監', 'Claude（Anthropic）')
         + sec('DESIGN · 系統與關卡設計', 'Claude', '以 The Game Awards 年度遊戲與各平台頂尖作品為標竿')
         + sec('ART DIRECTION · 美術', '程序化角色骨架 · 視差廢墟 · 體積光', '美術方向參考：Stellar Blade（劍星）')
         + sec('COMBAT · 戰鬥設計', '完美格擋 / 可回復生命 / 失衡處決', '致敬：Lies of P、Sekiro、Elden Ring')
-        + sec('WORLD & NARRATIVE · 世界觀與劇本', '灰港 · 頌歌方舟 · 大寂靜', '致敬：The Elder Scrolls V: Skyrim 的文書與支線')
+        + sec('WORLD & NARRATIVE · 世界觀與劇本', '溫陀 · 冥界庫爾 · 七道門', '改編自韓國巫歌〈巴里公主〉與蘇美詩歌〈伊南娜下冥界〉')
         + sec('MUSIC & SOUND · 音樂與音效', '即時生成配樂 · WebAudio 程序化音效', '每一次完美格擋，都在彈奏她的主題')
-        + sec('CAST · 角色', '凜音 — 晚禱七號', '歐德 — 戰術無人機', '瑪絲緹娜 — 首席指揮', '葛雷夫 — 斷弦騎士', '塔莉亞 — 鐘樓機械師', '巴洛 — 守鐘人', '艾蓮・薇格 — 第七降臨隊隊長')
+        + sec('CAST · 角色', '巴里 — 第七位公主', '寧舒 — 魂燈侍靈', '妲莉 — 點燈人', '無長丞 — 冥界的守門巨人', '瑪格 — 送葬司儀', '葛雷夫 — 掘墓人', '老鐸 — 敲鐘人', '六公主 — 走過這條路的姊姊', '厄蕾絲 — 冥后')
         + (this.creditsExtra || []).map((x) => sec(x.h, ...x.p)).join('')
         + sec('SPECIAL THANKS', '以及，願意聆聽的你。')
-        + `<p class="end">「別回頭。往前走——替我，把歌唱完。」<br><br>— 本作為原創作品 —</p>`;
+        + `<p class="end">「走到底。替我，把那扇門打開。」<br><br>— 本作為原創改編作品 —</p>`;
       roll.classList.remove('go'); void roll.offsetWidth; roll.classList.add('go');
       G.Music.play('ending');
       let t = 0;

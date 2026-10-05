@@ -10,23 +10,24 @@
 (function (G) {
   const U = G.U;
   const REWARDS = {
-    echo: { name: '共鳴回響', icon: '◇', col: '#7ff4ff' },
-    fruit: { name: '殘響果實', icon: '❖', col: '#ff8fb8' },
+    echo: { name: '共鳴回響', icon: '◇', ico: 'boon', col: '#7ff4ff' },
+    fruit: { name: '殘響果實', icon: '❖', ico: 'fruit', col: '#ff8fb8' },
     crystal: { name: '殘響結晶', icon: '⬟', col: '#c08bff' },
-    shards: { name: '殘響碎片', icon: '♦', col: '#6ff3ff' },
-    gear: { name: '裝備', icon: '⚔', col: '#ffb347' },
-    stone: { name: '鍛造石', icon: '⬢', col: '#ffd28a' },
-    heal: { name: '共鳴泉', icon: '✚', col: '#9cf7b0' },
-    exit: { name: '返回地表', icon: '⇡', col: '#ffffff' },
+    shards: { name: '殘響碎片', icon: '♦', ico: 'shards', col: '#6ff3ff' },
+    gear: { name: '裝備', icon: '⚔', ico: 'gear', col: '#ffb347' },
+    stone: { name: '鍛造石', icon: '⬢', ico: 'stone', col: '#ffd28a' },
+    heal: { name: '共鳴泉', icon: '✚', ico: 'heal', col: '#9cf7b0' },
+    event: { name: '未知', icon: '？', ico: 'd20', col: '#ffd27a' },
+    exit: { name: '返回地表', icon: '⇡', ico: 'exit', col: '#ffffff' },
   };
   // 苦難契約: id → { name, desc(rank), max }
   const PACT = [
-    { id: 'hp', name: '堅硬寂裔', desc: (r) => `敵人生命 +${20 * r}%`, max: 3 },
-    { id: 'dmg', name: '兇暴寂裔', desc: (r) => `敵人傷害 +${20 * r}%`, max: 3 },
-    { id: 'horde', name: '寂裔大軍', desc: (r) => `每一波多 ${r} 名敵人`, max: 2 },
-    { id: 'haste', name: '急躁', desc: (r) => `敵人移動速度 +${10 * r}%`, max: 2 },
-    { id: 'tonic', name: '斷藥', desc: (r) => `調和劑 -${r}`, max: 2 },
-    { id: 'frail', name: '脆弱', desc: (r) => `受到傷害時，額外損失 ${10 * r}% 已損失的生命`, max: 2 },
+    { id: 'hp', icon: 'pact_hp', name: '堅硬寂裔', desc: (r) => `敵人生命 +${20 * r}%`, max: 3 },
+    { id: 'dmg', icon: 'pact_dmg', name: '兇暴寂裔', desc: (r) => `敵人傷害 +${20 * r}%`, max: 3 },
+    { id: 'horde', icon: 'pact_horde', name: '寂裔大軍', desc: (r) => `每一波多 ${r} 名敵人`, max: 2 },
+    { id: 'haste', icon: 'pact_haste', name: '急躁', desc: (r) => `敵人移動速度 +${10 * r}%`, max: 2 },
+    { id: 'tonic', icon: 'pact_tonic', name: '斷藥', desc: (r) => `調和劑 -${r}`, max: 2 },
+    { id: 'frail', icon: 'pact_frail', name: '脆弱', desc: (r) => `受到傷害時，額外損失 ${10 * r}% 已損失的生命`, max: 2 },
   ];
 
   const A = G.Abyss = {
@@ -90,7 +91,7 @@
         start: { x: a0 + 140, y: fy }, bounds: [a0 - 600, a1 + 600], gravity: (lv.gravity || 1),
         solids, oneways, pylons: [], notes: [], items: [], npcs: [], triggers: [],
         encounters: { abyss: { manual: true, respawn: true, echo: false, boss: kind === 'boss', elite: kind === 'elite', arena: [a0, a1], waves } },
-        zones: [{ x: -1e9, name: `殘響深淵　第 ${r.depth} 層`, en: `THE ABYSS — DEPTH ${r.depth}`, music: kind === 'boss' ? (base.music && base.music.boss) || 'boss' : (base.music && base.music.explore) || 'explore' }],
+        zones: [{ x: -1e9, name: `無底冥井　第 ${r.depth} 層`, en: `THE BOTTOMLESS WELL — DEPTH ${r.depth}`, music: kind === 'boss' ? (base.music && base.music.boss) || 'boss' : (base.music && base.music.explore) || 'explore' }],
       };
       const bh = base.hooks || {};
       const safe = (f) => (f ? function () { try { return f.apply(this, arguments); } catch (e) { return undefined; } } : undefined);
@@ -149,7 +150,9 @@
         r.crystals += n; G.Mirror.gain(n, `第 ${r.depth} 層守門者`);
         const best = (game.save.abyss = game.save.abyss || { best: 0, runs: 0 });
         best.best = Math.max(best.best, r.depth);
-        this.grant(game, 'gear', after, true);
+        const F = game.save.flags, mk = 'well_' + r.depth;
+        const gift = (next) => { if (F[mk] || !game.save.dnd) { next(); return; } F[mk] = true; G.Events.wellGift(game, r.depth, next); };
+        this.grant(game, 'gear', () => gift(after), true);
         return;
       }
       this.grant(game, r.reward, after);
@@ -160,6 +163,7 @@
       const src = { cx, cy: P.y - 80, y: P.y };
       switch (kind) {
         case 'echo': game.control = false; G.Boons.offer(() => { game.control = true; G.Input.clearBuffers(); done(); }); return;
+        case 'event': G.Events.open(game, null, done); return;
         case 'fruit': game.control = false; G.Boons.offer(() => { game.control = true; G.Input.clearBuffers(); done(); }, { fruit: true }); return;
         case 'crystal': { const n = Math.round((3 + r.depth * 0.6) * this.rewardMul()); r.crystals += n; G.Mirror.gain(n); break; }
         case 'shards': { const n = Math.round((60 + r.depth * 18) * (1 + 0.1 * this.heat())); sv.shards += n; G.UI.toast(`殘響碎片　+${n}`, 'good'); G.SFX.play('pickup'); break; }
@@ -171,7 +175,7 @@
       done();
     },
     rollDoors() {
-      const r = this.run, keys = ['echo', 'echo', 'fruit', 'shards', 'shards', 'gear', 'stone', 'heal'];
+      const r = this.run, keys = ['echo', 'echo', 'fruit', 'shards', 'gear', 'stone', 'heal', 'event', 'event'];
       const owned = Object.keys(G.game.save.boons || {}).length;
       const pick = () => { let k; do { k = keys[Math.floor(Math.random() * keys.length)]; } while (k === 'fruit' && owned < 2); return k; };
       const a = pick(); let b = pick(); let guard = 0; while (b === a && guard++ < 10) b = pick();
@@ -233,7 +237,7 @@
         ctx.globalCompositeOperation = 'source-over';
         ctx.strokeStyle = U.rgba(R.col, 0.7); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, -24); ctx.lineTo(24, 0); ctx.lineTo(0, 24); ctx.lineTo(-24, 0); ctx.closePath(); ctx.stroke();
         ctx.font = '700 24px "Noto Sans TC", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.lineWidth = 5; ctx.strokeStyle = '#0b0612'; ctx.strokeText(R.icon, 0, 1); ctx.fillStyle = R.col; ctx.fillText(R.icon, 0, 1);
+        if (!(R.ico && G.Icons.draw(ctx, R.ico, 0, 0, 30, R.col))) { ctx.lineWidth = 5; ctx.strokeStyle = '#0b0612'; ctx.strokeText(R.icon, 0, 1); ctx.fillStyle = R.col; ctx.fillText(R.icon, 0, 1); }
         ctx.font = '600 14px "Noto Serif TC", serif'; ctx.lineWidth = 5; ctx.strokeText(R.name, 0, 44); ctx.fillStyle = '#efe9df'; ctx.fillText(R.name, 0, 44);
         if (R.sub) { ctx.font = '500 11px "Noto Sans TC", sans-serif'; ctx.lineWidth = 4; ctx.strokeText(R.sub, 0, 62); ctx.fillStyle = U.rgba(R.col, 0.95); ctx.fillText(R.sub, 0, 62); }
         ctx.restore();

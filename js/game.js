@@ -4,7 +4,7 @@
   const U = G.U, L = G.LEVEL, PI = Math.PI, TAU = PI * 2;
   const VIEW_H = 640;
 
-  const FREEZE = new Set(['pylon', 'gear', 'build', 'travel', 'trade', 'codex', 'savecode', 'settings', 'controls', 'note', 'relic', 'boon', 'choice', 'pause', 'abyss', 'abyssEnd']);
+  const FREEZE = new Set(['pylon', 'gear', 'build', 'travel', 'trade', 'codex', 'savecode', 'settings', 'controls', 'note', 'relic', 'boon', 'choice', 'pause', 'abyss', 'abyssEnd', 'classSel', 'charSheet', 'event', 'dice']);
   const DEFAULT_SETTINGS = { master: 0.8, music: 0.6, sfx: 0.85, shake: 1, flashes: true, hints: true, textSpeed: 1, touchAssist: true, fps: 'auto' };
 
   const Game = G.game = {
@@ -78,7 +78,8 @@
       this.state = 'intro'; this.control = false;
       this.cam.x = this.cam.tx = 600; this.cam.y = -170;
       G.Music.play(null);
-      G.UI.intro(G.DATA.intro, () => this.beginPlay());
+      // choose a class first (js/dnd.js), then the story begins
+      G.DnD.chooseClass(this.save, () => { this.player.recalc(); this.player.hp = this.player.maxHp; this.save.tonic = this.player.maxTonic; this.persist(); G.UI.intro(G.DATA.intro, () => this.beginPlay()); });
     },
     beginPlay() {
       this.state = 'play'; this.fadeA = 1; this.fadeTarget = 0;
@@ -96,6 +97,8 @@
     continueGame() {
       const s = G.Store.get('save', null);
       if (!s) return;
+      // saves from before classes existed choose one, once
+      if (!s.dnd) { G.DnD.chooseClass(s, () => { G.Store.set('save', s); this.continueGame(); }, { returning: true }); return; }
       const want = s.chapter || 1;
       if (!G.Chapters.loaded(want)) {
         const m = G.Chapters.info(want);
@@ -546,9 +549,9 @@
     },
     interactables() {
       const list = [], F = this.save.flags;
-      for (const p of L.pylons) list.push({ kind: 'pylon', x: p.x, y: p.y, ref: p, label: '調諧共鳴碑' });
+      for (const p of L.pylons) list.push({ kind: 'pylon', x: p.x, y: p.y, ref: p, label: '點亮魂燈台' });
       for (const n of L.notes) list.push({ kind: 'note', x: n.x, y: n.y, ref: n, label: '閱讀', read: F['note_' + n.id] });
-      for (const it of L.items) if (!F[it.flag]) list.push({ kind: 'item', x: it.x, y: it.y, ref: it, label: it.chest ? '打開' : '拾取' });
+      for (const it of L.items) if (!F[it.flag]) list.push({ kind: 'item', x: it.x, y: it.y, ref: it, label: it.event ? '調查' : it.locked ? '開鎖（敏捷 DC 12）' : it.chest ? '打開' : '拾取' });
       for (const n of L.npcs) list.push({ kind: 'npc', x: n.x, y: n.y, ref: n, label: '交談' });
       for (const g of G.Props.gates) if (!g.open) list.push({ kind: 'gate', x: g.x - 50, y: g.y, ref: g, label: '進入王房' });
       for (const d of G.Abyss.doorNear(this)) list.push(d);
@@ -586,6 +589,16 @@
         const n = G.DATA.codex.notes.find((q) => q.id === it.ref.id);
         this.control = false;
         G.UI.readNote(n, () => { this.control = true; G.Input.clearBuffers(); });
+      } else if (it.kind === 'item' && it.ref.event) {
+        F[it.ref.flag] = true; G.SFX.play('pageOpen'); G.Events.open(this);
+      } else if (it.kind === 'item' && it.ref.locked) {
+        // a locked chest: a DEX check — failure springs the trap, but the lid gives either way
+        const ref = it.ref; this.control = false;
+        G.Dice.check({ attr: 'dex', dc: 12, title: '上鎖的' + ref.name }, (r) => {
+          F[ref.flag] = true; this.control = true; G.Input.clearBuffers();
+          if (!r.ok) { P.hp = Math.max(1, P.hp - P.maxHp * 0.15); P.flash = 1; this.shake(0.4); G.SFX.play('hurt'); this.toast('機關射出了毒針', 'warn'); }
+          G.SFX.play(ref.sfx || 'pickup'); this.toast(`打開了${ref.name}`, 'item'); if (ref.onTake) ref.onTake(this); this.persist();
+        });
       } else if (it.kind === 'item') {
         const ref = it.ref; F[ref.flag] = true;
         G.FX.ring(ref.x, ref.y - 40, 10, 140, 0.6, '#ffe7b0', 4); G.FX.ember(ref.x, ref.y - 40, 24, '#ffe7b0');
@@ -595,10 +608,10 @@
         P.facing = it.x > P.x ? 1 : -1;
         if (it.ref.talk) { it.ref.talk(this); return; }
         F.met_barrow = F.met_barrow || false;
-        if (!F.met_barrow) this.dialog('barrowMeet', () => { F.met_barrow = true; G.UI.journal('支線任務：守鐘人的歌', '替巴洛找回米菈的音樂盒'); });
+        if (!F.met_barrow) this.dialog('barrowMeet', () => { F.met_barrow = true; G.UI.journal('支線任務：敲鐘人的歌', '替老鐸找回諾娜的音樂盒'); });
         else if (F.got_musicbox && !F.gave_musicbox) {
           G.SFX.play('musicbox');
-          this.dialog('barrowDone', () => { F.gave_musicbox = true; this.giveRelic('blessing'); G.UI.journal('支線任務完成', '守鐘人的歌'); });
+          this.dialog('barrowDone', () => { F.gave_musicbox = true; this.giveRelic('blessing'); G.UI.journal('支線任務完成', '敲鐘人的歌'); });
         } else if (!F.gave_musicbox) this.dialog('barrowWait');
         else this.dialog('barrowAfter');
       }
@@ -635,7 +648,7 @@
     // per-rest Mirror effects: 不屈之心 re-arms, 共鳴湧動 refills resonance
     mirrorRefresh() {
       const P = this.player; if (!P) return;
-      P.mirrorDefy = true;
+      P.mirrorDefy = true; G.DnD.rest(P); G.Events.rest(P); P.recalc();
       const s = G.Mirror.lv('surge'); if (s) P.res = Math.max(P.res || 0, 25 * s);
     },
     // dynamic difficulty (chapter III on): compare Rinne's damage output and toughness with what the chapter expects,
@@ -830,7 +843,7 @@
         ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y, 3.5, 0, TAU); ctx.fill();
         ctx.restore();
         if (Math.random() < 0.2) G.FX.ember(x, y, 1, it.kind === 'relic' ? '#ffd28a' : '#fff0dc', { w: 20, h: 20, up: 40 });
-        this.drawBeacon(ctx, it.x, it.y, it.kind === 'relic' ? '#ffb347' : '#fff0dc', it.kind === 'relic' ? '◆' : '✦', (it.kind === 'relic' ? '遺物　' : it.chest ? '寶箱　' : '物品　') + (it.chest ? '' : it.name || '可拾取'), false, t);
+        this.drawBeacon(ctx, it.x, it.y, it.kind === 'relic' ? '#ffb347' : '#fff0dc', it.kind === 'relic' ? '◆' : '✦', (it.kind === 'relic' ? '遺物　' : it.event ? '事件　？' : it.locked ? '上鎖的寶箱' : it.chest ? '寶箱　' : '物品　') + (it.chest || it.event ? '' : it.name || '可拾取'), false, t);
       }
       // NPCs (chapter-defined drawers, Barrow by default)
       for (const n of L.npcs) {

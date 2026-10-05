@@ -1109,7 +1109,7 @@
       g.save(); g.translate(x, -132); g.rotate(-0.06);
       poly(g, [[-50, -15], [50, -15], [64, 0], [50, 15], [-50, 15]]); g.fillStyle = '#2a4a46'; g.fill(); ink(g, 1.6);
       g.strokeStyle = 'rgba(230,226,210,0.6)'; g.lineWidth = 1; g.strokeRect(-46, -11, 92, 22);
-      g.fillStyle = '#eae4d2'; g.font = '700 12px "Noto Sans TC", sans-serif'; g.textAlign = 'center'; g.fillText('歌劇院廣場', 0, 1); g.font = '600 7px Rajdhani, sans-serif'; g.fillText('PIAZZA DELL\'OPERA →', 0, 10);
+      g.fillStyle = '#eae4d2'; g.font = '700 12px "Noto Sans TC", sans-serif'; g.textAlign = 'center'; g.fillText('劇院廣場', 0, 1); g.font = '600 7px Rajdhani, sans-serif'; g.fillText('PIAZZA DELL\'OPERA →', 0, 10);
       g.restore();
     } });
     // --- the Opera Square ---
@@ -1192,8 +1192,8 @@
       g.beginPath(); g.ellipse(8, -1, 3, 2, 0, 0, TAU); g.ellipse(17, -1, 3, 2, 0, 0, TAU); g.fill(); g.beginPath(); g.arc(12, 12, 5, PI, 0); g.fill();
       g.restore();
       g.fillStyle = stoneD; g.fillRect(x0, -720, x1 - x0, 60); g.fillStyle = C.gold; g.fillRect(x0, -720, x1 - x0, 4); g.fillRect(x0, -664, x1 - x0, 4);
-      g.fillStyle = C.goldL; g.font = '700 26px "Noto Serif TC", serif'; g.textAlign = 'center'; g.fillText('萊拉大歌劇院', dx, -682);
-      g.font = '600 10px Rajdhani, sans-serif'; g.fillText('TEATRO GRANDE DI LYRA · MDCCCXC', dx, -669);
+      g.fillStyle = C.goldL; g.font = '700 26px "Noto Serif TC", serif'; g.textAlign = 'center'; g.fillText('潮音大劇院', dx, -682);
+      g.font = '600 10px Rajdhani, sans-serif'; g.fillText('TEATRO DELLE MAREE · MDCCCXC', dx, -669);
       // statue niches high up
       for (const nx of [x0 + 60, x1 - 60]) { archPath(g, nx - 22, -1000, 44, 120); g.fillStyle = stoneD; g.fill(); ink(g, 1.4); g.fillStyle = stoneL; g.beginPath(); g.ellipse(nx, -930, 10, 40, 0, 0, TAU); g.fill(); ink(g, 1.2); g.beginPath(); g.arc(nx, -980, 8, 0, TAU); g.fill(); ink(g, 1.2); }
       g.beginPath(); g.rect(x0, top, x1 - x0, y - top); ink(g, 3);
@@ -1762,9 +1762,9 @@
       const n = pagesHave(F);
       if (F.c4_quest_done) { game.dialog('c4_simonAfter'); return; }
       if (n < 3) {
-        const lines = [{ who: 'c4_simon', text: n === 0 ? '……還沒找到嗎。沒關係。我已經等了二十年。' : `${n} 頁……還差 ${3 - n} 頁。風把它們帶到哪裡去了呢。` }];
+        const lines = [{ who: 'c4_simon', text: n === 0 ? '……還沒找到嗎。沒關係。我已經等了很多年。' : `${n} 頁……還差 ${3 - n} 頁。風把它們帶到哪裡去了呢。` }];
         if (!F.c4_got_page1) lines.push({ who: 'c4_simon', text: '大道上那台泡水的鋼琴——指揮以前最喜歡坐在那裡試音。' });
-        if (!F.c4_got_page2) lines.push({ who: 'c4_simon', text: '廣場噴泉上的繆斯，風最喜歡在她腳邊打轉。' });
+        if (!F.c4_got_page2) lines.push({ who: 'c4_simon', text: '廣場噴泉上的石像，風最喜歡在她腳邊打轉。' });
         if (!F.c4_got_page3) lines.push({ who: 'c4_simon', text: '還有……老鐘樓的頂端。風總是往高處吹。' });
         D.c4_simonWait = lines;
         game.dialog('c4_simonWait');
@@ -1800,9 +1800,9 @@
       { x: 9700, y: -230, w: 170 }, { x: 9950, y: -400, w: 170 }, { x: 10250, y: -520, w: 190 }, { x: 10550, y: -400, w: 170 }, { x: 10800, y: -240, w: 160 },   // theatre boxes
     ],
     pylons: [
-      { id: 'c4_p1', x: 1600, y: 0, name: '沉沒大道共鳴碑', dialog: 'c4_pylonSimon', flag: 'c4_met_simon' },
-      { id: 'c4_p2', x: 6700, y: -90, name: '大廳共鳴碑', dialog: 'c4_pylonTalia', flag: 'c4_talia_line' },
-      { id: 'c4_p3', x: 10950, y: 0, name: '後台共鳴碑', dialog: 'c4_pylonWings', flag: 'c4_wings_seen' },
+      { id: 'c4_p1', x: 1600, y: 0, name: '沉沒大道魂燈台', dialog: 'c4_pylonSimon', flag: 'c4_met_simon' },
+      { id: 'c4_p2', x: 6700, y: -90, name: '大廳魂燈台', dialog: 'c4_pylonTalia', flag: 'c4_talia_line' },
+      { id: 'c4_p3', x: 10950, y: 0, name: '後台魂燈台', dialog: 'c4_pylonWings', flag: 'c4_wings_seen' },
     ],
     notes: [
       { id: 'c4_n1', x: 470, y: 0 },
@@ -1857,7 +1857,7 @@
     },
     zones: [
       { x: -1e9, name: '沉沒大道', en: 'THE DROWNED BOULEVARD', music: 'c4_explore', amb: 'c4_lake' },
-      { x: PLAZA_X, name: '歌劇院廣場', en: 'THE OPERA SQUARE', music: 'c4_explore', amb: 'c4_square' },
+      { x: PLAZA_X, name: '劇院廣場', en: 'THE OPERA SQUARE', music: 'c4_explore', amb: 'c4_square' },
       { x: FACADE, name: '大廳', en: 'THE GRAND FOYER', music: 'c4_explore2', amb: 'c4_foyer' },
       { x: STALLS_X, name: '沉沒的觀眾席', en: 'THE DROWNED STALLS', music: 'c4_explore2', amb: 'c4_stage' },
       { x: 10930, name: '最後的舞台', en: 'THE LAST STAGE', music: 'c4_explore2', amb: 'c4_stage' },
@@ -1873,30 +1873,30 @@
   };
   const dialog = {
     c4_enter: [
-      { who: 'ode', text: '……萊拉。舊時代的音樂之都。' },
-      { who: 'rinne', text: '整座城，泡在水裡。' },
-      { who: 'ode', text: '大寂靜那年，他們打開了所有水閘。以為寂靜不會渡水。' },
+      { who: 'ode', text: '……第三道門。' },
+      { who: 'rinne', text: '整條街，泡在水裡。' },
+      { who: 'ode', text: '海吞下去的東西，最後都會沉到這裡。' },
       { who: 'rinne', text: '水面上，連漣漪都沒有聲音。' },
-      { who: 'rinne', text: '……歌劇院。從那裡穿過去。' },
+      { who: 'rinne', text: '……劇院。從那裡穿過去。' },
     ],
     c4_lake: [
       { who: 'rinne', text: '……我的倒影，沒有呼吸聲。' },
-      { who: 'ode', text: '這片湖映得出光。映不出聲音。' },
+      { who: 'ode', text: '這片水映得出光。映不出聲音。' },
     ],
     c4_puppets: [
       { who: 'rinne', text: '……線的另一端，沒有人。' },
     ],
     c4_poster: [
-      { who: 'rinne', text: '……〈最後的詠嘆〉。露塞特。季終公演。' },
-      { who: 'ode', text: '2263 年 11 月 4 日。寂靜抵達萊拉的那一晚。' },
+      { who: 'rinne', text: '……〈最後的詠嘆〉。露塞特。' },
+      { who: 'ode', text: '大潮來的那一晚，演的就是這一齣。' },
       { who: 'rinne', text: '她唱完了嗎。' },
     ],
     c4_pylonSimon: [
-      { who: 'sys', text: '（碑的頻段裡一陣雜訊，接著，是一個蒼老、溫和的男聲。）' },
+      { who: 'sys', text: '（燈台的火光一陣搖晃。接著，是一個蒼老、溫和的男聲。）' },
       { who: 'c4_simon', text: '……開場前五分鐘。燈光就位。弦樂，調音——' },
-      { who: 'rinne', text: '誰在頻段上？' },
+      { who: 'rinne', text: '誰？' },
       { who: 'c4_simon', text: '……觀眾？真的有觀眾。失禮了。舞台監督，西蒙。' },
-      { who: 'ode', text: '這個訊號……沒有發射源。是碑自己的殘響。' },
+      { who: 'ode', text: '沒有身體的聲音。……這座劇院，還記得他。' },
       { who: 'c4_simon', text: '圓頂塌下的那晚，一份樂譜被風吹散了。三頁，只有三頁。' },
       { who: 'c4_simon', text: '是指揮託我保管的。她說，總有一天，會有人把它唱完。' },
       { who: 'c4_simon', text: '我找了很久……可我好像，走不出這座劇院。' },
@@ -1907,23 +1907,23 @@
       { who: 'rinne', text: '水面下有東西。……只有出水的時候，才碰得到。' },
     ],
     c4_usher: [
-      { who: 'ode', text: '它們還在替不存在的觀眾，找座位。' },
+      { who: 'ode', text: '它們還在替散場的觀眾，找座位。' },
     ],
     c4_opera: [
       { who: 'rinne', text: '……圓頂破了。' },
-      { who: 'ode', text: '月光落在舞台上。像最後一次打光。' },
+      { who: 'ode', text: '光落在舞台上。像最後一次打光。' },
     ],
     c4_choir: [
-      { who: 'rinne', text: '……它在替同伴唱歌。' },
+      { who: 'rinne', text: '……它在替同伴唱歌。用的，不是自己的聲音。' },
     ],
     c4_pylonTalia: [
-      { who: 'talia', text: '——凜音？凜音……總算又接上了。' },
-      { who: 'rinne', text: '塔莉亞。' },
-      { who: 'talia', text: '上次斷線之後，頻段安靜了好幾天。我還以為……算了。妳還活著就好。' },
-      { who: 'talia', text: '萊拉……那座沉在湖裡的音樂之都？' },
-      { who: 'talia', text: '奶奶說，以前每到冬至，全世界都在聽萊拉歌劇院的廣播。' },
-      { who: 'talia', text: '那個女高音一開口，連鐘樓的鐘，都會跟著共鳴。' },
-      { who: 'talia', text: '刀拿過來吧。在那種地方，刀可不能走音。' },
+      { who: 'talia', text: '——是妳？……是妳。燈台的火，好幾天都沒動了。' },
+      { who: 'rinne', text: '我在。' },
+      { who: 'talia', text: '我還以為……算了。妳還在就好。' },
+      { who: 'talia', text: '這裡是溺死的人的劇院吧。每天晚上，他們都在唱自己的輓歌。燈台這邊，也聽得見。' },
+      { who: 'talia', text: '我死得太早，沒看過海。……下次，告訴我海是什麼顏色。' },
+      { who: 'talia', text: '……不問了。妳的表情，好像我問了什麼很難的事。' },
+      { who: 'talia', text: '刀拿過來吧。在這種地方，刀可不能走音。' },
     ],
     c4_foyer: [
       { who: 'rinne', text: '……好安靜。' },
@@ -1932,14 +1932,14 @@
     c4_eliteIntro: [
       { who: 'sys', text: '（迴廊盡頭，一把小提琴反覆拉著同一個 A 音。）' },
       { who: 'c4_valentin', text: 'A，四百四十。……不，四百三十九。又走音了。' },
-      { who: 'c4_valentin', text: '妳遲到了，共鳴者。這場排練，很久以前就開始了。' },
-      { who: 'c4_valentin', text: '首席小提琴，瓦倫丁。露塞特小姐登台之前，誰也不准上那座舞台。' },
+      { who: 'c4_valentin', text: '妳遲到了。這場排練，十八年前就開始了。' },
+      { who: 'c4_valentin', text: '首席，瓦倫丁。我的聲音，在露塞特小姐那裡。她唱完之前，誰也不准上台。' },
       { who: 'c4_valentin', text: '來吧。讓我聽聽，妳的拍子準不準。' },
     ],
     c4_eliteDefeat: [
       { who: 'c4_valentin', text: '……漂亮的切分音。妳搶拍了。搶得很好。' },
       { who: 'c4_valentin', text: '松香，拿去吧。這把弓乾了太久，該有人拉出真正的聲音。' },
-      { who: 'c4_valentin', text: '替我告訴她……樂團，到齊了。' },
+      { who: 'c4_valentin', text: '替我告訴她……可以謝幕了。' },
     ],
     c4_chandelier: [
       { who: 'sys', text: '（頭頂一聲細響。吊燈的鏈條，斷了。）' },
@@ -1956,17 +1956,17 @@
     ],
     c4_simonDone: [
       { who: 'rinne', text: '三頁都在這裡。' },
-      { who: 'c4_simon', text: '……是她的筆跡。是指揮的筆跡。' },
-      { who: 'sys', text: '（他把樂譜攤在譜架上。泛黃的五線譜最上方，有一行小字：「給米菈」。）' },
-      { who: 'c4_simon', text: '二十年前，指揮抱著一個小女孩走進這座劇院。孩子在發燒，一直哼著一首歌。' },
-      { who: 'c4_simon', text: '她把那首歌寫了下來。「這樣，就算她忘了，世界也會替她記得。」' },
-      { who: 'ode', text: '……和止弦鳴響時，是同一首。瑪絲緹娜的歌。只是這一份，有歌詞。' },
-      { who: 'rinne', text: '……米菈。巴洛的女兒，也叫米菈。' },
-      { who: 'ode', text: '……我不喜歡這個巧合。' },
-      { who: 'c4_simon', text: '♪ 睡吧，鐘聲會替妳數星星——睡吧，風會記得回家的路——' },
-      { who: 'c4_simon', text: '♪ 如果世界安靜了，別害怕——等妳醒來，我們再一起唱。' },
+      { who: 'c4_simon', text: '……就是這一份。潮水帶下來的那一份。' },
+      { who: 'sys', text: '（他把樂譜攤在譜架上。泛黃的五線譜最上方，有一行小字：「給沒有名字的孩子」。）' },
+      { who: 'c4_simon', text: '很多年前，潮水把一只木匣沖進這座劇院。裡面沒有人，只有這首搖籃曲——只寫了一半。' },
+      { who: 'c4_simon', text: '指揮把後半段補上了。她說：「總要有人，替那個孩子唱一次。」' },
+      { who: 'ode', text: '……前半段的筆跡。我見過。' },
+      { who: 'rinne', text: '……沒有名字的孩子。' },
+      { who: 'ode', text: '井底那個孩子，哼到一半停下的，就是這一段。' },
+      { who: 'c4_simon', text: '♪ 睡吧，浪會替妳數星星——睡吧，海會記得妳的模樣——' },
+      { who: 'c4_simon', text: '♪ 就算沒有人叫妳的名字，別害怕——等妳醒來，我們再一起唱。' },
       { who: 'c4_simon', text: '……謝謝妳。我終於可以喊「落幕」了。' },
-      { who: 'c4_simon', text: '把它帶上去吧。帶到她去的地方。' },
+      { who: 'c4_simon', text: '把它帶下去吧。帶到她在的地方。' },
     ],
     c4_simonAfter: [
       { who: 'sys', text: '（舞台監督的身影很淡了。他朝妳點點頭，像在示意下一個燈光變換。）' },
@@ -1974,19 +1974,19 @@
     c4_bossIntro: [
       { who: 'sys', text: '（舞台的燈，一盞一盞亮了起來。沒有人去開它們。）' },
       { who: 'c4_lucette', text: '……妳遲到了。第三幕，開始很久了。' },
-      { who: 'rinne', text: '妳的樂團，還在外面等妳。' },
-      { who: 'c4_lucette', text: '我知道。我每天都聽得見他們。……只有我自己的聲音，聽不見了。' },
-      { who: 'c4_lucette', text: '留下來吧。當我最後的觀眾。……拍子，由我來數。' },
+      { who: 'rinne', text: '他們的聲音，該還給他們了。' },
+      { who: 'c4_lucette', text: '還給他們，他們就會往下走。……然後，台上只剩我一個。' },
+      { who: 'c4_lucette', text: '留下來吧。第三道門的過路錢……就用妳的聲音付。' },
     ],
     c4_bossDefeat: [
       { who: 'c4_lucette', text: '……最高的那個音。我唱到了。' },
       { who: 'c4_lucette', text: '觀眾席……好多人。他們在鼓掌嗎？' },
       { who: 'rinne', text: '在鼓掌。' },
-      { who: 'c4_lucette', text: '……二十年前，一位指揮抱著一個孩子，從這裡往梯子上去了。' },
-      { who: 'c4_lucette', text: '那孩子聽得見寂靜。……像聽見一首歌。' },
-      { who: 'c4_lucette', text: '替我……對她唱完這首搖籃曲。' },
-      { who: 'ode', text: '舞台底下，有一座往上的升降梯。' },
-      { who: 'rinne', text: '……她們走的，就是這條路。' },
+      { who: 'c4_lucette', text: '……十八年前，海上漂過一只木箱。裡面的孩子，哭得好響。' },
+      { who: 'c4_lucette', text: '我等她沉下來。她沒有。……現在，她自己走下來了。' },
+      { who: 'c4_lucette', text: '這一聲……就當作，過門的錢。' },
+      { who: 'ode', text: '……第三道門，收下了妳的聲音。' },
+      { who: 'rinne', text: '……' },
     ],
   };
   const barks = {
@@ -2000,92 +2000,91 @@
   };
   const notes = [
     { id: 'c4_n1', name: '給露塞特小姐的信', en: 'A LETTER TO LUCETTE', body: [
-      '露塞特小姐：', '我叫安娜，九歲。媽媽說妳十二歲就站上了萊拉大歌劇院的舞台，所以我還有三年。',
+      '露塞特小姐：', '我叫安娜，九歲。媽媽說妳十二歲就站上了潮音大劇院的舞台，所以我還有三年。',
       '我每天都在浴室練高音，鄰居敲了好幾次牆。媽媽說，那代表他們聽見了。',
       '十一月的季終公演，我們買到了頂樓最後一排的票。如果妳往上看，我會揮手。——安娜'] },
-    { id: 'c4_n2', name: '水閘管理員的最後一班', en: 'THE SLUICE KEEPER — LAST SHIFT', body: [
-      '2263.11.04　21:40　市府命令：開啟全部十二道水閘。理由是「寂裔不會渡過流動的水」。我問是誰說的。沒有人回答。',
-      '22:15　水進來了，比預期快。運河、大道、廣場……整座城變成一面鏡子。',
-      '22:31　水不流了。它就那樣靜靜地停著，連風吹過去都沒有聲音。',
-      '歌劇院那邊還亮著燈。她還在唱。我聽不見，但我看得見燈。'] },
-    { id: 'c4_n3', name: '那一夜，劇院安靜了', en: 'THE NIGHT THE OPERA FELL SILENT', body: [
+    { id: 'c4_n2', name: '港口守夜人的最後一班', en: 'THE HARBOR WATCH — LAST SHIFT', body: [
+      '21:40　潮水漲過了第一道防波堤。港務官說，大劇院今晚照常開演。我問是誰說的。沒有人回答。',
+      '22:15　水進來了，比預期快。碼頭、大道、廣場……整條港街變成一面鏡子。',
+      '22:31　水不退了。它就那樣靜靜地停著，連風吹過去都沒有聲音。',
+      '劇院那邊還亮著燈。她還在唱。我聽不見，但我看得見燈。'] },
+    { id: 'c4_n3', name: '那一夜，門關上了', en: 'THE NIGHT THE DOORS CLOSED', body: [
       '（鐘樓頂上的一頁日記，被鐘錘壓著，才沒被風吹走。）',
-      '第三幕，〈最後的詠嘆〉。露塞特唱到最高的那個音——然後，聲音不見了。',
-      '不是停止，是「不見」。她的嘴還開著，樂團還在拉，可是整座劇院什麼也聽不到。',
-      '觀眾開始鼓掌。兩千四百個人一起鼓掌，沒有一點聲音。她站在台上，一直鞠躬，一直鞠躬。',
-      '我在這座鐘樓上看著，敲了一整夜的鐘。鐘也沒有響。'] },
-    { id: 'c4_n4', name: '第四降臨隊 作戰日誌', en: 'DESCENT IV — FIELD LOG', body: [
-      '【第四降臨隊・隊長　露塞特・德瓦爾】',
-      '路線變更：經由萊拉前往梯基。我知道這會多花三天。隊員問我為什麼。我說，因為那是我的舞台。',
-      '那一年我十九歲。大寂靜偷走了我的第三幕。方舟收留了我，教會我把聲音當成武器。',
-      '現在我回來了。這一次，我要把那首詠嘆唱完——哪怕台下一個人都沒有。'] },
-    { id: 'c4_n5', name: '首席小提琴的調音記錄', en: "THE CONCERTMASTER'S TUNING LOG", body: [
-      '第 2,914 天。A = 439.6 Hz。',
-      '第 2,915 天。A = 439.2 Hz。弦在下沉，就像這座城。',
-      '第 2,916 天。露塞特小姐今天又上台了。她張開嘴，什麼也沒唱出來。她說今天的聲音很好。我說是的，很好。',
-      '第 2,917 天。如果有人走進這座劇院，我會擋住他。她還沒準備好。她永遠都不會準備好。',
-      '……A = 439.0 Hz。'] },
+      '十八年前的那一晚，第三幕唱到一半，劇院外的門關上了。從那天起，再也沒有新的溺死者走進來。',
+      '露塞特小姐沒有停。她讓我們把同一齣戲，再唱一次。再一次。',
+      '我們的輓歌早就唱完了。可是聲音還繫在她的線上，我們就走不進第三道門。',
+      '我在這座鐘樓上，敲了一整夜的鐘。鐘沒有響。'] },
+    { id: 'c4_n4', name: '節目單背面的字', en: 'ON THE BACK OF A PROGRAMME', body: [
+      '（泡得發皺的節目單。背面是鉛筆字，筆畫很用力。）',
+      '大潮那晚，我唱到最高的那個音——水就進來了。我的聲音停在那個音上，沒有跟我一起下來。',
+      '在這裡，溺死的人唱完自己的輓歌，就把聲音交給我，往下走。這是第三道門的規矩。',
+      '可是門關上以後，就再也沒有人下來了。我只好讓他們唱。一遍，又一遍。……我只是不想一個人站在台上。'] },
+    { id: 'c4_n5', name: '首席的調音記錄', en: "THE PRINCIPAL'S TUNING LOG", body: [
+      '第 6,514 天。A = 439.6。',
+      '第 6,515 天。A = 439.2。弦在下沉，就像這座劇院。',
+      '第 6,516 天。露塞特小姐今天又上台了。她張開嘴，唱出來的是安娜的聲音。她說今天的聲音很好。我說是的，很好。',
+      '第 6,517 天。如果有人走進這座劇院，我會擋住他。她還沒唱完。她永遠都不會唱完。',
+      '……A = 439.0。'] },
     { id: 'c4_n6', name: '舞台監督的值班簿', en: "THE STAGE MANAGER'S LOGBOOK", body: [
-      '2267.03.11　晴。湖面結了一層薄冰。',
-      '今晚有客人。一位黑色長髮的女士，穿著方舟的制服，抱著一個裹著紅圍巾的小女孩。',
-      '女孩在發燒，嘴裡一直哼著一首歌。很奇怪的旋律——像是一首歌裡，故意空了一拍。',
-      '女士說，她要帶孩子上梯子。「上面最安全。」她這麼說，可是她的眼睛不像在說實話。',
-      '她借了指揮台的燈，把孩子哼的歌寫成樂譜，交給我：「替她保管。總有一天，會有人把它唱完。」',
-      '隔天早上，她們順著地下河往梯子去了。我再也沒有見過她們。'] },
+      '（值班簿的最後幾頁。墨水被水暈開了。）',
+      '今晚，潮水帶進來一只木匣。裡面沒有人，只有一份樂譜。封蠟上壓著浪紋，是王宮用的那種。',
+      '最上方寫著：「給沒有名字的孩子」。下面是一首搖籃曲，只寫了一半，像是寫的人哭得寫不下去了。',
+      '指揮把後半段補上了。她說：「總要有人，替那個孩子唱一次。」',
+      '首演定在下一季。……那一季，再也沒有來。'] },
   ];
   const people = [
-    { id: 'c4_lucette', name: '露塞特・德瓦爾', en: 'LUCETTE DEVAL — THE LAST ARIA', portrait: null, unlock: 'c4_boss_seen', tag: '失聲者｜第四降臨隊隊長',
-      body: ['萊拉大歌劇院史上最年輕的首席女高音。十九歲那年的季終公演，大寂靜在她唱到最高音的瞬間抵達。',
-        '方舟收留了她。她成了共鳴者，以歌聲為刃，最後率領第四降臨隊重返地表——刻意繞道萊拉。',
-        '她回到了自己的舞台，對著空無一人的觀眾席，日復一日地唱。直到寂靜把她的聲音，連同她的身體，一起變成了玻璃。'] },
-    { id: 'c4_valentin', name: '瓦倫丁', en: 'VALENTIN — THE CONCERTMASTER', portrait: null, unlock: 'c4_elite_seen', tag: '第四降臨隊｜首席小提琴',
-      body: ['第四降臨隊的副隊長，露塞特的伴奏。他的共鳴武器是一把以弓為刃的小提琴。',
-        '他每天替樂器調音，記錄 A 音一天天往下沉的頻率。他知道她再也唱不出聲音，卻從來沒有告訴她。'] },
-    { id: 'c4_simon', name: '西蒙', en: 'SIMON — THE STAGE MANAGER', portrait: null, unlock: 'c4_met_simon', tag: '殘響｜萊拉大歌劇院舞台監督',
-      body: ['大寂靜之後仍留守在劇院裡的舞台監督。他早已不在人世——留下的，只是一段困在劇院聲學結構裡的「殘響」。',
+    { id: 'c4_lucette', name: '露塞特', en: 'LUCETTE — THE PUPPETEER DIVA', portrait: null, unlock: 'c4_boss_seen', tag: '第三道門｜提線歌姬',
+      body: ['潮音大劇院最後的首席女高音。大潮之夜，她唱到最高音的那一刻，水淹進了劇院。',
+        '在冥界，她成了第三道門的守門人：溺死的人唱完自己的輓歌，便把聲音交給她，然後往下走。',
+        '門關上之後，再也沒有人下來。她把收來的聲音一根一根繫上絲線，讓同一群人，把同一齣戲唱了十八年。'] },
+    { id: 'c4_valentin', name: '瓦倫丁', en: 'VALENTIN — THE PRINCIPAL', portrait: null, unlock: 'c4_elite_seen', tag: '第三道門｜首席',
+      body: ['潮音大劇院的首席男高音，露塞特的搭檔。他的聲音早就交了出去，如今只剩一把從樂池撈起的小提琴。',
+        '他每天替琴調音，記錄 A 音一天天往下沉。他知道她再也唱不出自己的聲音，卻從來沒有告訴她。他自己，也一直沒有謝幕。'] },
+    { id: 'c4_simon', name: '西蒙', en: 'SIMON — THE STAGE MANAGER', portrait: null, unlock: 'c4_met_simon', tag: '溺死者｜潮音大劇院舞台監督',
+      body: ['大潮之夜沒能離開劇院的舞台監督。他的輓歌很短，早就唱完了；可是他不肯往下走。',
         '他還在倒數開場，還在替燈光就位，還在等一份被風吹散的樂譜回到譜架上。',
-        '「各部門注意——開場前五分鐘。」這句話，他已經說了二十年。'] },
+        '「各部門注意——開場前五分鐘。」這句話，他已經說了很多年。'] },
   ];
   const world = [
-    { id: 'c4_lyra', name: '萊拉', en: 'LYRA, THE DROWNED CAPITAL', unlock: 't_c4_t_lake',
-      body: ['舊時代的「音樂之都」。運河縱橫，三百一十二座音樂廳，每一扇窗都曾傳出琴聲。',
-        '2263 年 11 月 4 日，市府開啟全部水閘，試圖以流水阻擋寂裔。水進來了，然後停止流動——整座城沉入一面不會回聲的湖。'] },
+    { id: 'c4_lyra', name: '沉港', en: 'THE SUNKEN HARBOR', unlock: 't_c4_t_lake',
+      body: ['溫陀的舊港街。很多年前的一場大潮，把整條港街連同大劇院，一起帶進了海裡。',
+        '在庫爾，海吞下去的東西，最後都會沉到這裡：船骨、街燈、整座劇院，還有人。'] },
     { id: 'c4_mirror', name: '黑鏡湖', en: 'THE BLACK MIRROR', unlock: 't_c4_t_lake',
-      body: ['淹沒萊拉的湖水。它反射月光、燈火與倒影，卻不反射任何聲音。',
-        '少數地方的水是真正的黑色——那是寂靜本身滲出的「黑水」，會一點一點吞掉站在裡面的人的心跳。'] },
-    { id: 'c4_opera', name: '萊拉大歌劇院', en: 'THE GRAND OPERA OF LYRA', unlock: 't_c4_t_opera',
-      body: ['兩千四百個座位、一百一十二個包廂、當年全世界最大的水晶吊燈。銅綠色的圓頂上，金色的阿波羅高舉著七弦琴。',
-        '圓頂在大寂靜後的某個冬天坍塌。月光從破口直接照進觀眾席——那裡如今積滿了湖水。',
-        '舞台底下有一座貨運升降梯，順著斷層之井的地下河，一路通往梯子的中段。'] },
+      body: ['淹沒沉港的水。它反射光、燈火與倒影，卻不反射任何聲音。',
+        '少數地方的水是真正的黑色——那是「黑水」，會一點一點吞掉站在裡面的人的心跳。'] },
+    { id: 'c4_opera', name: '潮音大劇院', en: 'THE TIDESONG OPERA', unlock: 't_c4_t_opera',
+      body: ['兩千四百個座位、一百一十二個包廂、溫陀最大的水晶吊燈。銅綠色的圓頂上，金色的海神高舉著七弦琴。',
+        '圓頂在某個冬天坍塌。光從破口直接照進觀眾席——那裡如今積滿了水。',
+        '舞台底下有一道往下的石階。溺死的人唱完輓歌，就從那裡走向第三道門。'] },
     { id: 'c4_echoes', name: '殘響之人', en: 'THOSE WHO LINGER', unlock: 'c4_met_simon',
-      body: ['歐德的推論：在共鳴特別強的地方，一個人最後的聲音可能會被建築「記住」，像一段不斷重播的錄音。',
-        '「這不是鬼。」歐德說，「是很固執的回音。」停頓了很久之後：「……我大概，沒有資格這樣說別人。」'] },
+      body: ['寧舒說：在這座劇院裡，一個人最後的歌，會被牆記住，一遍一遍地重唱。',
+        '「這不是鬼。」祂說，「是還沒唱完的輓歌。」停了很久之後：「……我大概，沒有資格這樣說別人。」'] },
   ];
   const items = [
-    { id: 'c4_score', name: '米菈的樂譜', en: "MIRA'S SCORE", unlock: 'relic_c4_score', relic: true,
-      body: ['瑪絲緹娜親筆寫下的樂譜，最上方寫著「給米菈」。是那首旋律——第一次，配上了歌詞。', '遺物效果：完美格擋判定時間 +30ms。'] },
+    { id: 'c4_score', name: '無名的搖籃曲', en: 'A LULLABY WITH NO NAME', unlock: 'relic_c4_score', relic: true,
+      body: ['從海上漂下來的樂譜，最上方寫著「給沒有名字的孩子」。前半是一個母親的字跡，後半是指揮補上的。它從來沒有被唱給那個孩子聽過。', '遺物效果：完美格擋判定時間 +30ms。'] },
     { id: 'c4_page1', name: '樂譜殘頁（一）', en: 'SCORE FRAGMENT I', unlock: 'c4_got_page1', body: ['泡過水的五線譜。音符被暈開了，但還讀得出旋律的開頭。'] },
     { id: 'c4_page2', name: '樂譜殘頁（二）', en: 'SCORE FRAGMENT II', unlock: 'c4_got_page2', body: ['邊緣被噴泉的水染成了青色。上面有一行鉛筆小字：「這裡要換氣」。'] },
-    { id: 'c4_page3', name: '樂譜殘頁（三）', en: 'SCORE FRAGMENT III', unlock: 'c4_got_page3', body: ['最後一頁。旋律的結尾，是一個很長的休止符。'] },
+    { id: 'c4_page3', name: '樂譜殘頁（三）', en: 'SCORE FRAGMENT III', unlock: 'c4_got_page3', body: ['最後一頁，是指揮的字跡。結尾是一個很長的休止，像是在等誰接著唱。'] },
   ];
-  const relics = { c4_score: { name: '米菈的樂譜', desc: '完美格擋判定 +30ms' } };
+  const relics = { c4_score: { name: '無名的搖籃曲', desc: '完美格擋判定 +30ms' } };
   G.Relics.c4_score = { apply(P) { P.parryWin += 0.03; } };
   // the elite's relic belongs to ch4_foes.js; only fill it in if that file did not define it
   if (!G.DATA.relics.c4_rosin) {
     relics.c4_rosin = { name: '松香', desc: '攻擊力 +8%' };
-    items.push({ id: 'c4_rosin', name: '松香', en: 'ROSIN', unlock: 'relic_c4_rosin', relic: true, body: ['瓦倫丁的松香塊，被握得溫熱。弓弦乾了二十年，擦上它，還是會唱。', '遺物效果：攻擊力 +8%。'] });
+    items.push({ id: 'c4_rosin', name: '松香', en: 'ROSIN', unlock: 'relic_c4_rosin', relic: true, body: ['瓦倫丁的松香塊，被握得溫熱。弓弦乾了十八年，擦上它，還是會唱。', '遺物效果：攻擊力 +8%。'] });
   }
   if (!G.Relics.c4_rosin) G.Relics.c4_rosin = { apply(P) { P.dmgMul = (P.dmgMul || 1) * 1.08; } };
 
   /* =============================== REGISTER =============================== */
   const CH4 = G.Chapters.register({
-    id: 4, key: 'ch4', num: 'IV', numZh: '四', title: '沉沒的歌劇院', en: 'THE DROWNED OPERA',
+    id: 4, key: 'ch4', num: 'IV', numZh: '四', title: '溺死者的劇場', en: 'THE THEATRE OF THE DROWNED',
     intro: [
-      { t: '曾經，這座城的每一扇窗都在唱歌。', s: 'ONCE, EVERY WINDOW IN THIS CITY SANG.' },
-      { t: '如今只剩下月光，\n和一面不會回聲的湖。', s: 'NOW THERE IS ONLY MOONLIGHT — AND A LAKE THAT RETURNS NO ECHO.' },
+      { t: '溺死的人，在這裡唱自己的輓歌。', s: 'HERE THE DROWNED SING THEIR OWN DIRGES.' },
+      { t: '唱完的，往下走。\n沒唱完的，留下來。', s: 'THOSE WHO FINISH GO DOWN. THOSE WHO DO NOT, STAY.' },
     ],
     enterDialog: 'c4_enter',
-    outro: '「二十年前，有人抱著一個孩子，走過這條路。」',
+    outro: '「十八年前，海上漂過一只木箱。」',
     level: LEVEL,
     pal: {
       skyTop: ['#04071a', '#0c0308'], skyMid: ['#122149', '#2a0a16'], skyLow: ['#36578c', '#5a1626'], horizon: ['#9cbbe2', '#c8604a'],

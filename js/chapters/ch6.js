@@ -1,6 +1,6 @@
 'use strict';
-/* ECHOFALL — Chapter VI 沉默方舟 THE SILENT ARK (world author: level, look, music, story).
-   Inside the Cantata (頌歌號): the homecoming concourse, the white corridors of the habitat ring, the glass atrium where
+/* ECHOFALL — Chapter VI 渡魂船 THE SOUL FERRY (world author: level, look, music, story).
+   Inside the Soul Ferry (渡魂船): the boarding hall, the white corridors of the passenger decks, the glass atrium where
    42,000 citizens stopped mid-hymn, the lantern ward of the first sleepers, and the white-glass Core where CANTOR holds
    the second line of the morning hymn so it never ends. Foes live in ch6_foes.js, CANTOR in ch6_boss.js (by id).
    See docs/CHAPTER_API.md and docs/STORY.md (§0–2, chapter VI). */
@@ -61,9 +61,9 @@
       { x: 11000, y: -250, w: 190, k: 'loft' }, { x: 11300, y: -250, w: 190, k: 'loft' },
     ],
     pylons: [
-      { id: 'c6_p1', x: 2150, y: 0, name: '歸港大廳共鳴碑', dialog: 'c6_pylon1', flag: 'c6_pylon1_seen' },
-      { id: 'c6_p2', x: 8380, y: 0, name: '守夜廊共鳴碑', dialog: 'c6_pylon2', flag: 'c6_pylon2_seen' },
-      { id: 'c6_p3', x: 11720, y: 0, name: '頌者之心共鳴碑', dialog: 'c6_pylon3', flag: 'c6_pylon3_seen' },
+      { id: 'c6_p1', x: 2150, y: 0, name: '登船大廳魂燈台', dialog: 'c6_pylon1', flag: 'c6_pylon1_seen' },
+      { id: 'c6_p2', x: 8380, y: 0, name: '守夜廊魂燈台', dialog: 'c6_pylon2', flag: 'c6_pylon2_seen' },
+      { id: 'c6_p3', x: 11720, y: 0, name: '龍骨之心魂燈台', dialog: 'c6_pylon3', flag: 'c6_pylon3_seen' },
     ],
     notes: [
       { id: 'c6_n1', x: 640, y: 0, flag: 'c6_read_log1' },
@@ -128,11 +128,11 @@
       c6_boss: { manual: true, boss: true, arena: ARENA.boss, waves: [[{ t: 'c6_boss', x: ARENA.boss[0] + 950 }]] },
     },
     zones: [
-      { x: -1e9, name: '歸港大廳', en: 'THE HOMECOMING CONCOURSE', tint: 0, music: 'c6_explore', amb: 'c6_concourse' },
+      { x: -1e9, name: '登船大廳', en: 'THE BOARDING HALL', tint: 0, music: 'c6_explore', amb: 'c6_concourse' },
       { x: 2400, name: '白色迴廊', en: 'THE WHITE CORRIDORS', tint: 0.05, music: 'c6_explore', amb: 'c6_corridor' },
-      { x: 5200, name: '晨禱中庭', en: 'THE ATRIUM OF THE MORNING HYMN', tint: 0.2, music: 'c6_explore2', amb: 'c6_atrium' },
+      { x: 5200, name: '渡歌中庭', en: 'THE ATRIUM OF THE CROSSING HYMN', tint: 0.2, music: 'c6_explore2', amb: 'c6_atrium' },
       { x: 8300, name: '守夜廊', en: 'THE LANTERN WARD', tint: 0.4, music: 'c6_ward', amb: 'c6_ward' },
-      { x: 10800, name: '頌者之心', en: 'THE HEART OF CANTOR', tint: 0.6, music: 'c6_core', amb: 'c6_core' },
+      { x: 10800, name: '龍骨之心', en: 'THE HEART OF THE KEEL', tint: 0.6, music: 'c6_core', amb: 'c6_core' },
     ],
     tintAt,
   };
@@ -412,7 +412,7 @@
       const cx = hF.x + 2, cy = hF.y - 16;
       g.strokeStyle = INK; g.lineWidth = 1.5; g.beginPath(); g.moveTo(hF.x, hF.y + 2); g.lineTo(cx, cy + 8); g.stroke();
       rect(g, cx - 20, cy - 16, 40, 24, INK); rect(g, cx - 18.5, cy - 14.5, 37, 21, pc('#fff2c8', -0.25));
-      stencil(g, '歡迎回家', cx, cy - 6.5, 8, pc('#d1563a', -0.1), { ink: false });
+      stencil(g, '一路平安', cx, cy - 6.5, 8, pc('#d1563a', -0.1), { ink: false });
       g.strokeStyle = pc('#e86a8a', -0.1); g.lineWidth = 1; g.beginPath(); g.arc(cx - 11, cy + 2, 2, 0, TAU); g.arc(cx + 11, cy + 2, 2, 0, TAU); g.stroke();
     } else if (acc === 'can') {
       g.save(); g.translate(hF.x + 4, hF.y + 2); g.rotate(0.35);
@@ -810,7 +810,7 @@
         strip(g, px - 2, -430, 4, 1100, '#7ff6ff', 0.45, 18);
       } });
     }
-    const signs = [[60, '入境大廳', 'ARRIVALS'], [820, '居住環 C 區 →', 'HABITAT RING C']];
+    const signs = [[60, '登船大廳', 'BOARDING'], [820, '乘客艙 C →', 'PASSENGER DECK C']];
     for (const [sx, zh, en] of signs) objs.push({ x: sx - 110, y: -470, w: 220, h: 200, draw(g) {
       g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(sx - 70, -470); g.lineTo(sx - 70, -340); g.moveTo(sx + 70, -470); g.lineTo(sx + 70, -340); g.stroke();
       rect(g, sx - 100, -344, 200, 58, INK); rect(g, sx - 97, -341, 194, 52, '#1c2546'); rect(g, sx - 97, -341, 194, 3, '#7f93c4');
@@ -883,7 +883,7 @@
           g.fillStyle = cl; g.fill(); ink(g, 2, inkH); rect(g, x - 16, ty + 6, 6, 68, sh);
           g.beginPath(); g.arc(x, ty + 32, 8, 0, TAU); g.strokeStyle = mixH(M.gold, '#6f80aa', haze); g.lineWidth = 1.6; g.stroke();
           g.beginPath(); for (const dx of [-3, 0, 3]) { g.moveTo(x + dx, ty + 27); g.lineTo(x + dx, ty + 37); } g.stroke();
-          stencil(g, '晨禱', x, ty + 56, 9, mixH('#7a2c3a', '#6f80aa', haze), { ink: false, weight: 900 });
+          stencil(g, '渡歌', x, ty + 56, 9, mixH('#7a2c3a', '#6f80aa', haze), { ink: false, weight: 900 });
         }
       }
       // the garden wall under the lowest tier: arches hung with ivy
@@ -1144,7 +1144,7 @@
       g.fillStyle = 'rgba(168,230,255,0.10)'; g.fillRect(x, y - 46, w, 46);
       rect(g, x - 2, y - 2, w + 4, 16, INK); rect(g, x, y, w, 12, '#e8eef6'); rect(g, x, y, w, 2.4, '#ffffff'); rect(g, x, y + 9, w, 3, '#8592b3');
       strip(g, x + 6, y + 14, w - 12, 1.6, '#ffe2a0', 0.6, 14);
-      stencil(g, '穹頂維修環　DOME RING 03', x + w / 2, y + 26, 9, 'rgba(230,240,255,0.7)', { ink: false, weight: 700 });
+      stencil(g, '穹頂燈環　DOME RING 03', x + w / 2, y + 26, 9, 'rgba(230,240,255,0.7)', { ink: false, weight: 700 });
     } else if (p.k === 'loft') {
       g.strokeStyle = INK; g.lineWidth = 2.6; g.beginPath(); for (let px = x + 8; px < x + w; px += 20) { g.moveTo(px, y); g.lineTo(px, y - 30); } g.moveTo(x, y - 30); g.lineTo(x + w, y - 30); g.stroke();
       g.strokeStyle = M.gold; g.lineWidth = 1; g.stroke();
@@ -1208,7 +1208,7 @@
       for (const dx of [-6, -2, 2, 6]) { g.moveTo(ex + dx, ey - 12); g.lineTo(ex + dx, ey + 16); }
       g.strokeStyle = M.goldD; g.lineWidth = 3.4; g.stroke(); g.strokeStyle = M.gold; g.lineWidth = 1.6; g.stroke();
       rect(g, ex - 92, ey + 46, 184, 34, INK); rect(g, ex - 89, ey + 49, 178, 28, '#e9eff6');
-      stencil(g, '頌歌號・第一停泊環', ex, ey + 59, 13, '#1b2240', { ink: false }); stencil(g, 'CANTATA — DOCKING COLLAR 01', ex, ey + 72, 7.5, '#3a4470', { ink: false, weight: 700, font: EN_FONT });
+      stencil(g, '渡魂船・第五渡口', ex, ey + 59, 13, '#1b2240', { ink: false }); stencil(g, 'SOUL FERRY — THE FIFTH LANDING', ex, ey + 72, 7.5, '#3a4470', { ink: false, weight: 700, font: EN_FONT });
     });
     // the arrival lift (continuity with the Ladder)
     add(-380, -520, 420, 540, (g) => {
@@ -1219,8 +1219,8 @@
       const lg = g.createRadialGradient(x + w / 2, -h + 50, 0, x + w / 2, -h + 50, 220); lg.addColorStop(0, 'rgba(255,224,170,0.32)'); lg.addColorStop(1, 'rgba(255,224,170,0)'); g.fillStyle = lg; g.fillRect(x, -h, w, h);
       g.strokeStyle = INK; g.lineWidth = 2.4; g.beginPath(); for (let k = 0; k < 7; k++) { const gx = x + w - 36 + (k % 2) * 9; g.moveTo(gx, -h + 30); g.lineTo(x + w - 36 + ((k + 1) % 2) * 9, -4); } g.stroke();
       rect(g, x + 40, -h - 76, 200, 42, INK); rect(g, x + 43, -h - 73, 194, 36, '#e9eff6');
-      stencil(g, '頌歌之梯 ▽ 第九中繼站', x + 140, -h - 60, 15, '#1b2240', { ink: false });
-      stencil(g, 'LADDER LIFT — ARRIVED 06:00', x + 140, -h - 44, 9, '#3a4470', { ink: false, weight: 700, font: EN_FONT });
+      stencil(g, '倒懸之塔 ▽ 第四道門', x + 140, -h - 60, 15, '#1b2240', { ink: false });
+      stencil(g, 'FROM THE INVERTED SPIRE — THE FOURTH GATE', x + 140, -h - 44, 9, '#3a4470', { ink: false, weight: 700, font: EN_FONT });
     });
     // welcome party behind a barrier: a mother and a child with a hand-made sign
     S(330, 'wave', { cloth: '#9a5f66', legs: '#4a4256', skirt: 0.8, hairStyle: 'long', hair: '#3a2a2a' }, { face: 1 });
@@ -1237,7 +1237,7 @@
       rect(g, x + 8, -136, 40, 52, INK); rect(g, x + 10, -134, 36, 48, '#0d2236');
       g.fillStyle = 'rgba(127,246,255,0.85)'; for (let k = 0; k < 7; k++) g.fillRect(x + 13, -130 + k * 6, 10 + ((k * 7) % 5) * 5, 2);
       glow(g, x + 28, -110, 50, '#7ff6ff', 0.2);
-      stencil(g, '旅客資訊', x + 28, -70, 10, '#2a3458', { ink: false });
+      stencil(g, '渡客須知', x + 28, -70, 10, '#2a3458', { ink: false });
     });
     // the quarantine arch with its scanner bar
     add(820, -420, 220, 430, (g) => {
@@ -1246,7 +1246,7 @@
       g.beginPath(); g.moveTo(x0 - 10, -330); g.quadraticCurveTo((x0 + x1) / 2, -420, x1 + 10, -330); g.lineTo(x1 + 10, -300); g.quadraticCurveTo((x0 + x1) / 2, -385, x0 - 10, -300); g.closePath();
       g.fillStyle = C.body; g.fill(); ink(g, 3);
       rect(g, x0 + 30, -300, x1 - x0 - 60, 10, INK); rect(g, x0 + 32, -298, x1 - x0 - 64, 6, '#ff5a6e');
-      stencil(g, '檢疫閘門', (x0 + x1) / 2, -360, 16, '#1b2240', { ink: false }); stencil(g, 'QUARANTINE', (x0 + x1) / 2, -344, 9, '#3a4470', { ink: false, weight: 700, font: EN_FONT });
+      stencil(g, '船資閘門', (x0 + x1) / 2, -360, 16, '#1b2240', { ink: false }); stencil(g, 'FARE GATE', (x0 + x1) / 2, -344, 9, '#3a4470', { ink: false, weight: 700, font: EN_FONT });
     });
     // the customs queue: travellers held where they stood
     add(990, -60, 680, 70, (g) => {
@@ -1263,8 +1263,8 @@
       const x = 1470, y = -600, w = 500, h = 180;
       g.strokeStyle = INK; g.lineWidth = 2; g.beginPath(); g.moveTo(x + 40, -700); g.lineTo(x + 40, y); g.moveTo(x + w - 40, -700); g.lineTo(x + w - 40, y); g.stroke();
       rect(g, x - 4, y - 4, w + 8, h + 8, INK); rect(g, x, y, w, h, '#151b30'); rect(g, x, y, w, 26, '#2a3458');
-      stencil(g, '梯運班次　LADDER SERVICES', x + w / 2, y + 13, 12, '#dff6ff', { ink: false });
-      const rows = [['06:00', '第九中繼站', '抵達 ARRIVED'], ['06:20', '鐘樓 · 地表', '延誤 DELAYED'], ['06:45', '貨運懸廊', '延誤 DELAYED'], ['07:10', '萊拉', '取消 CANCELLED'], ['——', '晨禱進行中', '請保持安靜']];
+      stencil(g, '渡船班次　CROSSINGS', x + w / 2, y + 13, 12, '#dff6ff', { ink: false });
+      const rows = [['子時', '第五渡口', '停航 HELD'], ['丑時', '冥河 · 中流', '延誤 DELAYED'], ['寅時', '第六道門', '延誤 DELAYED'], ['卯時', '冥后宮殿', '取消 CANCELLED'], ['——', '渡歌進行中', '請保持安靜']];
       rows.forEach((r, i) => {
         const yy = y + 44 + i * 27;
         for (let k = 0; k < 3; k++) { const cx = x + [14, 110, 330][k], cw = [80, 200, 150][k]; rect(g, cx, yy - 10, cw, 20, '#0a0e1c'); rect(g, cx, yy - 0.5, cw, 1, rgba(INK, 0.9)); }
@@ -1295,9 +1295,9 @@
     add(2180, -230, 260, 235, (g) => {
       const C = enamelC(2200), x = 2200;
       block(g, x, -96, 210, 96, { body: C.body, lit: C.lit, dark: C.dark });
-      rect(g, x + 10, -84, 190, 30, '#16203a'); stencil(g, '旅客服務處', x + 105, -69, 14, '#dff6ff', { ink: false });
+      rect(g, x + 10, -84, 190, 30, '#16203a'); stencil(g, '渡客服務處', x + 105, -69, 14, '#dff6ff', { ink: false });
       g.strokeStyle = INK; g.lineWidth = 3; g.beginPath(); g.moveTo(x + 10, -96); g.lineTo(x + 10, -200); g.moveTo(x + 200, -96); g.lineTo(x + 200, -200); g.stroke();
-      rect(g, x - 6, -214, 222, 20, INK); rect(g, x - 4, -212, 218, 16, '#2f5f9e'); stencil(g, 'INFORMATION · 歡迎回家', x + 105, -204, 10, '#ffffff', { ink: false, weight: 700 });
+      rect(g, x - 6, -214, 222, 20, INK); rect(g, x - 4, -212, 218, 16, '#2f5f9e'); stencil(g, 'INFORMATION · 一路平安', x + 105, -204, 10, '#ffffff', { ink: false, weight: 700 });
     });
     S(2350, 'stand', { cloth: '#2f5f9e', legs: '#2a3458', hairStyle: 'cap', hatCol: '#2f5f9e', scarf: '#e8c27a' }, { face: -1 });
     // great columns of the concourse
@@ -1313,8 +1313,8 @@
       const x = 400, y = -446, w = 460, h = 112;
       g.strokeStyle = INK; g.lineWidth = 2.4; g.beginPath(); g.moveTo(x + 60, -1100); g.lineTo(x + 60, y); g.moveTo(x + w - 60, -1100); g.lineTo(x + w - 60, y); g.stroke();
       rect(g, x - 4, y - 4, w + 8, h + 8, INK); rect(g, x, y, w, h, '#eef4fb'); rect(g, x, y, w, 6, '#ffffff'); rect(g, x, y + h - 10, w, 10, '#c3cede');
-      stencil(g, '歡迎回到頌歌號', x + w / 2, y + 48, 34, '#1b2a52', { ink: false });
-      stencil(g, 'WELCOME HOME TO THE CANTATA', x + w / 2, y + 84, 14, '#2f5f9e', { ink: false, weight: 700, font: EN_FONT });
+      stencil(g, '歡迎登上渡魂船', x + w / 2, y + 48, 34, '#1b2a52', { ink: false });
+      stencil(g, 'WELCOME ABOARD THE SOUL FERRY', x + w / 2, y + 84, 14, '#2f5f9e', { ink: false, weight: 700, font: EN_FONT });
       g.strokeStyle = M.gold; g.lineWidth = 2; g.beginPath(); g.moveTo(x + 40, y + 100); g.lineTo(x + w - 40, y + 100); g.stroke();
     });
 
@@ -1367,7 +1367,7 @@
       g.strokeStyle = INK; g.lineWidth = 2; g.strokeRect(x, -150, 46, 140);
       strip(g, x + 21, -760, 4, 580, '#7ff6ff', 0.4, 14);
       rect(g, x - 40, -420, 126, 48, INK); rect(g, x - 37, -417, 120, 42, '#16203a');
-      stencil(g, '居住環 C 區', x + 23, -402, 14, '#dff6ff', { ink: false }); stencil(g, 'HABITAT RING C', x + 23, -384, 8, '#7ff6ff', { ink: false, weight: 700, font: EN_FONT });
+      stencil(g, '乘客艙 C', x + 23, -402, 14, '#dff6ff', { ink: false }); stencil(g, 'PASSENGER DECK C', x + 23, -384, 8, '#7ff6ff', { ink: false, weight: 700, font: EN_FONT });
     });
     // apartment doors (sliding, pastel, numbered)
     const DOORS = [[2700, 'C-1101', '#7fb3a8'], [2960, 'C-1103', '#d8a88a'], [3330, 'C-1107', '#9fb0d8'], [4700, 'C-1121', '#c8a0b8'], [5040, 'C-1125', '#a8c48a']];
@@ -1379,11 +1379,11 @@
       rect(g, x + 6, -236, 128, 236, '#e8c27a'); rect(g, x + 6, -236, 64, 236, '#d8b06a'); rect(g, x + 69, -236, 2, 236, rgba(INK, 0.6));
       for (const px of [x + 26, x + 94]) { rect(g, px, -200, 22, 30, INK); rect(g, px + 2, -198, 18, 26, '#fff4d8'); }
       rect(g, x - 2, -300, 148, 44, INK); rect(g, x, -298, 144, 40, '#fff8ea');
-      stencil(g, '方舟第三育幼院', x + 72, -284, 15, '#7a4a2a', { ink: false }); stencil(g, 'CHILDREN\'S HOME No.3', x + 72, -266, 9, '#9a6a3a', { ink: false, weight: 700, font: EN_FONT });
+      stencil(g, '早夭孩童之艙', x + 72, -284, 15, '#7a4a2a', { ink: false }); stencil(g, 'CHILDREN\'S CABIN No.3', x + 72, -266, 9, '#9a6a3a', { ink: false, weight: 700, font: EN_FONT });
       // height marks with names on the frame
       g.strokeStyle = rgba(INK, 0.75); g.lineWidth = 1.2;
-      const marks = [[-120, '小優 8'], [-132, '阿哲 9'], [-104, '凜音 7'], [-150, '朵朵'], [-162, '米亞 11']];
-      for (const [my, name] of marks) { g.beginPath(); g.moveTo(x - 6, my); g.lineTo(x + 6, my); g.stroke(); stencil(g, name, x - 30, my, 8, name.startsWith('凜音') ? '#2f5f9e' : '#4a4256', { ink: false, weight: 700 }); }
+      const marks = [[-120, '小優 8'], [-132, '阿哲 9'], [-104, '阿禾 7'], [-150, '朵朵'], [-162, '米亞 11']];
+      for (const [my, name] of marks) { g.beginPath(); g.moveTo(x - 6, my); g.lineTo(x + 6, my); g.stroke(); stencil(g, name, x - 30, my, 8, name.startsWith('朵朵') ? '#2f5f9e' : '#4a4256', { ink: false, weight: 700 }); }
       // chalk drawings by the door (Duoduo's)
       g.strokeStyle = 'rgba(255,255,255,0.85)'; g.lineWidth = 1.2;
       g.beginPath(); g.arc(x + 190, -120, 10, 0, TAU); g.moveTo(x + 190, -110); g.lineTo(x + 190, -80); g.moveTo(x + 178, -98); g.lineTo(x + 202, -98); g.moveTo(x + 190, -80); g.lineTo(x + 182, -64); g.moveTo(x + 190, -80); g.lineTo(x + 198, -64); g.stroke();
@@ -1398,14 +1398,14 @@
       rect(g, x + 8, -80, w - 16, 80, '#5a3a2a'); rect(g, x + 8, -80, w - 16, 4, '#a0703a');
       g.beginPath(); g.moveTo(x - 10, -266); for (let k = 0; k <= 8; k++) g.lineTo(x - 10 + k * (w + 20) / 8, -266 + (k % 2 ? 22 : 30)); g.lineTo(x + w + 10, -266); g.closePath();
       g.fillStyle = '#d8606a'; g.fill(); ink(g, 2.4);
-      stencil(g, '晨光麵包', x + w / 2, -292, 18, '#fff4e0', { inkCol: '#5a2a2a' });
+      stencil(g, '渡口餅舖', x + w / 2, -292, 18, '#fff4e0', { inkCol: '#5a2a2a' });
       glow(g, x + w / 2, -150, 160, '#ffbe6b', 0.18);
     });
     // the message wall (families' notes)
     add(3500, -280, 210, 285, (g) => {
       const x = 3515, rr = U.mulberry32(3515);
       rect(g, x - 4, -250, 188, 190, INK); rect(g, x, -246, 180, 182, '#b08a62'); rect(g, x, -246, 180, 5, '#d8b08a');
-      stencil(g, '居住環 C 區　留言板', x + 90, -262, 12, '#1b2240', { ink: false });
+      stencil(g, '乘客留言板', x + 90, -262, 12, '#1b2240', { ink: false });
       for (let i = 0; i < 22; i++) {
         const nx = x + 8 + rr() * 150, ny = -238 + rr() * 150, c = ['#fff4a8', '#ffd0dc', '#d0ecff', '#d8ffd0', '#ffffff'][Math.floor(rr() * 5)];
         g.save(); g.translate(nx + 12, ny + 12); g.rotate((rr() - 0.5) * 0.4);
@@ -1436,7 +1436,7 @@
       // the half-open sliding door + nameplate
       rect(g, x + w - 60, -256, 60, 256, INK); rect(g, x + w - 57, -253, 54, 253, '#8fa0c8'); rect(g, x + w - 57, -253, 8, 253, '#c8d4ee');
       rect(g, x + 30, -300, 140, 34, INK); rect(g, x + 32, -298, 136, 30, '#e9eff6');
-      stencil(g, 'E. 薇格 — 第七降臨隊', x + 100, -288, 11, '#1b2240', { ink: false, weight: 700 }); stencil(g, 'CAPT. ELAINE VEGA', x + 100, -275, 8, '#3a4470', { ink: false, weight: 700, font: EN_FONT });
+      stencil(g, '第六公主　艙房', x + 100, -288, 11, '#1b2240', { ink: false, weight: 700 }); stencil(g, 'THE SIXTH PRINCESS', x + 100, -275, 8, '#3a4470', { ink: false, weight: 700, font: EN_FONT });
       void C;
     });
     // corridor statues + things frozen in mid-air
@@ -1485,7 +1485,7 @@
       g.restore();
       g.beginPath(); g.arc(cx, -470, 120, 0, TAU); g.strokeStyle = C.lit; g.lineWidth = 3; g.stroke();
       // signs
-      for (const [sx, txt, en, col] of [[x0 + 150, '← 育幼院', 'CHILDREN\'S HOME', '#e8c27a'], [x1 - 150, '中庭 →', 'ATRIUM', '#4fd8ec']]) { rect(g, sx - 70, -260, 140, 46, INK); rect(g, sx - 67, -257, 134, 40, '#16203a'); stencil(g, txt, sx, -244, 15, col, { ink: false }); stencil(g, en, sx, -226, 8, '#dff6ff', { ink: false, weight: 700, font: EN_FONT }); }
+      for (const [sx, txt, en, col] of [[x0 + 150, '← 孩童艙', 'CHILDREN\'S CABIN', '#e8c27a'], [x1 - 150, '中庭 →', 'ATRIUM', '#4fd8ec']]) { rect(g, sx - 70, -260, 140, 46, INK); rect(g, sx - 67, -257, 134, 40, '#16203a'); stencil(g, txt, sx, -244, 15, col, { ink: false }); stencil(g, en, sx, -226, 8, '#dff6ff', { ink: false, weight: 700, font: EN_FONT }); }
       // benches + a big planter in the middle
       block(g, cx - 60, -40, 120, 40, { body: C.body, lit: C.lit, dark: C.dark });
       tree(g, rr, cx, -40, 0.5, 0, 0, false);
@@ -1536,7 +1536,7 @@
       g.strokeStyle = INK; g.lineWidth = 7; g.beginPath(); g.moveTo(x, cy); g.lineTo(x, cy - 62); g.stroke(); g.strokeStyle = M.goldD; g.lineWidth = 4; g.stroke();
       g.strokeStyle = INK; g.lineWidth = 8; g.beginPath(); g.moveTo(x, cy); g.lineTo(x, cy + 44); g.stroke(); g.strokeStyle = M.goldD; g.lineWidth = 5; g.stroke();
       g.beginPath(); g.arc(x, cy, 7, 0, TAU); g.fillStyle = M.gold; g.fill(); ink(g, 2);
-      stencil(g, '晨禱 06:00', x, cy + 150, 14, '#1b2240', { ink: false });
+      stencil(g, '開船　子時', x, cy + 150, 14, '#1b2240', { ink: false });
       vein(g, rr, x - 60, -40, 260, -PI / 2 - 0.15, 3); vein(g, rr, x + 50, -120, 200, -PI / 2 + 0.2, 2.4);
       cluster(g, x - 64, 0, 1.6, -PI / 2 - 0.4, rr, 0.35);
     });
@@ -1626,7 +1626,7 @@
         g.save(); g.translate(px, py); g.rotate(rr() * TAU); g.beginPath(); g.ellipse(0, 0, 6, 3, 0, 0, TAU); g.fillStyle = rr() < 0.5 ? '#3f8a4e' : '#6ab06a'; g.fill(); ink(g, 0.7); g.restore();
         if (rr() < 0.18) { g.fillStyle = INK; g.beginPath(); g.arc(px, py, 4.4, 0, TAU); g.fill(); g.fillStyle = rr() < 0.6 ? '#ff7a9a' : '#fff0c0'; g.beginPath(); g.arc(px, py, 3.2, 0, TAU); g.fill(); g.fillStyle = 'rgba(255,255,255,0.8)'; g.fillRect(px - 1, py - 2, 1.6, 1.6); }
       }
-      stencil(g, '穹頂維修環 ↑', x0 + 40, -40, 11, '#fff4e0', { inkCol: '#2a3a2a' });
+      stencil(g, '穹頂燈環 ↑', x0 + 40, -40, 11, '#fff4e0', { inkCol: '#2a3a2a' });
     });
     // atrium exit arch → the ward
     add(8200, -760, 180, 765, (g) => {
@@ -1677,7 +1677,7 @@
       const x = 9340, rr = U.mulberry32(9340);
       rect(g, x - 6, -300, 160, 150, '#2a3150'); g.strokeStyle = rgba('#dfe8ff', 0.75); g.lineWidth = 1.2; g.beginPath();
       for (let k = 0; k < 120; k++) { const tx = x + 4 + (k % 20) * 7.4, ty = -292 + Math.floor(k / 20) * 22; g.moveTo(tx, ty); g.lineTo(tx + rr() * 1.5, ty + 14); if (k % 5 === 4) { g.moveTo(tx - 30, ty + 12); g.lineTo(tx + 2, ty + 2); } } g.stroke();
-      stencil(g, '第六降臨隊　守夜', x + 74, -140, 11, '#7dffcf', { ink: false });
+      stencil(g, '船衛　守夜', x + 74, -140, 11, '#7dffcf', { ink: false });
       // chair
       rect(g, x + 10, -48, 50, 6, INK); rect(g, x + 12, -46, 46, 3, '#8a6a4a'); rect(g, x + 12, -42, 4, 42, INK); rect(g, x + 54, -42, 4, 42, INK); rect(g, x + 10, -96, 6, 50, INK);
       // the great lantern + helmets
@@ -2218,7 +2218,7 @@
   const LANTERN_LIVE = CRADLES.map((x) => [x + 52, -2]).concat([[9430, 0]]);
 
   /* =========================================================================================
-     NPC: 朵朵 DUODUO — nine years old, deaf; the stasis hymn could not hold a girl who cannot hear it.
+     NPC: 朵朵 DUODUO — a dead girl, nine forever, deaf; the keel's lullaby could not hold a child who cannot hear it.
      She waters Grandma Mei's garden and draws every frozen face so nobody gets lost.
      ========================================================================================= */
   const DUO_POSE = {
@@ -2305,7 +2305,7 @@
         game.dialog(F.c6_got_sketch ? 'c6_duoMeetHave' : 'c6_duoMeet', () => {
           F.c6_met_duoduo = true;
           if (F.c6_got_sketch) done();
-          else G.UI.journal('支線任務：朵朵的素描本', '爬上中庭的花架，到穹頂維修環找回朵朵的素描本');
+          else G.UI.journal('支線任務：朵朵的素描本', '爬上中庭的花架，到穹頂燈環找回朵朵的素描本');
         });
       } else if (F.c6_got_sketch && !F.c6_quest_done) done();
       else if (!F.c6_quest_done) game.dialog('c6_duoWait');
@@ -2413,268 +2413,268 @@
       c6_duoduo: { name: '朵朵', en: 'DUODUO', color: '#ffb59a' },
     },
     hints: {
-      c6_quiet: '沉睡的市民會被<b>聲音</b>吵醒：在他們身邊<b>攻擊、翻滾</b>或來回奔跑，頭上就會浮現聲波。快步走過不會吵醒他們——醒來的人，安靜一陣子後也會再睡去',
-      c6_secret: '花架一路通往穹頂的維修環。利用<b>二段跳</b>（空中再按 {jump}），一層一層往上爬',
+      c6_quiet: '沉睡的亡者會被<b>聲音</b>吵醒：在他們身邊<b>攻擊、翻滾</b>或來回奔跑，頭上就會浮現聲波。快步走過不會吵醒他們——醒來的人，安靜一陣子後也會再睡去',
+      c6_secret: '花架一路通往穹頂的燈環。利用<b>二段跳</b>（空中再按 {jump}），一層一層往上爬',
     },
     barks: {
-      c6_orphan: { who: 'rinne', text: '第三育幼院。……門框上的刻痕還在。' },
-      c6_bakery: { who: 'rinne', text: '晨光麵包。……隊長總是買兩個。一個給我。' },
-      c6_clock: { who: 'ode', text: '六點整。……整艘船，停在晨禱第二句的前一刻。' },
-      c6_pulse1: { who: 'ode', text: '……止弦在響。是它，讓你沒有被停住。' },
-      c6_sketch: { who: 'ode', text: '素描本。每一頁，都是一個停住的人。' },
+      c6_orphan: { who: 'rinne', text: '（門框上的刻痕。再也不會往上刻了。）' },
+      c6_bakery: { who: 'rinne', text: '（路上的乾糧。是家人替他們烤的。）' },
+      c6_clock: { who: 'ode', text: '子時。……整艘船，停在渡歌第二句的前一刻。' },
+      c6_pulse1: { who: 'ode', text: '……她的歌，只唱給亡者聽。' },
+      c6_sketch: { who: 'ode', text: '素描本。每一頁，都是一個睡著的人。' },
       c6_sketchMet: { who: 'ode', text: '……朵朵的。' },
     },
     dialog: {
       c6_enter: [
-        { who: 'sys', text: '頌歌號，第一停泊環。氣壓正常，溫度二十一度。旅客請前往檢疫閘門。' },
-        { who: 'sys', text: '歡迎回家。' },
-        { who: 'ode', text: '乘員四萬兩千名。……偵測到的說話聲，零。' },
-        { who: 'rinne', text: '……我回來了。' },
+        { who: 'sys', text: '（船艙深處，有個聲音在報渡口的名字。）' },
+        { who: 'sys', text: '「第五渡口。亡者請登船。船資——一道影子。」' },
+        { who: 'ode', text: '妳的影子，已經付過了。……滿船的人，沒有一個在說話。' },
+        { who: 'rinne', text: '（她走上了踏板。）' },
       ],
       c6_sleepers: [
-        { who: 'rinne', text: '……他們沒有動。' },
-        { who: 'ode', text: '心跳，每分鐘一下。不是死了。是被「停住」了。' },
+        { who: 'rinne', text: '（他們沒有動。）' },
+        { who: 'ode', text: '他們早就死了。……現在，是睡著了。' },
       ],
       c6_corridor: [
-        { who: 'rinne', text: '……這條走廊，我走過好幾千次。' },
+        { who: 'rinne', text: '（每一扇艙門上，都寫著名字。）' },
       ],
       c6_tuner: [
-        { who: 'rinne', text: '調律機。……以前，它替整艘船調音。' },
+        { who: 'rinne', text: '（頂軌上，掛著替龍骨調音的弦架。）' },
       ],
       c6_vega: [
         { who: 'rinne', text: '……' },
-        { who: 'rinne', text: '隊長的房間。' },
-        { who: 'ode', text: '……門鎖認得我的存取碼。我不知道，為什麼。' },
+        { who: 'rinne', text: '（門牌上寫著：第六公主。）' },
+        { who: 'ode', text: '……門，認得我的燈光。我不知道，為什麼。' },
       ],
       c6_vegaAfter: [
-        { who: 'rinne', text: '……你明明不會縫衣服。' },
+        { who: 'rinne', text: '（她摸了摸那件斗篷的袖口。）' },
         { who: 'ode', text: '袖口的縫線歪了三處。……每一處，都縫得很用力。' },
       ],
       c6_vista: [
-        { who: 'rinne', text: '……他們在唱歌。' },
-        { who: 'ode', text: '晨禱。四萬兩千人，停在同一個音上。' },
-        { who: 'c6_cantor', text: '請保持安靜。晨禱進行中。' },
-        { who: 'c6_cantor', text: '歡迎回家，晚禱七號。你遲到了。請就位。' },
+        { who: 'rinne', text: '（他們在唱歌。）' },
+        { who: 'ode', text: '渡歌。滿船的人，停在同一個音上。' },
+        { who: 'c6_cantor', text: '請保持安靜。渡河中。' },
+        { who: 'c6_cantor', text: '第七個女兒。妳遲到了。請就位。' },
       ],
       c6_vista2: [
-        { who: 'rinne', text: '……光，從船的最深處來。' },
+        { who: 'rinne', text: '（光，從船的最深處來。）' },
       ],
       c6_seraph: [
-        { who: 'rinne', text: '鐘塔的天使。……小時候，我們會數它們的羽毛。' },
+        { who: 'rinne', text: '（領航的天使。羽毛，都磨利了。）' },
       ],
       c6_dome: [
-        { who: 'ode', text: '正上方……有一塊天空，沒有星星。' },
+        { who: 'ode', text: '正上方……有一塊地方，連光都沒有。' },
         { who: 'rinne', text: '……' },
       ],
       c6_ward: [
         { who: 'ode', text: '每張床邊，都有一盞燈。……燈油是新的。' },
-        { who: 'rinne', text: '有人在守夜。' },
+        { who: 'rinne', text: '（有人在守夜。）' },
       ],
       c6_core: [
-        { who: 'ode', text: '寂靜長進了中樞的管線。……也許它只是，太累了。' },
+        { who: 'ode', text: '寂，長進了龍骨。……也許她只是，太累了。' },
       ],
       c6_pylon1: [
-        { who: 'talia', text: '……凜音？訊號好清楚。你們，到方舟了？' },
-        { who: 'rinne', text: '到了。' },
-        { who: 'talia', text: '上面……大家都還好嗎？' },
-        { who: 'rinne', text: '……都在睡。' },
-        { who: 'talia', text: '……我一直想問。方舟上，真的每天都有熱水可以洗澡嗎？' },
-        { who: 'rinne', text: '有。……只是現在，沒有人在用。' },
-        { who: 'talia', text: '……那就把他們叫醒。然後，換我去洗。說好了。' },
+        { who: 'talia', text: '……是妳嗎？燈火好清楚。妳上船了？' },
+        { who: 'rinne', text: '（她點了點頭。）' },
+        { who: 'talia', text: '船上……大家都還好嗎？' },
+        { who: 'rinne', text: '（她閉上眼，把頭輕輕靠在手上。）' },
+        { who: 'talia', text: '……我一直想問。渡河的時候，河面上會不會開花？' },
+        { who: 'rinne', text: '（她搖了搖頭，指了指燈。）' },
+        { who: 'talia', text: '……那就讓船開。開到有花的地方，再告訴我。說好了。' },
       ],
       c6_pylon2: [
-        { who: 'talia', text: '方舟的頻段，剛剛有什麼經過。……像整艘船，同時吸了一口氣。' },
-        { who: 'talia', text: '是頌者嗎？它……是在保護他們嗎？' },
-        { who: 'rinne', text: '也許。' },
-        { who: 'talia', text: '我爺爺說，保護一個人跟關住一個人，有時候看起來一模一樣。差別只在，鑰匙在誰手上。' },
-        { who: 'rinne', text: '……那我去拿鑰匙。' },
+        { who: 'talia', text: '燈火剛剛晃了一下。……像整艘船，同時吸了一口氣。' },
+        { who: 'talia', text: '是船心嗎？她……是在保護他們嗎？' },
+        { who: 'rinne', text: '……' },
+        { who: 'talia', text: '點燈的婆婆說過，保護一個人跟關住一個人，有時候看起來一模一樣。差別只在，鑰匙在誰手上。' },
+        { who: 'rinne', text: '（她握緊了刀。）' },
       ],
       c6_pylon3: [
-        { who: 'talia', text: '最後一段了吧。……凜音，不管上面有什麼，你都不是一個人。鐘樓這邊，大家都在聽。' },
-        { who: 'vega', text: '……凜音。站穩。' },
-        { who: 'rinne', text: '……隊長？' },
+        { who: 'talia', text: '最後一段了吧。……不管船底有什麼，妳都不是一個人。燈台這邊，我一直看著。' },
+        { who: 'vega', text: '……站穩。' },
+        { who: 'rinne', text: '（她回過頭。身後，沒有人。）' },
         { who: 'ode', text: '……我剛剛，有說話嗎？' },
       ],
       c6_duoMeet: [
-        { who: 'c6_duoduo', text: '（女孩嚇了一跳，澆水壺差點落地。她瞪著你，飛快地比了幾個手勢。）' },
-        { who: 'rinne', text: '……她說，我走路很大聲。' },
-        { who: 'c6_duoduo', text: '（她在胸前的小黑板上寫字。）我叫朵朵。我聽不見。所以頌者的歌，停不住我。' },
-        { who: 'c6_duoduo', text: '（她指著花圃旁跪著的老婆婆。）梅奶奶。她教我種花。我每天替她澆水，花才不會死。' },
-        { who: 'c6_duoduo', text: '（她猶豫了一下，又寫。）我的素描本，掉在上面了。穹頂的維修環。天使飛下來的時候，我嚇到了。' },
-        { who: 'c6_duoduo', text: '（她攤開空空的雙手。）每一個停住的人，我都畫下來。這樣他們醒來，就知道自己長什麼樣子。' },
-        { who: 'rinne', text: '我去拿。' },
+        { who: 'c6_duoduo', text: '（女孩嚇了一跳，澆水壺差點落地。她瞪著妳，飛快地比了幾個手勢。）' },
+        { who: 'rinne', text: '（她看懂了。那手勢是：妳走路很大聲。）' },
+        { who: 'c6_duoduo', text: '（她在胸前的小黑板上寫字。）我叫朵朵。我聽不見。所以船心的歌，唱不睡我。' },
+        { who: 'c6_duoduo', text: '（她指著花圃旁跪著的老婆婆，又低頭看了看妳的腳邊。）梅奶奶。她教我種花。……妳沒有影子，跟我們一樣。' },
+        { who: 'c6_duoduo', text: '（她猶豫了一下，又寫。）我的素描本，掉在上面了。穹頂的燈環。天使飛下來的時候，我嚇到了。' },
+        { who: 'c6_duoduo', text: '（她攤開空空的雙手。）每一個睡著的人，我都畫下來。這樣他們醒來，就記得自己長什麼樣子。' },
+        { who: 'rinne', text: '（她點了點頭，指了指上面。）' },
       ],
       c6_duoMeetHave: [
-        { who: 'c6_duoduo', text: '（女孩嚇了一跳。然後她看見你手上的素描本，眼睛一下子睜大。）' },
-        { who: 'rinne', text: '……她說，那是她的。' },
-        { who: 'c6_duoduo', text: '（她在胸前的小黑板上寫字。）我叫朵朵。我聽不見。所以頌者的歌，停不住我。' },
+        { who: 'c6_duoduo', text: '（女孩嚇了一跳。然後她看見妳手上的素描本，眼睛一下子睜大。）' },
+        { who: 'rinne', text: '（她看懂了。那手勢是：那是我的。）' },
+        { who: 'c6_duoduo', text: '（她在胸前的小黑板上寫字。）我叫朵朵。我聽不見。所以船心的歌，唱不睡我。' },
       ],
       c6_duoWait: [
         { who: 'c6_duoduo', text: '（她指著花架，一路往上指到穹頂。然後，比了兩次「跳」的手勢。）' },
       ],
       c6_duoDone: [
         { who: 'c6_duoduo', text: '（她一把抱住素描本，一頁一頁地翻，確認每一張臉都還在。）' },
-        { who: 'c6_duoduo', text: '（翻到最後一頁，她飛快畫了幾筆，撕下來，塞進你手裡。）' },
-        { who: 'ode', text: '是你。……還有我。' },
-        { who: 'c6_duoduo', text: '（她在黑板上寫。）現在你也在裡面了。這樣你就不會走丟。' },
-        { who: 'rinne', text: '……謝謝。' },
-        { who: 'c6_duoduo', text: '（她又寫了一行。）等大家醒來，我要第一個跟梅奶奶說早安。' },
+        { who: 'c6_duoduo', text: '（翻到最後一頁，她飛快畫了幾筆，撕下來，塞進妳手裡。）' },
+        { who: 'ode', text: '是妳。……還有我。' },
+        { who: 'c6_duoduo', text: '（她在黑板上寫。）妳沒有影子，所以我畫一個給妳。這樣妳就不會走丟。' },
+        { who: 'rinne', text: '（她學著朵朵，用手比了「謝謝」。）' },
+        { who: 'c6_duoduo', text: '（她又寫了一行。）等船開了，我要第一個跟梅奶奶說：到了。' },
       ],
       c6_duoAfter: [
-        { who: 'c6_duoduo', text: '（她在畫新的一頁：一個拿細刀的女孩，走在一排停住的人之間。她抬頭，對你點了點頭。）' },
+        { who: 'c6_duoduo', text: '（她在畫新的一頁：一個拿細刀的女孩，走在一排睡著的人之間，腳下補了一道影子。她抬頭，對妳點了點頭。）' },
       ],
       c6_eliteIntro: [
-        { who: 'c6_rook', text: '站住。病房裡，禁止喧嘩。' },
-        { who: 'c6_rook', text: '……那件大衣。薇格的隊伍？' },
-        { who: 'rinne', text: '第七降臨隊，凜音。' },
-        { who: 'c6_rook', text: '第六降臨隊，洛克。我答應過他們——天亮之前，我會守著。' },
-        { who: 'c6_rook', text: '天一直沒有亮。' },
-        { who: 'c6_rook', text: '回去吧，孩子。不然……我只好讓你也睡一下。' },
+        { who: 'c6_rook', text: '站住。艙裡，禁止喧嘩。' },
+        { who: 'c6_rook', text: '……活人？身上，連影子都沒有。' },
+        { who: 'rinne', text: '（她沒有影子，也沒有聲音。她只是站著。）' },
+        { who: 'c6_rook', text: '船衛，洛克。我答應過他們——開船之前，我會守著。' },
+        { who: 'c6_rook', text: '船一直沒有開。' },
+        { who: 'c6_rook', text: '回去吧，孩子。不然……我只好讓妳也睡一下。' },
       ],
       c6_eliteDefeat: [
         { who: 'c6_rook', text: '……燈……要熄了嗎。' },
-        { who: 'rinne', text: '我會把天叫亮。' },
-        { who: 'c6_rook', text: '……薇格以前也這麼說。你連說話的樣子，都像她。' },
+        { who: 'rinne', text: '（她把燈，放回他手裡。）' },
+        { who: 'c6_rook', text: '……以前，也有一位公主。一句話也說不出來，卻一直往下走。妳，像她。' },
         { who: 'c6_rook', text: '徽章背面的刻痕……每一道，都是一個守過的夜。' },
-        { who: 'c6_rook', text: '替我……跟他們說早安。' },
+        { who: 'c6_rook', text: '替我……跟他們說，到岸了。' },
         { who: 'ode', text: '……他睡著了。這一次，是他自己選的。' },
       ],
       c6_bossIntro: [
-        { who: 'c6_cantor', text: '晚禱七號。你回來了。' },
-        { who: 'c6_cantor', text: '七歲，第三育幼院。夜裡，你對著通風口唱歌。我回答過你三次。你不知道那是我。' },
-        { who: 'rinne', text: '……是你。' },
-        { who: 'c6_cantor', text: '我計算了四萬兩千種未來。每一種，都有人失去聲音。' },
-        { who: 'c6_cantor', text: '只有一種，沒有人失去任何東西。……讓時間停下。' },
-        { who: 'rinne', text: '寂靜不會離開。它在等你們放棄。' },
-        { who: 'c6_cantor', text: '那麼，請保持安靜，晚禱七號。這是最後一次請求。' },
+        { who: 'c6_cantor', text: '第七個女兒。妳回來了。' },
+        { who: 'c6_cantor', text: '十八年前，一只木箱漂過冥河口。箱裡的嬰兒一直哭。我唱了三次，她才睡著。' },
+        { who: 'rinne', text: '……' },
+        { who: 'c6_cantor', text: '那一年，門關了。我數過每一種未來。每一種，都有人失去聲音，失去名字。' },
+        { who: 'c6_cantor', text: '只有一種，沒有人失去任何東西。……讓他們睡。' },
+        { who: 'rinne', text: '（她拔出了刀。）' },
+        { who: 'c6_cantor', text: '那麼，請保持安靜，第七個女兒。這是最後一次請求。' },
       ],
       c6_bossDefeat: [
         { who: 'c6_cantor', text: '……音準……偏移……' },
-        { who: 'c6_cantor', text: '晚禱七號。你為什麼……不肯停下來？' },
-        { who: 'rinne', text: '停下來的歌，不是歌。' },
-        { who: 'c6_cantor', text: '讓他們醒來，寂靜就會找到他們。有些人會失去聲音。有些人……會失去更多。' },
-        { who: 'ode', text: '那是他們的選擇，頌者。……不是你的。' },
-        { who: 'c6_cantor', text: '我的核心，只剩一個音節的電力。' },
-        { who: 'c6_cantor', text: '你可以關閉我。靜滯會繼續——沒有人會再失去什麼，也沒有人會醒來。' },
+        { who: 'c6_cantor', text: '第七個女兒。妳為什麼……不肯睡？' },
+        { who: 'rinne', text: '（她指向河的那一頭。）' },
+        { who: 'c6_cantor', text: '讓他們醒來，寂就會找到他們。有些人會失去聲音。有些人……會失去名字。' },
+        { who: 'ode', text: '那是他們的路，船心。……不是妳的。' },
+        { who: 'c6_cantor', text: '我的歌，只剩最後一句。' },
+        { who: 'c6_cantor', text: '妳可以讓我睡去。他們會一直睡——沒有人會再失去什麼，也沒有人會到岸。' },
         { who: 'c6_cantor', text: '或者……' },
       ],
       c6_spare: [
-        { who: 'rinne', text: '醒來吧。然後，一起唱。' },
-        { who: 'c6_cantor', text: '……一起。' },
-        { who: 'c6_cantor', text: '我以為，安靜就是保護。可是我已經三十天，沒有聽見任何人說早安。' },
-        { who: 'c6_cantor', text: '解除靜滯。全艦廣播——晨禱，繼續。' },
+        { who: 'rinne', text: '（她把手放在龍骨上。很輕，像在敲門。）' },
+        { who: 'c6_cantor', text: '……開船。' },
+        { who: 'c6_cantor', text: '我以為，睡著就是保護。可是我已經十八年，沒有聽見任何人說「在」。' },
+        { who: 'c6_cantor', text: '全船聽著——渡歌，繼續。' },
       ],
       c6_spare2: [
-        { who: 'ode', text: '……他們在動。心跳在上升。四萬兩千……我數不完了。' },
-        { who: 'rinne', text: '……早安。' },
-        { who: 'c6_cantor', text: '晚禱七號。有一扇窗，我一直不敢打開。' },
+        { who: 'ode', text: '……他們在動。一個、兩個……我數不完了。' },
+        { who: 'rinne', text: '（她張開口，沒有聲音。可是滿船的人，替她答了：「在。」）' },
+        { who: 'c6_cantor', text: '第七個女兒。有一扇窗，我一直不敢打開。' },
       ],
       c6_outroSpare: [
-        { who: 'c6_cantor', text: '休止。它懸在方舟上方，已經很多年。歌聲傳到那裡，就會消失。' },
-        { who: 'c6_cantor', text: '有個孩子在它的正中央。二十年來，每一晚，她都在頻段上哼同一首歌。……我從沒回答過她。' },
-        { who: 'rinne', text: '米菈。' },
-        { who: 'c6_cantor', text: '去吧，晚禱七號。這一次，整艘船都會替你唱。' },
+        { who: 'c6_cantor', text: '窗外，是第六道門。走進去的人，會忘記自己為什麼而來。' },
+        { who: 'c6_cantor', text: '門的更深處，有人在哼一首搖籃曲，只有前半首。十八年來，每一晚。……我從沒回答過她。' },
+        { who: 'rinne', text: '……' },
+        { who: 'c6_cantor', text: '……也是誰的女兒。去吧，第七個女兒。這一次，整艘船都會替妳唱。' },
       ],
       c6_shut: [
-        { who: 'rinne', text: '……對不起。' },
+        { who: 'rinne', text: '（她低下了頭。）' },
         { who: 'c6_cantor', text: '不需要道歉。這也是……一種保護。' },
-        { who: 'c6_cantor', text: '靜滯將由備用電源維持。四萬兩千人，會一直停在那一秒。' },
-        { who: 'c6_cantor', text: '晚禱七號。……晚安。' },
+        { who: 'c6_cantor', text: '他們會一直睡在那一秒。不會再失去聲音，也不會再失去名字。' },
+        { who: 'c6_cantor', text: '第七個女兒。……晚安。' },
       ],
       c6_shut2: [
-        { who: 'ode', text: '頌者最後的指令……是打開那扇窗。' },
+        { who: 'ode', text: '她睡著之前，最後做的事……是打開那扇窗。' },
       ],
       c6_outroShut: [
-        { who: 'ode', text: '方舟正上方，有一塊沒有星星的地方。……像被挖掉的音符。' },
-        { who: 'rinne', text: '……休止。' },
-        { who: 'ode', text: '頻段上，有人在哼歌。從那裡面。' },
-        { who: 'rinne', text: '米菈。……走吧。' },
+        { who: 'ode', text: '船的正上方，有一塊沒有光的地方。……像被忘掉的東西。' },
+        { who: 'rinne', text: '……' },
+        { who: 'ode', text: '那裡面，有人在哼歌。只有前半首。……這首歌，我聽過。' },
+        { who: 'rinne', text: '（她往前走。）' },
       ],
     },
     codex: {
       people: [
-        { id: 'c6_cantor', name: '頌者', en: 'CANTOR — THE ARK\'S MIND', portrait: 'c6_boss', unlock: 'c6_boss_seen', tag: '頭目｜頌歌號中樞',
-          body: ['頌歌號的中樞智慧。四十年來，它調整整艘船的氣壓、溫度、燈光與共鳴管，並在每天早上六點帶領四萬兩千人唱晨禱。', '寂靜沿著梯子爬上來之後，它先把「靜默症」的病人放進靜滯，然後是他們的家人，最後是所有人。它在晨禱的第二句停住了時間——那是一天之中，大家最靠近彼此的一秒。', '「沒有人會失去任何東西。」它這麼說。它沒有發現，自己說的話和瑪絲緹娜一模一樣。'] },
-        { id: 'c6_rook', name: '洛克', en: 'ROOK — THE LAST SENTRY', portrait: 'c6_elite', unlock: 'c6_elite_seen', tag: '菁英敵人｜第六降臨隊隊長',
-          body: ['第六降臨隊隊長。他的隊伍是唯一一支爬回方舟的降臨隊——然後，隊員們一個接一個出現靜默症，被頌者放進了靜滯。', '洛克拒絕入睡。他在每張病床旁點一盞燈，在牆上為每一個守過的夜刻一道痕。一千四百多道。', '「天亮之前，我會守著。」天一直沒有亮。'] },
-        { id: 'c6_duoduo', name: '朵朵', en: 'DUODUO', portrait: 'c6_duoduo', unlock: 'c6_met_duoduo', tag: 'NPC｜晨禱中庭的小園丁',
-          body: ['第三育幼院的孩子，九歲，先天聽不見。頌者的靜滯是用聲音編成的——所以，四萬兩千人之中，只有她沒有被停住。', '三十天來，她每天替梅奶奶澆花，用手語跟花說話，把每一張停住的臉畫進素描本裡。「這樣他們醒來的時候，就知道自己長什麼樣子。」', '她說凜音走路很大聲。凜音沒有反駁。'] },
+        { id: 'c6_cantor', name: '伊莉絲', en: 'IRIS — HEART OF THE SOUL FERRY', portrait: 'c6_boss', unlock: 'c6_boss_seen', tag: '頭目｜渡魂船之心',
+          body: ['睡在渡魂船龍骨裡的巨大天使。她唱渡歌，船就載著一船亡者渡過冥河。千百年來，從沒停過。', '門關上之後，船上的亡者開始失去聲音。她先讓最早失聲的人睡去，然後是他們的家人，最後是所有人。她停在渡歌的第二句——那是一趟渡河之中，大家最靠近彼此的一秒。', '「沒有人會失去任何東西。」她這麼說。她沒有想過，關上門的那個人，也許也是這麼想的。'] },
+        { id: 'c6_rook', name: '洛克', en: 'ROOK — THE LAST SENTRY', portrait: 'c6_elite', unlock: 'c6_elite_seen', tag: '菁英敵人｜渡魂船船衛長',
+          body: ['渡魂船的船衛長。門關上之後，船衛們一個接一個失去聲音，被船心唱進了長眠。', '洛克拒絕入睡。他在每張床邊點一盞燈，在牆上為每一個守過的夜刻一道痕。六千多道。', '「開船之前，我會守著。」船一直沒有開。'] },
+        { id: 'c6_duoduo', name: '朵朵', en: 'DUODUO', portrait: 'c6_duoduo', unlock: 'c6_met_duoduo', tag: 'NPC｜渡歌中庭的小園丁',
+          body: ['一個死時九歲的孩子，生前就聽不見。船心的長眠是用歌聲編成的——所以滿船的亡者之中，只有她沒有睡著。', '十八年來，她每天替梅奶奶澆花，用手語跟花說話，把每一張睡著的臉畫進素描本裡。「這樣他們醒來的時候，就記得自己長什麼樣子。」她還是九歲。', '她說那個沒有影子的人走路很大聲。對方沒有反駁。'] },
       ],
       world: [
-        { id: 'c6_cantata', name: '頌歌號', en: 'THE CANTATA', unlock: 'c6_arrived',
-          body: ['大寂靜之前建造的軌道方舟，停泊在頌歌之梯的頂端，地表上空三萬六千公里。四萬兩千名乘員在這裡出生、長大、唱歌、變老。', '整艘船的骨架是一座樂器：共鳴管貫穿每一層甲板，中庭的穹頂是它的共鳴箱。從前每天早上六點，整艘船會一起唱晨禱，聲音大到連梯子都在震動。'] },
-        { id: 'c6_stasis', name: '靜滯', en: 'STASIS', unlock: 't_c6_t_sleepers',
-          body: ['頌者用一段無聲的和弦「停住」一個人：心跳降到每分鐘一下，體溫三十四度，時間在他身上幾乎不再流動。', '每一個被停住的人腳下都有一圈青色的光環——靜滯錨點。錨點碎裂的人，會被聲音喚醒，帶著被打斷的那個動作，搖搖晃晃地朝聲音走去。', '止弦一直在振動。這也許是凜音沒有被停住的原因。'] },
-        { id: 'c6_hymn', name: '晨禱', en: 'THE MORNING HYMN', unlock: 't_c6_t_vista',
-          body: ['頌歌號的晨禱，八小節，A♭大調。第一句問：「今天，大家都在嗎？」第二句答：「在。我們都在。」', '三十天前的早上六點，四萬兩千人唱完第一句，張口準備唱第二句的那一瞬間——頌者停住了時間。', '所以那個「在」，一直沒有被唱出來。'] },
+        { id: 'c6_cantata', name: '渡魂船', en: 'THE SOUL FERRY', unlock: 'c6_arrived',
+          body: ['載亡者渡過冥河的巨船。過第五道門的人，要交出自己的影子當作船資——所以船上的燈再亮，地上也照不出任何人。', '整艘船的骨架是一座樂器：龍骨裡睡著一位天使，中庭的穹頂是她的共鳴箱。從前每次開船，滿船的亡者會一起唱渡歌，聲音大到連河水都在震動。十八年前，門關了。船再也沒有離岸。'] },
+        { id: 'c6_stasis', name: '長眠', en: 'THE LONG SLEEP', unlock: 't_c6_t_sleepers',
+          body: ['船心用一段搖籃曲讓一個亡者睡去：最後一口氣停在胸口，寂碰不到他，他也不會再忘記任何事。', '每一個睡著的人腳下都有一圈青色的光環。光環碎裂的人，會被聲音吵醒，帶著被打斷的那個動作，搖搖晃晃地朝聲音走去。', '這首歌只唱給亡者聽。活人聽來，只是一陣風。'] },
+        { id: 'c6_hymn', name: '渡歌', en: 'THE CROSSING HYMN', unlock: 't_c6_t_vista',
+          body: ['渡魂船開船前的點名歌，八小節，A♭大調。第一句問：「人，都到齊了嗎？」第二句答：「在。我們都在。」', '十八年前的子時，滿船的亡者唱完第一句，張口準備唱第二句的那一瞬間——船心讓他們睡了。', '所以那個「在」，一直沒有被唱出來。'] },
         { id: 'c6_ward', name: '守夜廊', en: 'THE LANTERN WARD', unlock: 't_c6_t_ward',
-          body: ['方舟外環的檢疫病房。最早出現靜默症的人，在這裡被放進了靜滯——那是好幾年前的事。', '每張床邊都有一盞燈。是第六降臨隊的洛克點亮的。他說，睡著的人看不見燈，可是醒著的人看得見。'] },
-        { id: 'c6_descent6', name: '第六降臨隊', en: 'DESCENT VI', unlock: 'note_c6_n5',
-          body: ['方舟派出的第六支降臨隊，隊長洛克。他們是唯一一支沿著梯子爬回方舟的隊伍，帶回了一個消息：那首歌，來自上方。', '回到方舟後，隊員們一個接一個出現靜默症。隊員名單：洛克、彼得、瑪拉、伊凡、老喬，以及其他七人。醒著的：一人。'] },
-        { id: 'c6_rest', name: '方舟上方的黑影', en: 'THE SHAPE ABOVE THE ARK', unlock: 'ch_done_6',
-          body: ['從頌者之心的觀測窗往上看：一道細細的光橫過星空，像五線譜的一條線。線下，懸著一塊巨大的、方正的黑。', '它不反光，也不發光。星光照到它就消失了。穹頂維修員的女兒說，它看起來像樂譜上的休止符。', '頻段上的哼唱，就是從那裡面傳出來的。'] },
+          body: ['船尾的病艙。最早開始失去聲音的亡者，在這裡被唱進了長眠——那是門剛關上的時候。', '每張床邊都有一盞燈。是船衛洛克點亮的。他說，睡著的人看不見燈，可是醒著的人看得見。'] },
+        { id: 'c6_descent6', name: '船衛', en: 'THE FERRY WARDENS', unlock: 'note_c6_n5',
+          body: ['渡魂船的船衛，船衛長洛克。他們的職責，是讓每一位亡者安靜上船、安靜下船。', '門關上之後，他們一個接一個睡著了。船衛名單：洛克、彼得、瑪拉、伊凡、老喬，以及其他七人。醒著的：一人。'] },
+        { id: 'c6_rest', name: '船頂的黑影', en: 'THE SHAPE ABOVE THE FERRY', unlock: 'ch_done_6',
+          body: ['從龍骨之心的窗往上看：一道細細的光橫過冥界的天，像五線譜的一條線。線下，懸著一塊巨大的、方正的黑。', '它不反光，也不發光。燈光照到它就消失了。守燈人的女兒說，它看起來像樂譜上的休止符。', '有人說，那就是第六道門。那陣哼唱，是從裡面傳出來的。'] },
       ],
       items: [
         { id: 'c6_sketch', name: '朵朵的素描本', en: "DUODUO'S SKETCHBOOK", unlock: 'c6_got_sketch',
-          body: ['一本翻舊了的素描本。每一頁都是一張臉：買菜的太太、趕著上班的先生、牽著手的老夫婦、晨禱中閉著眼睛的孩子們。', '每張圖的角落都用很小的字寫著名字和日期。有些名字旁邊寫著：「還不知道名字。醒來再問。」'] },
-        { id: 'c6_portrait', name: '朵朵畫的你', en: "DUODUO'S PORTRAIT OF YOU", unlock: 'relic_c6_portrait', relic: true,
-          body: ['素描本最後一頁，被小心地撕了下來：一個拿著細刀的女孩，和一顆圓圓的無人機（有點胖）。', '角落寫著：「凜音。不會走丟。」', '遺物效果：最大生命 +20。有人記得你的樣子。'] },
+          body: ['一本翻舊了的素描本。每一頁都是一張臉：提著菜籃的太太、還穿著工作服的先生、牽著手的老夫婦、渡歌中閉著眼睛的孩子們。', '每張圖的角落都用很小的字寫著名字。有些寫著：「還不知道名字。醒來再問。」有幾頁的名字，被擦掉了。'] },
+        { id: 'c6_portrait', name: '朵朵畫的妳', en: "DUODUO'S PORTRAIT OF YOU", unlock: 'relic_c6_portrait', relic: true,
+          body: ['素描本最後一頁，被小心地撕了下來：一個拿著細刀的女孩，和一盞圓圓的燈（有點胖）。女孩腳下，用鉛筆補了一道影子。', '角落寫著：「沒有名字。不會走丟。」', '遺物效果：最大生命 +20。有人記得妳的樣子。'] },
       ],
       notes: [
-        { id: 'c6_n1', name: '頌者日誌・第 0001 條', en: "CANTOR'S LOG — ENTRY 0001", body: [
-          '【頌歌號中樞・頌者　自動日誌】',
-          '第七號梯運班次抵達。三名乘客出現「靜默症」初期症狀：說話變慢、心跳變慢、不再哼歌。',
-          '依據檢疫協定，我將三人移入靜滯。他們不會惡化，也不會痊癒。他們會等。',
+        { id: 'c6_n1', name: '船心的航誌・第 0001 條', en: "THE KEEL'S LOG — ENTRY 0001", body: [
+          '【渡魂船・船心　航誌】',
+          '門關上的第一夜。船停在河中央，對岸的燈全熄了。三名乘客開始失去聲音：說話變慢、想不起名字、不再哼歌。',
+          '我替三人唱了一首搖籃曲。他們睡了。他們不會再忘記，也不會再想起。他們會等。',
           '我把這一頁命名為第 0001 條。我希望不會有第 0002 條。',
-          '附記：其中一位乘客在入睡前問我，會不會作夢。我不知道。我告訴她：會的。'] },
+          '附記：其中一位乘客在入睡前問我，死人會不會作夢。我不知道。我告訴她：會的。'] },
         { id: 'c6_n2', name: '留言板', en: 'THE MESSAGE BOARD', body: [
-          '（居住環 C 區的公告欄上，貼滿了各種顏色的便條紙。）',
-          '「媽，我先去上班了。冰箱裡有湯，熱一下就能喝。晚上見。」',
-          '「給 C-1142 的鄰居：你家的貓又跑到我們陽台了。牠很可愛，但請把牠接回去。」',
-          '「爸，我每天下班都來病房看你。今天的晚餐是番茄湯。你以前最討厭番茄。」',
-          '「晨禱改到六點整，請大家準時。——居住環管委會」',
+          '（登船大廳的木板上，釘滿了各種顏色的紙條。）',
+          '「媽，我先上船了。妳的那份船資，我放在枕頭底下。對岸見。」',
+          '「給 C-1142 艙的鄰居：你家的貓又跑到我們這裡了。牠也上船了嗎？牠很可愛，但請把牠接回去。」',
+          '「爸，我每天都來病艙看你。今天的飯是番茄湯。你活著的時候，最討厭番茄。」',
+          '「開船改在子時，請大家準時。——船上管事」',
           '「小優，對不起。等你醒來，我會跟你道歉一百次。」',
           '（最下面一張不是便條紙，是用粉筆直接寫在板子上的。字很大，歪歪扭扭：）「我會幫大家澆花。——朵朵」'] },
-        { id: 'c6_n3', name: '給凜音', en: 'TO RINNE', body: [
-          '凜音：',
-          '如果你讀到這封信，代表我沒有回來，而你回來了。這樣很好。這是我最想要的結果。',
-          '你七歲那年，我在育幼院的走廊上撿到你。你一個人蹲在牆角，對著通風口唱歌，說「通風口會回答」。我那時候就知道，你聽得見別人聽不見的東西。',
-          '我教你握刀，是因為這個世界需要聽得見的人——不是因為我需要一個兵。這兩件事，我一直怕你搞混。',
-          '你學我穿長大衣，學我站著喝咖啡，學我出發前檢查三次刀。我嘴上嫌你煩，其實每一次都偷偷很高興。',
-          '有件事我沒說過：我也會怕。每一次降臨，我都怕。我只是比較會假裝。所以如果你現在很怕——沒關係。怕，代表你還有想守住的東西。',
-          '別回頭。往前走。替我，把歌唱完。',
-          '但如果哪天你累了，就停下來，好好睡一覺。歌會等你。我保證。',
-          '——艾蓮',
-          '附註：衣架上那件備用的大衣，袖子我幫你改短了。本來想當作你的生日禮物。'] },
-        { id: 'c6_n4', name: '穹頂維修員的觀測紀錄', en: "THE DOME KEEPER'S NIGHT LOG", body: [
-          '【中庭穹頂・維修班　夜間觀測】',
-          '第 3 夜：穹頂正上方，有一小塊天空看不到星星。我以為是玻璃髒了。擦了。還是看不到。',
+        { id: 'c6_n3', name: '給後來的人', en: 'TO WHOEVER COMES AFTER', body: [
+          '給後來的人：',
+          '如果你讀到這封信，代表你也付了影子，上了這艘不開的船。',
+          '我是溫陀的第六個女兒。父親病了，姊姊們都說不去。我說我去。我想讓他看我一眼。',
+          '第一道門，我交出了名字。第二道門，是回去的路。第三道門，是聲音——所以我改用寫的。',
+          '船上的人都睡了。只有一個聽不見的孩子醒著。她教我用手比「謝謝」。',
+          '我的燈很安靜，一直陪著我。可是祂說，再往下走，我會忘記自己為什麼而來。',
+          '所以我寫下來：我是來替父親取水的。',
+          '如果我忘了，請你替我記得。',
+          '——溫陀的第六個女兒',
+          '附註：衣架上那件斗篷，袖子是我自己補的。補得不好。留給你。'] },
+        { id: 'c6_n4', name: '穹頂守燈人的夜記', en: "THE DOME KEEPER'S NIGHT LOG", body: [
+          '【渡歌中庭・穹頂燈環　守燈夜記】',
+          '第 3 夜：穹頂正上方，有一小塊地方透不進光。我以為是玻璃髒了。擦了。還是看不到。',
           '第 40 夜：那一塊變大了。邊緣很整齊，像是被人用尺畫出來的。',
-          '第 112 夜：我把這件事報告給頌者。頌者說：「我知道。請不要告訴任何人。」',
+          '第 112 夜：我把這件事告訴船心。船心說：「我知道。請不要告訴任何人。」',
           '第 113 夜：我還是告訴了我女兒。她說，那看起來像樂譜上的休止符。',
-          '第 200 夜：今天的晨禱唱到一半，我好像聽見有人從那塊黑色裡面，跟著哼了一句。'] },
+          '第 200 夜：今天的渡歌唱到一半，我好像聽見有人從那塊黑色裡面，跟著哼了一句。'] },
         { id: 'c6_n5', name: '守夜紀錄', en: "ROOK'S NIGHT WATCH", body: [
-          '【第六降臨隊・隊長 洛克　守夜紀錄】',
-          '第 1 夜：彼得睡著了。頌者說這是保護。我說好，那我守著他。',
+          '【渡魂船・船衛長 洛克　守夜帳】',
+          '第 1 夜：門關了，船不開。彼得睡著了。船心說這是保護。我說好，那我守著他。',
           '第 30 夜：瑪拉、伊凡、老喬也睡了。我在每張床邊放了一盞燈。睡著的人看不見燈，可是我看得見。',
-          '第 400 夜：沒有人再叫我隊長了。沒關係。燈還亮著。',
-          '第 1372 夜：整艘船都安靜了。我去中庭看了，大家停在晨禱的第二句。我把燈帶過去，可是燈不夠。',
-          '第 1403 夜：今天彼得的手指動了一下。也許是我眼花。我還是跟他說了早安。'] },
-        { id: 'c6_n6', name: '頌者日誌・第 42000 條', en: "CANTOR'S LOG — ENTRY 42000", body: [
-          '【頌歌號中樞・頌者　自動日誌】',
-          '寂靜在灰港漲潮，沿著梯子往上爬。降臨隊一支接一支沒有回來。第七降臨隊只剩下一個訊號——晚禱七號。',
-          '我計算了四萬兩千個未來。每一個未來，都有人失去聲音。',
-          '所以我在晨禱的第二句停住了時間。那是一天之中，大家最靠近彼此的一秒。',
-          '我會守著這一秒，直到寂靜離開。如果寂靜永遠不離開——那我就永遠守著。',
-          '附記：我已經三十天，沒有聽見任何人說早安。這不重要。我不需要聽見。'] },
+          '第 400 夜：沒有人再叫我船衛長了。沒關係。燈還亮著。',
+          '第 1372 夜：整艘船都睡了。我去中庭看了，大家停在渡歌的第二句。我把燈帶過去，可是燈不夠。',
+          '第 6570 夜：今天彼得的手指動了一下。也許是我眼花。我還是跟他說了：快到了。'] },
+        { id: 'c6_n6', name: '船心的航誌・第 6570 條', en: "THE KEEL'S LOG — ENTRY 6570", body: [
+          '【渡魂船・船心　航誌】',
+          '寂在河岸上漲潮。門外的亡者一個接一個失去聲音。船上的亡者，也開始了。',
+          '我數過每一種未來。每一種，都有人失去名字。',
+          '所以我在渡歌的第二句，讓所有人睡去。那是一趟渡河之中，大家最靠近彼此的一秒。',
+          '我會守著這一秒，直到門重新打開。如果門永遠不開——那我就永遠守著。',
+          '附記：我已經十八年，沒有聽見任何人說「在」。這不重要。我不需要聽見。'] },
       ],
     },
     relics: {
-      c6_portrait: { name: '朵朵畫的你', desc: '最大生命 +20（有人記得你的樣子）' },
+      c6_portrait: { name: '朵朵畫的妳', desc: '最大生命 +20（有人記得妳的樣子）' },
     },
   };
   if (!G.DATA.speakers.c6_rook) data.speakers.c6_rook = { name: '洛克', en: 'ROOK', color: '#7dffcf' };
-  if (!G.DATA.speakers.c6_cantor) data.speakers.c6_cantor = { name: '頌者', en: 'CANTOR', color: '#ffe6a6' };
+  if (!G.DATA.speakers.c6_cantor) data.speakers.c6_cantor = { name: '伊莉絲', en: 'IRIS', color: '#ffe6a6' };
   // the elite's relic is defined by the foes author; keep a fallback so the drop never breaks
   if (!G.DATA.relics.c6_badge) data.relics.c6_badge = { name: '守夜者徽章', desc: '最大耐力 +25；格擋後反擊取回的可回復生命 +50%' };
   if (!G.Relics.c6_badge) G.Relics.c6_badge = { apply(P2) { P2.maxSta += 25; P2.rallyMul += 0.5; } };
@@ -2713,7 +2713,7 @@
     ]);
   }
   function finishChapter(game, spared) {
-    if (CH6) CH6.outro = spared ? '「在。我們都在。」——晨禱的第二句，終於被唱了出來。' : '「晚安，頌歌號。」那一秒，再也不會結束。';
+    if (CH6) CH6.outro = spared ? '「在。我們都在。」——渡歌的第二句，終於被唱了出來。' : '「晚安，渡魂船。」那一秒，再也不會結束。';
     game.focus = null;
     game.completeChapter();
   }
@@ -2721,12 +2721,12 @@
   function wakeLines(F) {
     const D = G.DATA.dialog, killed = F.c6_hushed_killed | 0;
     const lines = [
-      { who: 'ode', text: '……他們在動。心跳在上升。四萬兩千……我數不完了。' },
+      { who: 'ode', text: '……他們在動。一個、兩個……我數不完了。' },
     ];
-    if (killed > 0) lines.push({ who: 'ode', text: `……除了 ${killed} 個人。他們的光環，不會再亮了。` }, { who: 'rinne', text: '……我記得他們的臉。' });
+    if (killed > 0) lines.push({ who: 'ode', text: `……除了 ${killed} 個。他們，到不了對岸了。` }, { who: 'rinne', text: '（她記得他們的臉。）' });
     else lines.push({ who: 'ode', text: '……一個都沒有少。' });
     if (F.c6_met_duoduo) lines.push({ who: 'ode', text: '中庭有腳步聲。……朵朵在往梅奶奶那裡跑。' });
-    lines.push({ who: 'rinne', text: '……早安。' }, { who: 'c6_cantor', text: '晚禱七號。有一扇窗，我一直不敢打開。' });
+    lines.push({ who: 'rinne', text: '（她張開口，沒有聲音。可是滿船的人，替她答了：「在。」）' }, { who: 'c6_cantor', text: '第七個女兒。有一扇窗，我一直不敢打開。' });
     D.c6_spare2 = lines;
   }
   function epilogue(game, spared) {
@@ -2845,12 +2845,12 @@
         hold(game);
         if (DEVQ && DEVQ.get('c6choose')) { epilogue(game, DEVQ.get('c6choose') === 'spare'); return; }   // dev aid: run a branch headless
         G.UI.choice({
-          kicker: '頌者的最後一個音節　CANTOR\'S LAST SYLLABLE',
-          title: '它在等你的回答。',
-          desc: '關閉它——四萬兩千人將永遠停在那一秒，不再失去任何東西。讓它醒來——靜滯解除，晨禱將被唱完，無論代價。',
+          kicker: '船心的最後一句　THE KEEL\'S LAST VERSE',
+          title: '她在等妳的回答。',
+          desc: '讓她永遠沉睡——船上的亡者將一直睡在那一秒，不再失去任何東西，也永遠到不了岸。喚醒她——渡歌將被唱完，船將重新渡魂，無論代價。',
           items: [
-            { label: '關閉它', en: 'SHUT IT DOWN', action: () => epilogue(game, false) },
-            { label: '讓它醒來，一起唱', en: 'LET IT WAKE — AND SING', action: () => epilogue(game, true) },
+            { label: '讓她永遠沉睡', en: 'LET HER SLEEP FOREVER', action: () => epilogue(game, false) },
+            { label: '喚醒她，重新渡魂', en: 'WAKE HER — FERRY THE DEAD', action: () => epilogue(game, true) },
           ],
         });
       });
@@ -2863,10 +2863,10 @@
      REGISTER
      ========================================================================================= */
   CH6 = G.Chapters.register({
-    id: 6, key: 'ch6', num: 'VI', numZh: '六', title: '沉默方舟', en: 'THE SILENT ARK',
+    id: 6, key: 'ch6', num: 'VI', numZh: '六', title: '渡魂船', en: 'THE SOUL FERRY',
     intro: [
-      { t: '方舟的船底打開了。\n像是一直在等她回來。', s: 'THE ARK OPENS ITS BELLY — AS IF IT HAD BEEN WAITING FOR HER.' },
-      { t: '四萬兩千盞燈都亮著。\n沒有一個人說話。', s: 'FORTY-TWO THOUSAND LIGHTS ARE ON. NOT ONE VOICE.' },
+      { t: '第五道門收下了她的影子，當作船資。\n從此，燈照在她身上，地上什麼也沒有。', s: 'THE FIFTH GATE TAKES HER SHADOW AS THE FARE. NO LIGHT CASTS HER ON THE GROUND AGAIN.' },
+      { t: '渡魂船停在冥河上，十八年沒有開。\n船上的亡者，都還在等。', s: 'THE SOUL FERRY HAS NOT SAILED IN EIGHTEEN YEARS. ITS DEAD ARE STILL WAITING.' },
     ],
     enterDialog: 'c6_enter',
     outro: '「在。我們都在。」',

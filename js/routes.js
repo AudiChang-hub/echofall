@@ -10,26 +10,26 @@
 
   // names and the letter each road leaves behind (Elden Ring style: terse, elliptical)
   const LORE = {
-    1: { a: ['斷橋市集', 'THE SEVERED MARKET', '攤販的帳本', ['三月十二。魚價又漲了。', '三月十三。今天沒有人來買，也沒有人來賣。', '三月十四。我聽不見自己數錢的聲音。']],
-         b: ['禱鐘地窖', 'THE BELL CRYPT', '地窖牆上的刻字', ['鐘，是為了讓活人記得時間。', '——那死人呢。', '（下方，另一種筆跡）死人記得的，是最後一聲。']] },
-    2: { a: ['雪崩纜道', 'THE AVALANCHE LINE', '纜車司機的值班表', ['第四十一班。乘客：零。', '我照樣發車。上面的人說，梯子要有人走，才算是梯子。', '第四十二班——']],
-         b: ['凍湖修院', 'THE FROZEN CLOISTER', '見習修女的禱詞', ['請讓鐘再響一次。', '若不能，請讓我替它響。', '（紙的背面，用指甲刻滿了同一個字：在。）']] },
-    3: { a: ['礦工長廊', "THE MINERS' GALLERY", '工頭的點名簿', ['名字一個接一個被劃掉。', '最後一行寫著：「點到的人，請答『有』。」', '下面是空白。']],
-         b: ['回音晶洞', 'THE ECHO GEODE', '晶壁上的刮痕', ['這裡的晶體會記住聲音。', '我在這裡喊了妻子的名字。', '一百年後，會有人聽見嗎。']] },
+    1: { a: ['送葬大道', 'THE FUNERAL AVENUE', '抬棺人的日誌', ['第六千五百七十天。棺材還是空的。', '國王還沒斷氣，我們還在走。', '隊伍最前面的人，已經換過三代了。']],
+         b: ['王陵地窖', 'THE ROYAL CRYPT', '刻在空墓上的字', ['此處預留給第七位公主。', '（下方，另一種筆跡）她沒有死。', '是被丟掉的。']] },
+    2: { a: ['亡者山道', 'THE PATH OF THE DEAD', '山門守衛的值班表', ['放行亡者：零。', '十八年來，每天都寫零。', '今天也是。']],
+         b: ['無名者祠', 'THE SHRINE OF THE NAMELESS', '祠裡的名牌', ['牌子上的名字都被刮掉了。', '交出名字的人，在這裡留下最後一個字。', '有一塊是空白的。像是在等誰。']] },
+    3: { a: ['逆掘坑道', 'THE COUNTER-TUNNEL', '掘路人的鎬柄', ['柄上刻著回家的方向。', '刻了很多次。', '每一次，方向都不一樣。']],
+         b: ['回音晶洞', 'THE ECHO GEODE', '晶壁上的刮痕', ['從這裡往上挖，就是我的村子。', '我已經挖了十八年。', '上面的人，還記得我嗎。']] },
     4: { a: ['後台迴廊', 'BACKSTAGE', '泡爛的節目單', ['今晚的演出照常進行。', '觀眾請勿離席。', '演員，也是。']],
          b: ['淹沒的包廂', 'THE DROWNED BOXES', '包廂裡的觀劇鏡', ['鏡片後面還留著一層薄霧。', '像是有人看到最後一幕，忘了眨眼。']] },
-    5: { a: ['斷錨甲板', 'THE BROKEN ANCHOR DECK', '錨手的結繩', ['每一個結，是一個沒有回來的人。', '繩子，已經不夠長了。']],
-         b: ['失重花園', 'THE WEIGHTLESS GARDEN', '園丁的標籤', ['這株不需要土。', '它只需要有人記得替它澆水。', '（標籤上的日期，是十二年前。）']] },
-    6: { a: ['鍋爐艙', 'THE BOILER HOLD', '司爐的手套', ['指尖燒穿了。', '他們說，最後一個離開鍋爐的人，把火添到了天亮。', '沒有人說，天亮之後他去了哪裡。']],
-         b: ['育兒舍', 'THE NURSERY', '黑板上的粉筆字', ['今天學的歌：晨禱。', '第一句，大家都會了。', '第二句，明天再教。']] },
-    7: { a: ['斷弦小徑', 'THE SNAPPED-STRING PATH', '一截斷弦', ['它斷的時候，沒有聲音。', '這裡的一切，都是這樣結束的。']],
-         b: ['休止之庭', 'THE COURT OF RESTS', '無字的樂譜', ['整頁都是休止符。', '演奏它的人，必須比誰都專心。']] },
-    8: { a: ['終曲迴廊', 'THE FINALE GALLERY', '最後一張門票', ['座位：無。', '入場時間：一切結束之後。']],
-         b: ['無聲合唱席', 'THE SILENT CHOIR LOFT', '合唱席的名牌', ['每張椅子上都放著名牌。', '有一張，寫著妳的名字。']] },
+    5: { a: ['斷錨甲板', 'THE BROKEN ANCHOR DECK', '錨手的結繩', ['每一個結，是一個掉進虛無裡的人。', '繩子，已經不夠長了。']],
+         b: ['失重花園', 'THE WEIGHTLESS GARDEN', '園丁的標籤', ['這株不需要土。', '它只需要有人記得替它澆水。', '（標籤上的日期，是十八年前。）']] },
+    6: { a: ['船底槳艙', 'THE OAR DECK', '划槳人的手套', ['指尖磨穿了。', '他們說，最後一個划槳的人把船划到河中央，然後停下來等。', '沒有人說，他在等什麼。']],
+         b: ['孩童艙', "THE CHILDREN'S CABIN", '黑板上的粉筆字', ['今天學的歌：渡河謠。', '第一句，大家都會了。', '第二句，到了對岸再教。']] },
+    7: { a: ['褪色小徑', 'THE FADING PATH', '一截褪色的布條', ['上面寫的字，已經讀不出來了。', '只看得出，是寫給一個孩子的。']],
+         b: ['空白之庭', 'THE BLANK COURT', '無字的家書', ['整張紙都是空白的。', '寄信的人，在寫下第一個字之前就忘了。']] },
+    8: { a: ['判官迴廊', "THE JUDGES' GALLERY", '最後一張判決書', ['罪名：出生。', '判決：無。', '判決書沒有署名。']],
+         b: ['無聲合唱席', 'THE SILENT CHOIR LOFT', '合唱席的名牌', ['每張椅子上都放著名牌。', '有一張，寫著妳的名字——妳交出去的那一個。']] },
   };
   const ROAD = {
-    a: { name: '險路', sub: '連戰・菁英・稀有裝備', icon: '⚔', col: '#ff8f9f' },
-    b: { name: '幽徑', sub: '攀登・寶箱・鍛造石・文書', icon: '❖', col: '#9cf7b0' },
+    a: { name: '險路', sub: '連戰・菁英・稀有裝備', icon: '⚔', ico: 'pact_dmg', col: '#ff8f9f' },
+    b: { name: '幽徑', sub: '攀登・寶箱・事件・文書', icon: '❖', ico: 'chest', col: '#9cf7b0' },
   };
   // the letters join the archive
   for (const ch in LORE) for (const r of ['a', 'b']) {
@@ -117,7 +117,7 @@
       if (!f.open) drawRubble(ctx, f.x + 10, f.y, t);
       for (const d of this.doors(f)) {
         const walked = F[`road_${ch}${d.road}`];
-        G.Abyss.drawArch(ctx, d, f.y, { col: ROAD[d.road].col, icon: ROAD[d.road].icon, name: `${ROAD[d.road].name}・${LORE[ch][d.road][0]}`, sub: walked ? '已走過' : ROAD[d.road].sub }, t, game.player);
+        G.Abyss.drawArch(ctx, d, f.y, { col: ROAD[d.road].col, icon: ROAD[d.road].icon, ico: ROAD[d.road].ico, name: `${ROAD[d.road].name}・${LORE[ch][d.road][0]}`, sub: walked ? '已走過' : ROAD[d.road].sub }, t, game.player);
       }
     },
 
@@ -157,11 +157,18 @@
           if (r() < 0.6) oneways.push({ x: x + 520, y: fy - h2 - 150, w: 180 });
           x += 1200;
         },
-        ledge(key, reward) {
+        // a dungeon-master event: a lone shrine lit in the dark (js/events.js)
+        event() {
+          floor(x, 760);
+          items.push({ id: id('ev'), x: x + 380, y: fy, flag: `${id('ev')}_seen`, name: '？', kind: 'key', event: true });
+          x += 760;
+        },
+        ledge(key, reward, locked) {
           floor(x, 1000);
           const lx = x + 160 + Math.floor(r() * 80);
           oneways.push({ x: lx, y: fy - 150, w: 180 }, { x: lx + 230, y: fy - 300, w: 180 }, { x: lx + 460, y: fy - 450, w: 240 });
           chest(lx + 580, fy - 450, key, '遺留的箱子', reward);
+          if (locked) items[items.length - 1].locked = true;
           x += 1000;
         },
         ditch(n) {
@@ -190,11 +197,11 @@
       const crystals = (n) => () => G.Mirror.gain(n, '寶箱');
       M.entry();
       if (road === 'a') {
-        M.arena(3); M.steps(); M.ditch(3); M.arena(4); M.elite();
+        M.arena(3); M.steps(); M.event(); M.ditch(3); M.arena(4); M.elite();
         M.shrine((g) => { gearAt(2)(g); crystals(15)(g); });
       } else {
         M.steps(); M.ledge('c1', (g) => { stones(2)(g); sv.shards += 120; g.toast('殘響碎片　+120', 'good'); });
-        M.arena(3); M.ditch(2); M.ledge('c2', crystals(12)); M.arena(3);
+        M.arena(3); M.event(); M.ditch(2); M.ledge('c2', crystals(12), true); M.arena(3);
         M.shrine((g) => { gearAt(1)(g); stones(2)(g); });
       }
       const x1 = x;
@@ -239,7 +246,7 @@
       const a = this.active; if (!a) return;
       for (const it of G.LEVEL.items) if (it.chest && !game.save.flags[it.flag]) drawChest(ctx, it.x, it.y, game.time);
       this.exitDoor = this.exitDoor && this.exitDoor.x === this.exitX ? this.exitDoor : { x: this.exitX };
-      G.Abyss.drawArch(ctx, this.exitDoor, a.f.y, { col: '#ffd9a8', icon: '⇢', name: '回到主路', sub: G.Chapters.info(a.ch).title }, game.time, game.player);
+      G.Abyss.drawArch(ctx, this.exitDoor, a.f.y, { col: '#ffd9a8', icon: '⇢', ico: 'exit', name: '回到主路', sub: G.Chapters.info(a.ch).title }, game.time, game.player);
     },
     exitNear() { const a = this.active; return a ? [{ kind: 'roadExit', x: this.exitX, y: a.f.y, label: '穿過去，回到主路' }] : []; },
     // out the far side: the main chapter again, standing just beyond the rubble

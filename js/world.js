@@ -26,8 +26,8 @@
       { x: 6600, y: -230, w: 200 },
     ],
     pylons: [
-      { id: 'p1', x: 2780, y: 0, name: '墜落點共鳴碑' },
-      { id: 'p2', x: 6080, y: 0, name: '沉鐘共鳴碑' },
+      { id: 'p1', x: 2780, y: 0, name: '舊王港魂燈台' },
+      { id: 'p2', x: 6080, y: 0, name: '送葬大道魂燈台' },
     ],
     notes: [
       { id: 'n1', x: 470, y: 0 },
@@ -39,7 +39,7 @@
     ],
     items: [
       { id: 'hushbell', x: 4475, y: -540, flag: 'relic_hushbell', name: '靜默之鈴', kind: 'relic' },
-      { id: 'musicbox', x: 5420, y: -640, flag: 'got_musicbox', name: '米菈的音樂盒', kind: 'key' },
+      { id: 'musicbox', x: 5420, y: -640, flag: 'got_musicbox', name: '諾娜的音樂盒', kind: 'key' },
     ],
     npcs: [{ id: 'barrow', x: 6250, y: 0 }],
     triggers: [
@@ -523,7 +523,7 @@
           g.fillStyle = '#16141a'; g.fillRect(sx, sy, 26, 70);
           g.fillStyle = rr() < 0.5 ? 'rgba(111,243,255,0.5)' : 'rgba(255,90,130,0.45)';
           g.font = 'bold 18px "Noto Serif TC", serif'; g.textAlign = 'center';
-          const words = ['灰港', '鐘樓', '劇院', '旅館', '藥局', '電台'];
+          const words = ['溫陀', '鐘樓', '劇院', '旅店', '藥舖', '棺木'];
           const wd = words[Math.floor(rr() * words.length)];
           g.fillText(wd[0], sx + 13, sy + 28); g.fillText(wd[1], sx + 13, sy + 54);
         }
@@ -689,7 +689,7 @@
     } });
     lamp(380, 0, 20); lamp(1420, 0, -40); lamp(2350, 0, 30); lamp(3300, -90, 0); lamp(4150, -90, -30); lamp(6500, 0, 25);
     barricade(1050, 0); barricade(2230, 0); barricade(4600, -90);
-    sign(1300, 0, '灰港 中央區 →'); sign(3150, -90, '沉鐘大道'); sign(6600, 0, '大教堂 1.2km');
+    sign(1300, 0, '溫陀王城 →'); sign(3150, -90, '送葬大道'); sign(6600, 0, '大教堂 →');
     xtal(1640, 0, 26, '#d64dff'); xtal(2560, 0, 34, '#d64dff'); xtal(3700, -90, 30, '#e04dff'); xtal(4420, -90, 40, '#ff3d7f');
     xtal(5810, -90, 36, '#ff3d7f'); xtal(6900, 0, 30, '#ff2a5f'); xtal(7400, 0, 48, '#ff2a5f'); xtal(7700, 0, 60, '#ff2a5f'); xtal(8950, 0, 70, '#ff2a5f');
     // Barrow's cracked bell

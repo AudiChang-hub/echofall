@@ -63,38 +63,38 @@
   }
 
   /* ================================ data: speaker, barks, hints, codex ================================ */
-  D.speakers.c8_mira = D.speakers.c8_mira || { name: '米菈', en: 'MIRA', color: '#ffd6a0' };
-  D.barks.c8_bossP2 = { who: 'c8_mira', text: '爸爸說，一個人唱會怕……就要有人跟著唱。妳要跟好喔。' };
-  D.barks.c8_bossP3 = { who: 'c8_mira', text: '不要過來……只要我一直憋著，就不會再有人消失。' };
-  D.barks.c8_bossTaught = { who: 'c8_mira', text: '……下一個音。我想起來了。' };
-  D.barks.c8_bossHush = { who: 'ode', text: '……連她的呼吸，都聽不見了。' };
-  D.barks.c8_bossFinale = { who: 'c8_mira', text: '最後一個休止符……拜託，讓世界停在這裡。' };
+  D.speakers.c8_mira = D.speakers.c8_mira || { name: '厄蕾絲', en: 'ERESH', color: '#ffd6a0' };
+  D.barks.c8_bossP2 = { who: 'c8_mira', text: '從來沒有人唱給我聽過……所以，我自己唱。妳要跟好喔。' };
+  D.barks.c8_bossP3 = { who: 'c8_mira', text: '不要過來……只要門一直關著，就不會再有人被丟掉。' };
+  D.barks.c8_bossTaught = { who: 'c8_mira', text: '……下一個音。我好像，聽過。' };
+  D.barks.c8_bossHush = { who: 'ode', text: '……她，從來沒有呼吸過。' };
+  D.barks.c8_bossFinale = { who: 'c8_mira', text: '最後一道門……拜託，讓它一直關著。' };
   D.hints.c8_bossChime = '音樂盒的音符是白光：在音符碰到你的瞬間完美格擋 {guard}，它會飛回她的音樂盒。';
   D.hints.c8_bossTeach = '每一次完美格擋都是一句回答——她的顏色會一點一點回來。湊滿一整句旋律，她會想起下一個音。';
   D.hints.c8_bossSweep = '影子的手是紅光，無法格擋：手掌拍上地板的那一拍，{jump} 跳過它，或 {dodge} 穿過去。';
   D.hints.c8_bossHush = '「噓——」：寂靜裡聽不見預告聲。看地板上的紅色記號，休止符會落在那裡。';
-  D.hints.c8_bossCanon = '卡農：影子會在 0.6 秒後重複米菈剛才的動作。她的白光之後，往往緊跟著影子的紅光。';
+  D.hints.c8_bossCanon = '卡農：影子會在 0.6 秒後重複她剛才的動作。她的白光之後，往往緊跟著影子的紅光。';
   D.hints.c8_bossFinale = '終曲：跟著記號換位置、格擋落下的音符；雙手在你頭上合起時 {dodge}。之後影子會累倒——全力反擊。';
   // fallback only — the chapter file (ch8.js) registers after this one and its own lines replace these
   if (!D.dialog.c8_bossDefeat) {
     D.dialog.c8_bossDefeat = [
-      { who: 'sys', text: '（她吐出了一口氣。很長、很長的一口氣。）' },
+      { who: 'sys', text: '（她吐出了一口氣。這輩子的第一口氣。）' },
       { who: 'c8_mira', text: '……我好怕。一直、一直都好怕。' },
-      { who: 'ode', text: '凜音。寂靜在退——她在呼吸。' },
+      { who: 'ode', text: '……她在呼吸。' },
     ];
   }
   D.codex.hushborn = D.codex.hushborn || [];
   if (!D.codex.hushborn.some((c) => c.id === 'c8_boss')) D.codex.hushborn.push({
-    id: 'c8_boss', name: '米菈・休止之心', en: 'MIRA — HEART OF THE REST', portrait: 'c8_boss', unlock: 'seen_c8_boss',
-    tag: '頭目｜休止之心',
+    id: 'c8_boss', name: '冥后・厄蕾絲', en: 'ERESH, QUEEN OF THE DEAD', portrait: 'c8_boss', unlock: 'seen_c8_boss',
+    tag: '頭目｜冥后宮殿',
     body: [
-      '守鐘人巴洛的女兒。二十年前的靜默之夜，瑪絲緹娜在斷層之井的休止裡聽見一個孩子的呼吸，於是牽著她爬上了梯子。從那天起，米菈成了「休止之心」——世界之所以越來越安靜，是因為一個害怕的孩子，替全世界憋住了氣。',
-      '她身後那道巨大的影子不是怪物。那是她不敢發出的每一個聲音：同樣的鮑伯頭、同樣的圍巾、同樣的手勢，只是大了四倍，裡面裝滿了沒有聲音的夜空。',
+      '溫陀王的第一個女兒。生下來就沒有呼吸，父親沒有替她取名字。她在冥界長大，成了冥界的女王。十八年前，她看見父親又丟掉一個女兒，於是關上了冥界的門——讓他永遠死不了，看著自己的國家腐爛。',
+      '她身後那道巨大的影子不是怪物。那是冥界本身：同樣的短髮、同樣的圍巾、同樣的手勢，只是大了四倍，裡面裝滿了沒有星星的夜空。至於她自己，模樣停在一個從沒長大的女孩。',
       '第一樂章「搖籃曲」：音樂盒鈴音（白光——完美格擋會把音符彈回音樂盒）、搖籃環（白光，格擋能削架勢）、影之手（紅光：手掌拍上地板的那一拍，跳過或閃避）、休止符雨（地上的紅色記號）、「噓——」寂靜（聲音消失、視野邊緣變暗，只剩眼睛可靠）。靠得太近，影子會用手掌護住她；被逼到牆角，她會從你頭上飄過去。',
       '第二樂章「二重唱」：她睜開了眼睛，行了一個小小的屈膝禮。影子退到她身後，與她錯開 0.6 秒合唱——卡農。她的白光之後，往往緊跟著影子的紅光；節奏總是一長一短。',
-      '第三樂章「休止」：影子獨自站起，米菈蜷縮在它的胸口，隔著一道五線譜，像一顆心臟。心跳環成對而來；終曲「最後的休止」會吞掉所有聲音，以一記雙手合拍收尾——之後它會累倒在地，那是整場戰鬥最長的反擊時機。',
+      '第三樂章「休止」：影子獨自站起，她蜷縮在它的胸口，隔著一道五線譜，像一顆心臟。心跳環成對而來；終曲「最後的休止」會吞掉所有聲音，以一記雙手合拍收尾——之後它會累倒在地，那是整場戰鬥最長的反擊時機。',
       '弱點：每一次完美格擋都是一句回答。她的顏色會一點一點回來；湊滿十四個音，她會想起旋律的下一個音。',
-      '歐德註：「她在憋氣。整整二十年。……凜音，我算不出一個人可以憋多久。我只知道，她已經憋得太久了。」',
+      '寧舒的燈芯灰：「她從來沒有呼吸過。整整一輩子。……我算不出一個人可以不呼吸多久。我只知道，她已經憋得太久了。」',
     ],
   });
 
@@ -1219,7 +1219,7 @@
 
   /* ================================ the type ================================ */
   const BOSS = TYPES.c8_boss = Object.assign({
-    name: '米菈・休止之心', en: 'MIRA — HEART OF THE REST', w: 64, h: 150, hp: 3200, bal: 380, shards: 1200,
+    name: '冥后・厄蕾絲', en: 'ERESH, QUEEN OF THE DEAD', w: 64, h: 150, hp: 3200, bal: 380, shards: 1200,
     boss: true, poise: true, kbMul: 0.1, spawnT: 3.6, portrait: [0.9, 0.93],
     defeatDialog: 'c8_bossDefeat', phase2Bark: 'c8_bossP2', phase2Music: 'c8_boss2',
     get col() { const b = G.game && G.game.bossRef; return b && b.type === 'c8_boss' && b.phase >= 3 && !b.dead ? '#cbb8ff' : '#ffe3a8'; },

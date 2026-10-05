@@ -26,12 +26,13 @@
     spear: { name: '長槍', en: 'SPEAR', glyph: '槍', dmg: 0.95, spd: 1.0, reach: 1.48, bal: 0.9, len: 1.7, w: 1, shape: 'spear', trait: '攻擊距離最遠，削韌較低' },
     hammer: { name: '戰鎚', en: 'WARHAMMER', glyph: '鎚', dmg: 1.48, spd: 0.76, reach: 1.06, bal: 2.1, len: 1.15, w: 1, shape: 'hammer', trait: '非常慢，但幾下就能打出失衡' },
     scythe: { name: '鐮刀', en: 'SCYTHE', glyph: '鐮', dmg: 1.04, spd: 0.94, reach: 1.32, bal: 0.95, len: 1.45, w: 1, shape: 'scythe', bleedB: 7, trait: '大範圍揮掃，附帶出血累積' },
+    fan: { name: '巫扇', en: 'SPIRIT FAN', glyph: '扇', dmg: 0.82, spd: 1.16, reach: 1.0, bal: 0.8, len: 0.9, w: 1, shape: 'fan', trait: '巫女的法器：連段收尾放出靈風' },
     axe: { name: '巨斧', en: 'GREATAXE', glyph: '斧', dmg: 1.3, spd: 0.85, reach: 1.12, bal: 1.4, len: 1.22, w: 1, shape: 'axe', crit: 0.08, trait: '沉重劈砍，暴擊率 +8%' },
   };
   // named weapon bases (ch = earliest chapter they drop in; uq = only from that boss)
   const WEAPONS = {
-    zhixian: { cls: 'katana', name: '止弦', lore: '方舟第七降臨隊的制式共鳴刃。弦已經走音了。', start: true },
-    grayport: { cls: 'katana', name: '灰港巡夜刀', lore: '灰港守夜人的配刀，刀鞘早已遺失。', ch: 1 },
+    zhixian: { cls: 'katana', name: '止弦', lore: '棄兒之島的守燈人留給妳的刀。刀身上刻著一個妳不認得的名字。', start: true },
+    grayport: { cls: 'katana', name: '王城巡夜刀', lore: '溫陀守夜人的配刀。送葬隊伍出城的那一夜，他沒有回來換班。', ch: 1 },
     mistedge: { cls: 'katana', name: '霧鳴刀', lore: '揮動時會留下一聲很輕的鳴響。', ch: 3 },
     bellgreat: { cls: 'great', name: '鐘樓大劍', lore: '用鑄壞的鐘熔鑄而成，敲到東西會嗡嗡作響。', ch: 2 },
     quarry: { cls: 'great', name: '採石巨刃', lore: '斷層之井的礦工拿它劈開晶脈。', ch: 3 },
@@ -41,19 +42,22 @@
     duetblade: { cls: 'twin', name: '二重唱', lore: '兩把刃總是同時落下。', ch: 5 },
     tidelong: { cls: 'odachi', name: '潮汐長刀', lore: '刀身有一道永遠濕潤的紋路。', ch: 4 },
     skyodachi: { cls: 'odachi', name: '無重長刀', lore: '在高塔上鍛造，揮起來輕得不可思議。', ch: 5 },
-    arkgreat: { cls: 'great', name: '方舟護衛大劍', lore: '方舟儀隊的禮劍，開過刃之後就不只是禮劍了。', ch: 6 },
+    arkgreat: { cls: 'great', name: '渡魂船衛大劍', lore: '渡魂船上的衛士用它驅趕不肯下船的亡者。', ch: 6 },
     restkatana: { cls: 'katana', name: '休止之刃', lore: '夢裡撿到的刀，醒來時還握在手上。', ch: 7 },
-    graypike: { cls: 'spear', name: '灰港守衛長槍', lore: '城門守衛的長槍，槍纓早就褪色了。', ch: 1 },
+    graypike: { cls: 'spear', name: '王城守衛長槍', lore: '城門守衛的長槍。槍纓是黑的——溫陀已經服喪十八年了。', ch: 1 },
     icespear: { cls: 'spear', name: '冰柱長槍', lore: '槍尖是一截永不融化的冰。', ch: 2 },
     tidepike: { cls: 'spear', name: '潮汐魚叉', lore: '船員拿它刺過比船還大的東西。', ch: 5 },
-    halberd: { cls: 'spear', name: '方舟儀仗戟', lore: '儀隊在典禮上舉著它，現在它只剩下戰鬥。', ch: 6 },
+    halberd: { cls: 'spear', name: '渡船儀仗戟', lore: '渡魂船靠岸時，儀隊舉著它迎接亡者。現在它只剩下戰鬥。', ch: 6 },
+    spiritfan: { cls: 'fan', name: '引魂扇', lore: '棄兒之島的老巫女留下的扇子。扇面上的紅日，是用她自己的血點的。', ch: 1 },
+    moonfan: { cls: 'fan', name: '晦月扇', lore: '在沒有月亮的夜裡打開，死者會循著扇骨的聲音回頭。', ch: 3 },
+    ferryfan: { cls: 'fan', name: '渡魂扇', lore: '渡魂船的船夫用它替亡者搧去最後一口氣。', ch: 6 },
     bellhammer: { cls: 'hammer', name: '鐘錘', lore: '從大鐘裡拆下來的錘舌。每一擊都像在敲鐘。', ch: 2 },
     minehammer: { cls: 'hammer', name: '礦工大錘', lore: '敲開過無數晶脈，握柄被手磨得發亮。', ch: 3 },
     mallet: { cls: 'hammer', name: '管風琴槌', lore: '本來是調音用的。', ch: 6 },
     hushscythe: { cls: 'scythe', name: '寂靜之鐮', lore: '割下的不是麥子，是聲音。', ch: 3 },
     curtain: { cls: 'scythe', name: '落幕之鐮', lore: '舞台監督用它割斷布幕的繩索。', ch: 4 },
     dreamscythe: { cls: 'scythe', name: '夢鐮', lore: '揮動時會留下一段沒有聲音的殘影。', ch: 7 },
-    woodaxe: { cls: 'axe', name: '劈柴斧', lore: '灰港居民用來劈柴的斧頭。也劈別的東西。', ch: 1 },
+    woodaxe: { cls: 'axe', name: '劈柴斧', lore: '王城居民用來劈柴的斧頭。也劈別的東西。', ch: 1 },
     quarryaxe: { cls: 'axe', name: '採石巨斧', lore: '斧刃上嵌著晶石碎片。', ch: 3 },
     anchoraxe: { cls: 'axe', name: '錨斧', lore: '用斷掉的錨打成的斧頭。', ch: 5 },
     // boss signatures (always legendary)
@@ -62,13 +66,13 @@
     lucette: { cls: 'rapier', name: '露塞特的扇骨', lore: '最後的詠嘆，留在一根扇骨上。', uq: 'c4_boss', aff: 'frost' },
     idris: { cls: 'odachi', name: '斷錨', lore: '船長斬斷錨鏈的那把刀。', uq: 'c5_boss', aff: 'storm' },
     cantor: { cls: 'great', name: '頌者的管風琴劍', lore: '每揮一次，都有一根音管跟著鳴響。', uq: 'c6_boss', aff: 'sacred' },
-    vega: { cls: 'katana', name: '薇格的殘影', lore: '她教過你的每一招，都還在這把刀裡。', uq: 'c7_boss', aff: 'keen' },
+    vega: { cls: 'katana', name: '六公主的殘影', lore: '姊姊走到這裡就忘了自己是誰。她的刀還記得。', uq: 'c7_boss', aff: 'keen' },
     mira: { cls: 'twin', name: '休止符', lore: '兩道休止，中間是一首沒寫完的歌。', uq: 'c8_boss', aff: 'blood' },
   };
   // armor: weight class sets defense and a side effect (light = faster dodge, heavy = slower but sturdier)
   const ARMOR = {
     head: {
-      hood: { name: '降臨隊兜帽', wt: 'light', ch: 1, lore: '防水，防寂靜不太行。' },
+      hood: { name: '守燈人兜帽', wt: 'light', ch: 1, lore: '島上的海風很大。養母縫了三層。' },
       veil: { name: '修女頭紗', wt: 'light', ch: 2, lore: '戴上之後，世界會安靜一點。' },
       helmbell: { name: '鐘匠頭盔', wt: 'heavy', ch: 2, lore: '敲一下會響。' },
       lamp: { name: '礦工頭燈盔', wt: 'medium', ch: 3, lore: '燈還會亮。' },
@@ -78,12 +82,12 @@
       dreamcap: { name: '夢織頭巾', wt: 'light', ch: 7, lore: '摸起來像雲。' },
     },
     body: {
-      duster: { name: '降臨隊風衣', wt: 'light', ch: 1, lore: '凜音穿慣的那件，深藍底、紅內裡。' },
+      duster: { name: '守燈人風衣', wt: 'light', ch: 1, lore: '妳穿慣的那件，深藍底、紅內裡。被海水泡過很多次。' },
       chain: { name: '鐘樓鎖甲', wt: 'heavy', ch: 2, lore: '每一環都是一個小鈴。' },
       leather: { name: '礦工皮甲', wt: 'medium', ch: 3, lore: '肩上縫了好幾層補丁。' },
       gown: { name: '詠嘆禮服', wt: 'light', ch: 4, lore: '裙擺還在滴水。' },
       coat: { name: '船長大衣', wt: 'medium', ch: 5, lore: '口袋裡有一張褪色的航海圖。' },
-      robe: { name: '方舟祭袍', wt: 'heavy', ch: 6, lore: '繡著方舟的十二道聲紋。' },
+      robe: { name: '渡魂祭袍', wt: 'heavy', ch: 6, lore: '繡著十二個渡口的名字。最後一個被線劃掉了。' },
       nightgown: { name: '休止長袍', wt: 'light', ch: 7, lore: '夢裡的衣服，醒來還在。' },
     },
   };
@@ -187,7 +191,7 @@
     const r = rollRarity(tier, bonus), x = Math.random();
     if (x < 0.4) {
       const ks = Object.keys(WEAPONS).filter((k) => !WEAPONS[k].uq && !WEAPONS[k].start && (WEAPONS[k].ch || 1) <= ch);
-      return make('weapon', pick(ks), r, ch);
+      return make('weapon', (G.DnD && G.DnD.pickWeapon(ks, (k) => WEAPONS[k])) || pick(ks), r, ch);
     }
     if (x < 0.75) {
       const slot = Math.random() < 0.5 ? 'head' : 'body';
@@ -287,7 +291,7 @@
         }
       }
       const w = G_.get(sv, sv.gear.weapon), C = w ? CLASSES[def(w).cls] : CLASSES.katana;
-      t.look = { len: C.len, w: C.w, shape: C.shape || null, col: w && w.aff && AFF[w.aff] ? AFF[w.aff].col : null, r: w ? w.r : 0 };
+      t.look = { cls: w ? w.cls : null, len: C.len, w: C.w, shape: C.shape || null, col: w && w.aff && AFF[w.aff] ? AFF[w.aff].col : null, r: w ? w.r : 0 };
       // paper doll: what Rinne wears on her head and body (js/rig.js redraws her outfit from these)
       const hd = G_.get(sv, sv.gear.head), bd = G_.get(sv, sv.gear.body);
       t.outfit = { head: hd ? hd.base : null, body: bd ? bd.base : null };
@@ -326,10 +330,10 @@
       it.q = fresh.q; it.fx = fresh.fx; return true;
     },
     // Talia's remote supply: smithing stones and sealed echo caskets (a random piece of gear, at least fine)
-    shop(ch) { return [
-      { id: 'stone', name: '鍛造石', d: '強化武器用的材料。', cost: 60 + 10 * ch },
-      { id: 'casket', name: '殘響匣', d: '封存著一件隨機裝備（必定精良以上，第 ' + ch + ' 章等級）。', cost: 260 + 60 * ch },
-      { id: 'casket3', name: '共鳴殘響匣', d: '封存著一件隨機裝備（必定稀有以上）。', cost: 900 + 160 * ch },
+    shop(ch) { const pm = G.DnD ? G.DnD.priceMul() : 1; return [
+      { id: 'stone', name: '鍛造石', d: '強化武器用的材料。', cost: Math.round((60 + 10 * ch) * pm) },
+      { id: 'casket', name: '殘響匣', d: '封存著一件隨機裝備（必定精良以上，第 ' + ch + ' 章等級）。', cost: Math.round((260 + 60 * ch) * pm) },
+      { id: 'casket3', name: '共鳴殘響匣', d: '封存著一件隨機裝備（必定稀有以上）。', cost: Math.round((900 + 160 * ch) * pm) },
     ]; },
     buy(game, id) {
       const sv = game.save, ch = (G.Chapters.cur && G.Chapters.cur.id) || 1, item = G_.shop(ch).find((s) => s.id === id);

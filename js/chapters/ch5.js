@@ -1,5 +1,5 @@
 'use strict';
-/* ECHOFALL — Chapter V 無重之塔 THE UNMOORED SPIRE (world author: level, look, music, story).
+/* ECHOFALL — Chapter V 倒懸之塔 THE INVERTED SPIRE (world author: level, look, music, story).
    The Ladder's upper reach above the clouds: enamel waystations, derelict cargo cars, the aurora gap (cable-car
    set piece), the storm ring and the deck where Descent V cut its mooring. Gravity 0.62 (floaty, higher jumps).
    Foes / elite live in ch5_foes.js, the boss in ch5_boss.js — referenced here by id. See docs/CHAPTER_API.md. */
@@ -55,9 +55,9 @@
       { x: 9900, y: -230, w: 240 },                                             // storm-ring catwalk
     ],
     pylons: [
-      { id: 'c5_p1', x: 1950, y: 0, name: '第九中繼站共鳴碑', dialog: 'c5_pylon1', flag: 'c5_pylon1_seen' },
-      { id: 'c5_p2', x: 6650, y: -140, name: '斷口纜車站共鳴碑', dialog: 'c5_pylon2', flag: 'c5_pylon2_seen' },
-      { id: 'c5_p3', x: 11880, y: 0, name: '斷錨甲板共鳴碑', dialog: 'c5_pylon3', flag: 'c5_pylon3_seen' },
+      { id: 'c5_p1', x: 1950, y: 0, name: '第九燈亭魂燈台', dialog: 'c5_pylon1', flag: 'c5_pylon1_seen' },
+      { id: 'c5_p2', x: 6650, y: -140, name: '斷口纜車站魂燈台', dialog: 'c5_pylon2', flag: 'c5_pylon2_seen' },
+      { id: 'c5_p3', x: 11880, y: 0, name: '斷錨甲板魂燈台', dialog: 'c5_pylon3', flag: 'c5_pylon3_seen' },
     ],
     notes: [
       { id: 'c5_n1', x: 650, y: -220 },
@@ -111,10 +111,10 @@
       c5_boss: { manual: true, boss: true, arena: ARENA.boss, waves: [[{ t: 'c5_boss', x: ARENA.boss[0] + 950 }]] },
     },
     zones: [
-      { x: -1e9, name: '第九中繼站', en: 'WAYSTATION NINE', tint: 0, music: 'c5_explore', amb: 'c5_high' },
-      { x: 2400, name: '貨運懸廊', en: 'THE CARGO GALLERY', tint: 0.15, music: 'c5_explore', amb: 'c5_gallery' },
+      { x: -1e9, name: '第九燈亭', en: 'THE NINTH LAMP-HOUSE', tint: 0, music: 'c5_explore', amb: 'c5_high' },
+      { x: 2400, name: '陪葬品懸廊', en: 'THE GALLERY OF GRAVE GOODS', tint: 0.15, music: 'c5_explore', amb: 'c5_gallery' },
       { x: 6550, name: '極光斷口', en: 'THE AURORA GAP', tint: 0.3, music: 'c5_explore2', amb: 'c5_high' },
-      { x: 8900, name: '上環風暴層', en: 'THE STORM RING', tint: 0.55, music: 'c5_explore2', amb: 'c5_storm' },
+      { x: 8900, name: '倒懸風暴層', en: 'THE INVERTED STORM', tint: 0.55, music: 'c5_explore2', amb: 'c5_storm' },
       { x: 11900, name: '斷錨甲板', en: 'THE UNMOORED DECK', tint: 1, music: 'c5_explore2', amb: 'c5_deck' },
     ],
     tintAt,
@@ -388,7 +388,7 @@
       rect(g, -cw / 2, -ch / 2, cw, 6, mixH(M.rust, C.lit, 0.4));
       rect(g, -cw / 2, -ch / 2, 14, ch, mixH(M.rust, C.dark, 0.6));
       g.strokeStyle = rgba(INK, 0.45); g.lineWidth = 1.2; g.beginPath(); for (let k = -cw / 2 + 18; k < cw / 2; k += 7) { g.moveTo(k, -ch / 2 + 7); g.lineTo(k, ch / 2 - 3); } g.stroke();
-      stencil(g, '方舟貨運 05', 6, 0, 14, 'rgba(240,230,210,0.85)', { weight: 900 });
+      stencil(g, '陪葬品 05', 6, 0, 14, 'rgba(240,230,210,0.85)', { weight: 900 });
       g.restore();
       aviationLight(g, 875, -566, M.red, 2.5);
     } });
@@ -493,7 +493,7 @@
           if (z === 1 && rr() < 0.6) {
             const sy = ty + 100;
             rect(g, bx - 46, sy, 92, 36, INK); rect(g, bx - 44, sy + 2, 88, 32, mixH(C.body, M.enamel, 0.25));
-            stencil(g, rr() < 0.5 ? '第九站' : '往上環', bx, sy + 18, 15, 'rgba(255,220,170,0.75)', { ink: false });
+            stencil(g, rr() < 0.5 ? '第九燈亭' : '往錨台', bx, sy + 18, 15, 'rgba(255,220,170,0.75)', { ink: false });
           }
         } else {
           // ring walkway fragment / rail beam on brackets
@@ -588,10 +588,10 @@
   }
   function paintCargo(s) {
     const styles = [
-      { body: '#c2543a', lit: '#ef8a5e', dark: '#6d2534', text: '方舟貨運', sub: 'CANTATA FREIGHT  C-05-118' },
-      { body: '#2f7f86', lit: '#5fc3c0', dark: '#173e57', text: '第五降臨隊', sub: 'DESCENT V  SUPPLY' },
-      { body: '#d9dde8', lit: '#ffffff', dark: '#7c80a8', text: '易碎', sub: 'FRAGILE — RESONANT GLASS' },
-      { body: '#a1863f', lit: '#e6c46b', dark: '#55402a', text: '攀升艙', sub: 'CLIMBER  09' },
+      { body: '#c2543a', lit: '#ef8a5e', dark: '#6d2534', text: '陪葬品', sub: 'GRAVE GOODS  WONDA-118' },
+      { body: '#2f7f86', lit: '#5fc3c0', dark: '#173e57', text: '錨手補給', sub: 'ANCHOR CREW  STORES' },
+      { body: '#d9dde8', lit: '#ffffff', dark: '#7c80a8', text: '易碎', sub: 'FRAGILE — SOUL GLASS' },
+      { body: '#a1863f', lit: '#e6c46b', dark: '#55402a', text: '燈油', sub: 'LAMP OIL  09' },
     ];
     const S0 = styles[s.style || 0];
     return [{ x: s.x - 20, y: s.y - 30, w: s.w + 40, h: s.h + 40, draw(g) {
@@ -747,8 +747,8 @@
       rect(g, x + w / 2 - 20, y - h + 44, 40, 8, INK); rect(g, x + w / 2 - 18, y - h + 46, 36, 4, M.amberL);
       // sign
       rect(g, x + 50, y - h - 92, 200, 44, INK); rect(g, x + 53, y - h - 89, 194, 38, mixH(M.enamel, C.body, 0.3));
-      stencil(g, '升降梯 ▽ 萊拉', x + 150, y - h - 76, 15, '#1b2240', { ink: false });
-      stencil(g, 'LIFT — TO LYRA', x + 150, y - h - 58, 10, '#1b2240', { ink: false, weight: 700, font: 'Rajdhani, sans-serif' });
+      stencil(g, '吊籃 ▽ 第三道門', x + 150, y - h - 76, 15, '#1b2240', { ink: false });
+      stencil(g, 'CRADLE — TO THE THIRD GATE', x + 150, y - h - 58, 10, '#1b2240', { ink: false, weight: 700, font: 'Rajdhani, sans-serif' });
       void rim;
     } });
     // ---- Z1: station signage
@@ -758,10 +758,10 @@
       rect(g, x - 4, y - 300, 300, 96, INK);
       rect(g, x, y - 296, 292, 88, M.enamel); rect(g, x, y - 296, 292, 6, M.enamelL); rect(g, x, y - 214, 292, 6, M.enamelS);
       rect(g, x, y - 296, 18, 88, '#2f5fae');
-      stencil(g, '頌歌之梯・第九中繼站', x + 155, y - 266, 24, '#16204a', { ink: false });
-      stencil(g, 'CANTATA LADDER — WAYSTATION 09 — ALT. 41,200 M', x + 155, y - 238, 10, '#3a4470', { ink: false, weight: 700, font: 'Rajdhani, sans-serif' });
+      stencil(g, '倒懸之塔・第九燈亭', x + 155, y - 266, 24, '#16204a', { ink: false });
+      stencil(g, 'THE INVERTED SPIRE — LAMP-HOUSE 09 — THE SKY LIES BELOW', x + 155, y - 238, 10, '#3a4470', { ink: false, weight: 700, font: 'Rajdhani, sans-serif' });
       rect(g, x + 30, y - 228, 232, 2, '#16204a');
-      stencil(g, '◁ 往下 往萊拉　　往上環 ▷', x + 155, y - 220, 11, '#16204a', { ink: false, weight: 700 });
+      stencil(g, '◁ 回第三道門　　往錨台 ▷', x + 155, y - 220, 11, '#16204a', { ink: false, weight: 700 });
       g.fillStyle = rgba('#3a1f20', 0.45); for (let k = 0; k < 6; k++) { const rr = U.mulberry32(k + 900); g.fillRect(x + rr() * 290, y - 296 + rr() * 20, 2, 18 + rr() * 30); }
     } });
     // ---- Z1: beacon mast (the rotating lamp is animated in drawBack)
@@ -782,7 +782,7 @@
     objs.push({ x: 1600, y: -110, w: 260, h: 120, draw(g) {
       const C = deckC(0);
       for (let k = 0; k < 3; k++) { const cx = 1640 + k * 34; g.beginPath(); g.roundRect ? g.roundRect(cx - 14, -84, 28, 84, 10) : g.rect(cx - 14, -84, 28, 84); ink(g, 3); g.fillStyle = k === 1 ? M.crate : M.enamel; g.fill(); rect(g, cx - 14, -60, 28, 6, INK); rect(g, cx + 6, -80, 5, 76, rgba('#ffffff', 0.35)); }
-      block(g, 1760, -54, 70, 54, { body: '#5a4a6a', lit: '#8d7aa8', dark: '#2d2140' }); stencil(g, 'O₂', 1795, -27, 16, 'rgba(255,255,255,0.8)', { ink: false });
+      block(g, 1760, -54, 70, 54, { body: '#5a4a6a', lit: '#8d7aa8', dark: '#2d2140' }); stencil(g, '油', 1795, -27, 16, 'rgba(255,255,255,0.8)', { ink: false });
       void C;
     } });
     beaconAv(-200, -300);
@@ -849,7 +849,7 @@
       stencil(g, en, sx, -484, 9, '#7fd8e8', { ink: false, weight: 700, font: 'Rajdhani, sans-serif' });
     } });
     station(6740, 7230, CAB.ca, '極光斷口纜車站', 'AURORA GAP CABLEWAY — STATION A');
-    station(8640, 9060, CAB.cb, '上環纜車站', 'STATION B — STORM RING');
+    station(8640, 9060, CAB.cb, '風暴層纜車站', 'STATION B — THE INVERTED STORM');
     // haul + return cables across the gap (the car rides the lower one)
     objs.push({ x: CAB.ca - 20, y: -560, w: CAB.cb - CAB.ca + 40, h: 200, draw(g) {
       for (const [dy, w2] of [[0, 3.2], [-34, 2.4]]) {
@@ -865,8 +865,8 @@
       girder(g, 7100, 8900, 150, 16, { body: C.steel, lit: C.steelL, dark: C.steelD }, { holes: false });
       g.strokeStyle = INK; g.lineWidth = 9; g.beginPath(); g.moveTo(7100, 210); g.lineTo(8900, 210); g.stroke(); g.strokeStyle = '#4b6a7a'; g.lineWidth = 5; g.stroke(); g.strokeStyle = 'rgba(200,240,255,0.4)'; g.lineWidth = 1; g.beginPath(); g.moveTo(7100, 208); g.lineTo(8900, 208); g.stroke();
       rect(g, 7690, 236, 170, 46, INK); rect(g, 7693, 239, 164, 40, M.hazard);
-      stencil(g, '維修甲板・禁止進入', 7775, 252, 13, '#1b1530', { ink: false });
-      stencil(g, 'SERVICE DECK — NO ENTRY', 7775, 268, 9, '#1b1530', { ink: false, weight: 700, font: 'Rajdhani, sans-serif' });
+      stencil(g, '下層甲板・止步', 7775, 252, 13, '#1b1530', { ink: false });
+      stencil(g, 'LOWER DECK — NO PASSAGE', 7775, 268, 9, '#1b1530', { ink: false, weight: 700, font: 'Rajdhani, sans-serif' });
     } });
     // ---- Z4: storm ring — lightning rods, railings, Vela's watch perch
     railing(8920, 9490, -146); railing(9520, 13580, -6);
@@ -884,7 +884,7 @@
       g.beginPath(); g.moveTo(11410, -392); g.lineTo(11450, -460); g.quadraticCurveTo(11530, -440, 11630, -470); g.lineTo(11640, -392); g.closePath(); ink(g, 3); g.fillStyle = '#3d4a3a'; g.fill();
       g.strokeStyle = rgba('#b9f5a0', 0.35); g.lineWidth = 1; g.beginPath(); g.moveTo(11455, -455); g.quadraticCurveTo(11530, -438, 11625, -462); g.stroke();
       rect(g, 11440, -420, 40, 26, INK); rect(g, 11442, -418, 36, 22, '#2b2f3a');
-      stencil(g, '瞭望哨 V', 11525, -405, 12, 'rgba(220,255,210,0.7)', { ink: false });
+      stencil(g, '望星台 V', 11525, -405, 12, 'rgba(220,255,210,0.7)', { ink: false });
     } });
     // ---- Z5: the Unmoored Deck — winch drum, bollards, cut mooring arms, Descent V emblem
     objs.push({ x: 12100, y: -40, w: 1500, h: 60, draw(g) {
@@ -915,7 +915,7 @@
           g.restore();
         }
       }
-      stencil(g, '錨鏈絞盤 — 第五降臨隊', 13480, -60, 15, 'rgba(230,220,255,0.75)', { ink: false });
+      stencil(g, '錨鏈絞盤 — 錨長伊德里斯', 13480, -60, 15, 'rgba(230,220,255,0.75)', { ink: false });
     } });
     for (const bx of [12260, 12620, 13050]) objs.push({ x: bx - 30, y: -60, w: 60, h: 66, draw(g) {
       const C = deckC(1);
@@ -1242,7 +1242,7 @@
   }
 
   /* =========================================================================================
-     NPC: 叮叮 DINGDING — maintenance unit F-12 (kept the lamps lit for twenty years)
+     NPC: 叮叮 DINGDING — lamp-servant figurine No.12 (kept the lamps lit for eighteen years)
      ========================================================================================= */
   function drawDingding(ctx, x, y, t, look, ribbon, talk) {
     ctx.save(); ctx.translate(x, y);
@@ -1339,7 +1339,7 @@
         game.dialog('c5_dingMeet', () => {
           F.c5_met_dingding = true;
           if (F.c5_got_ribbon) done();
-          else G.UI.journal('支線任務：叮叮的紅布條', '到起重機艙找回綁在叮叮天線上的紅布條');
+          else G.UI.journal('支線任務：叮叮的紅布條', '到吊臂頂端的小艙，找回綁在叮叮鈴柄上的紅布條');
         });
       } else if (F.c5_got_ribbon && !F.c5_quest_done) done();
       else if (!F.c5_quest_done) game.dialog('c5_dingWait');
@@ -1430,164 +1430,163 @@
      STORY: dialogue, barks, hints, codex
      ========================================================================================= */
   const DONE_A = [
-    { who: 'rinne', text: '……是這個嗎。' },
+    { who: 'rinne', text: '（她攤開手。掌心裡，是那條紅布。）' },
     { who: 'c5_dingding', text: '……叮。' },
-    { who: 'c5_dingding', text: '天線……又完整了。' },
-    { who: 'c5_dingding', text: '叮叮留著一段錄音。工頭說，私人錄音違反規定。……叮叮還是留著。' },
-    { who: 'c5_girl', text: '（雜訊。然後，一個小女孩的聲音。）……這樣綁，就不會掉了。你叫叮叮，好不好？' },
-    { who: 'c5_girl', text: '我叫米菈。老師說，我們要去很高、很高的地方。到了那裡，就不會再有人哭了。' },
-    { who: 'c5_girl', text: '可是……我好想爸爸的鐘聲。叮叮，你幫我記住它，好不好？' },
-    { who: 'rinne', text: '……米菈。' },
+    { who: 'c5_dingding', text: '鈴柄……又完整了。' },
+    { who: 'c5_dingding', text: '叮叮的鈴，記得一個聲音。燈主說，亡者的聲音不能留。……叮叮還是留著。' },
+    { who: 'c5_girl', text: '（鈴響。然後，一個小女孩的聲音。）……這樣綁，就不會掉了。你叫叮叮，好不好？' },
+    { who: 'c5_girl', text: '他們說，要往下走很久、很久。走到底，就不會再痛了。' },
+    { who: 'c5_girl', text: '可是……我好想再聽一次爸爸敲的鐘。叮叮，你幫我記住它，好不好？' },
+    { who: 'rinne', text: '……' },
   ];
   const DONE_MB = [
-    { who: 'rinne', text: '她父親的鐘，還在響。' },
-    { who: 'c5_dingding', text: '那叮叮要把燈擦得更亮。這樣她從上面往下看，就知道路還在。' },
+    { who: 'rinne', text: '（她舉起手，輕輕做了一個敲鐘的動作。）' },
+    { who: 'c5_dingding', text: '……鐘，還在響？那叮叮要把燈擦得更亮。這樣她從下面往上看，就知道路還在。' },
   ];
   const DONE_B = [
-    { who: 'c5_dingding', text: '布條，請帶給她。叮叮的腳爬不上去。訪客可以。' },
-    { who: 'c5_dingding', text: '這個給你。叮叮的鈴芯。它記得節拍。……叮。' },
+    { who: 'c5_dingding', text: '布條，請帶給她。叮叮的腳走不到那麼遠。客人可以。' },
+    { who: 'c5_dingding', text: '這個給妳。叮叮的鈴芯。它記得節拍。……叮。' },
   ];
 
   const data = {
     speakers: {
       c5_dingding: { name: '叮叮', en: 'DINGDING', color: '#ffc86b' },
-      c5_girl: { name: '錄音', en: 'RECORDING', color: '#ff9a9a' },
+      c5_girl: { name: '回聲', en: 'ECHO', color: '#ff9a9a' },
       c5_vela: { name: '薇拉', en: 'VELA', color: '#b9f5a0' },
-      c5_idris: { name: '伊德里斯', en: 'CAPTAIN IDRIS', color: '#8fd3ff' },
+      c5_idris: { name: '伊德里斯', en: 'ANCHOR-WARDEN IDRIS', color: '#8fd3ff' },
     },
     hints: {
-      c5_lowgrav: '這裡的重力只有地表的 <b>六成</b>：跳得更高、落得更慢。{jump} 空中再按一次二段跳，能攀上更高的支架',
-      c5_secret: '起重機塔上方似乎有路。低重力下，<b>二段跳</b> 能跳得比平常更高',
-      c5_gondola: '站上纜車，它就會自行出發。若是墜落，下方有維修甲板，可以從兩側爬回來',
+      c5_lowgrav: '交出重量之後，身體只剩原本的 <b>六成</b>：跳得更高、落得更慢。{jump} 空中再按一次二段跳，能攀上更高的支架',
+      c5_secret: '吊臂塔上方似乎有路。低重力下，<b>二段跳</b> 能跳得比平常更高',
+      c5_gondola: '站上纜車，它就會自行出發。若是墜落，下方有甲板，可以從兩側爬回來',
     },
     barks: {
       c5_ride1: { who: 'ode', text: '……別往下看。' },
-      c5_ride2: { who: 'rinne', text: '……方舟。' },
-      c5_ride3: { who: 'ode', text: '四萬兩千人份的燈。……頻段上，一點聲音也沒有。' },
+      c5_ride2: { who: 'rinne', text: '（她往下看。天，在腳下。）' },
+      c5_ride3: { who: 'ode', text: '那些光點，都是燈。……沒有一盞，有人提著。' },
       c5_ribbon: { who: 'ode', text: '……褪色的紅布。像是從圍巾上撕下來的。' },
       c5_ribbonMet: { who: 'ode', text: '……叮叮的。它還在等。' },
       c5_fallSave: { who: 'ode', text: '……抓住了。' },
     },
     dialog: {
       c5_enter: [
-        { who: 'ode', text: '頌歌之梯，第九中繼站。雲……在我們腳下。' },
-        { who: 'rinne', text: '……好安靜。' },
-        { who: 'ode', text: '第五降臨隊最後的訊號，就斷在這一帶。' },
-        { who: 'rinne', text: '往上。' },
+        { who: 'ode', text: '第四道門。……它要的，是重量。' },
+        { who: 'rinne', text: '（她沒有停下。往前，踏了一步。）' },
+        { who: 'ode', text: '天，在我們腳下。' },
+        { who: 'rinne', text: '……' },
       ],
       c5_voidling: [
-        { who: 'rinne', text: '……空氣，在閃。' },
+        { who: 'rinne', text: '（空氣，在閃。）' },
       ],
       c5_gallery: [
         { who: 'ode', text: '燈全都亮著。……有人一直在擦。' },
       ],
       c5_breacher: [
-        { who: 'ode', text: '方舟的真空作業服。磁力靴……還咬著甲板。' },
+        { who: 'ode', text: '不肯交出重量的人。……腳，釘死在甲板上。' },
       ],
       c5_driftwatch: [
-        { who: 'ode', text: '舊的軌道哨。它還照著二十年前的班表巡邏。' },
+        { who: 'ode', text: '守望的眼睛。……它還在替亡者找路。' },
       ],
       c5_crane: [
-        { who: 'rinne', text: '……蠟筆畫。' },
+        { who: 'rinne', text: '（牆上，貼著幾張蠟筆畫。）' },
       ],
       c5_gap: [
-        { who: 'rinne', text: '路斷了。……只剩一條纜繩。' },
+        { who: 'rinne', text: '（路斷了。只剩一條纜繩。）' },
       ],
       c5_storm: [
-        { who: 'rinne', text: '……風裡，有東西。' },
+        { who: 'rinne', text: '（風裡，有東西。）' },
       ],
       c5_pylon1: [
-        { who: 'talia', text: '……凜音？訊號好遠。你們到底爬到哪裡了？' },
-        { who: 'rinne', text: '雲上面。' },
-        { who: 'talia', text: '雲上面……我連鐘樓的屋頂，都只爬上去過三次。' },
-        { who: 'talia', text: '這座碑的頻段很乾淨。我能替止弦再多擰幾圈——上限，又能往上調了。' },
-        { who: 'talia', text: '方舟那邊……還是很安靜。那上面的人，還好嗎？' },
-        { who: 'rinne', text: '我會去看。' },
+        { who: 'talia', text: '……是妳嗎？燈火好遠。妳走到哪裡了？' },
+        { who: 'rinne', text: '（她指了指腳下。）' },
+        { who: 'talia', text: '腳下……是天？我連燈台的頂，都只爬上去過三次。' },
+        { who: 'talia', text: '這盞燈的火很穩。我能替妳的刀再多磨幾道——上限，又能往上調了。' },
+        { who: 'talia', text: '妳說，人間的花……是什麼顏色？' },
+        { who: 'rinne', text: '（她沒有聲音了。她用手指，在燈台的灰上畫了一朵花。）' },
       ],
       c5_pylon2: [
-        { who: 'talia', text: '凜音，你聽——' },
-        { who: 'talia', text: '（雜訊裡，有斷斷續續的哼唱。很輕，像個孩子。）' },
-        { who: 'rinne', text: '……那首歌。' },
-        { who: 'ode', text: '來源在方舟的上方。……比方舟還高。' },
-        { who: 'talia', text: '那上面……還有什麼？' },
-        { who: 'rinne', text: '有人。' },
+        { who: 'talia', text: '妳聽——' },
+        { who: 'talia', text: '（燈火裡，有斷斷續續的哼唱。是一首溫陀的搖籃曲，只有前半首。）' },
+        { who: 'rinne', text: '……' },
+        { who: 'ode', text: '從塔的盡頭。……比天還遠。' },
+        { who: 'talia', text: '那裡……有人嗎？' },
+        { who: 'rinne', text: '（她點了點頭。）' },
       ],
       c5_pylon3: [
-        { who: 'talia', text: '鐘樓的老人說，伊德里斯船長是個好人。經過的時候，還替大家修過水塔。' },
-        { who: 'rinne', text: '好人也會累。' },
-        { who: 'talia', text: '……嗯。那就讓他休息吧。然後，你要回來。' },
+        { who: 'talia', text: '老點燈人說，伊德里斯錨長是個好人。生前在溫陀港，還替大家修過燈塔。' },
+        { who: 'rinne', text: '……' },
+        { who: 'talia', text: '……嗯。那就讓他休息吧。然後，妳要回來。' },
       ],
       c5_dingMeet: [
-        { who: 'c5_dingding', text: '叮。……訪客。第一百二十萬四千五百五十二顆螺栓。暫停計數。' },
-        { who: 'c5_dingding', text: '維修機 F-12。有人叫我叮叮。因為我走路，會叮、叮。' },
-        { who: 'rinne', text: '你一直在這裡？' },
-        { who: 'c5_dingding', text: '工頭說：「燈不能滅，我們會回來。」所以叮叮每天擦燈。七千……三百……很多天了。' },
-        { who: 'c5_dingding', text: '有一次，一個小女孩經過。她把紅布條綁在叮叮的天線上，說這樣就不會走丟。' },
-        { who: 'c5_dingding', text: '暴風把它吹走了，卡在上面的起重機艙。……叮叮的腳，爬不上去。' },
+        { who: 'c5_dingding', text: '叮。……客人。第一百二十萬四千五百五十二根燈芯。暫停計數。' },
+        { who: 'c5_dingding', text: '燈俑，十二號。有人叫我叮叮。因為我走路，會叮、叮。' },
+        { who: 'rinne', text: '（她看著那盞燈，又看著它。）' },
+        { who: 'c5_dingding', text: '燈主說：「燈不能滅，我們會回來。」所以叮叮每天擦燈。六千……五百……很多天了。' },
+        { who: 'c5_dingding', text: '很久以前，一個小女孩經過。她把紅布條綁在叮叮的鈴柄上，說這樣就不會走丟。' },
+        { who: 'c5_dingding', text: '大風把它吹走了，卡在上面的吊臂頂端。……叮叮的腳，爬不上去。' },
       ],
       c5_dingWait: [
-        { who: 'c5_dingding', text: '起重機艙，在懸廊的最上面。這裡身體很輕——跳兩次，就像鳥一樣。……叮。' },
+        { who: 'c5_dingding', text: '吊臂的頂端，在懸廊的最上面。這裡身體很輕——跳兩次，就像鳥一樣。……叮。' },
       ],
       c5_dingDone: DONE_A.concat(DONE_B),
       c5_dingDoneMB: DONE_A.concat(DONE_MB, DONE_B),
       c5_dingAfter: [
-        { who: 'c5_dingding', text: '第一百二十萬四千五百五十三顆。……叮。' },
-        { who: 'c5_dingding', text: '替叮叮跟米菈說：燈，都還亮著。' },
+        { who: 'c5_dingding', text: '第一百二十萬四千五百五十三根。……叮。' },
+        { who: 'c5_dingding', text: '替叮叮跟她說：燈，都還亮著。' },
       ],
       c5_eliteIntro: [
-        { who: 'c5_vela', text: '第五降臨隊，薇拉。船長有令——任何人，不准再往上。' },
-        { who: 'c5_vela', text: '我從沒失手過。轉身吧，共鳴者。' },
-        { who: 'rinne', text: '你們的船長，還在上面？' },
-        { who: 'c5_vela', text: '……他在等。我們都在等。' },
+        { who: 'c5_vela', text: '倒懸之塔，領航員薇拉。錨長有令——任何人，不准再往前。' },
+        { who: 'c5_vela', text: '我從沒失手過。轉身吧，沒有重量的人。' },
+        { who: 'rinne', text: '（她沒有轉身。）' },
+        { who: 'c5_vela', text: '……錨長在前面等。我們，都在等。' },
       ],
       c5_eliteDefeat: [
-        { who: 'c5_vela', text: '……最後一發，是我故意打偏的。你發現了嗎。' },
-        { who: 'c5_vela', text: '船長已經不說話了。他把錨鏈纏在身上……說這樣，才不會被「上面」拉走。' },
-        { who: 'c5_vela', text: '去吧。替我……讓他休息。' },
+        { who: 'c5_vela', text: '……最後一發，是我故意打偏的。妳發現了嗎。' },
+        { who: 'c5_vela', text: '錨長已經不說話了。他把錨鏈纏在身上……說這樣，塔才不會掉下去。' },
+        { who: 'c5_vela', text: '去吧。替我……讓他鬆手。' },
       ],
       c5_bossIntro: [
-        { who: 'c5_idris', text: '……又一艘不肯下錨的船。' },
-        { who: 'c5_idris', text: '我們切斷了纜索，追著那首歌爬上來。船員……一個接一個，安靜了。' },
-        { who: 'rinne', text: '上面有什麼。' },
-        { who: 'c5_idris', text: '比方舟還高的地方……有個孩子，屏著呼吸。替整個世界屏著。' },
-        { who: 'c5_idris', text: '誰都別想再上去。……起錨。' },
+        { who: 'c5_idris', text: '……又一個，交出了重量的人。' },
+        { who: 'c5_idris', text: '門關上那天，亡者一放手，就往天上墜。……一個接一個。' },
+        { who: 'rinne', text: '（她往塔尖的方向，看了一眼。）' },
+        { who: 'c5_idris', text: '什麼都沒有。所以我釘。……釘了十八年。' },
+        { who: 'c5_idris', text: '誰都別想鬆開它。……起錨。' },
       ],
       c5_bossDefeat: [
-        { who: 'c5_idris', text: '……錨，斷了。……原來，這麼輕。' },
-        { who: 'c5_idris', text: '休止不在地底。它錨在梯子的頂端……那孩子，就在錨的另一頭。' },
-        { who: 'rinne', text: '她的名字。' },
-        { who: 'c5_idris', text: '……米菈。她一直哼著那首歌。好讓自己……不要害怕。' },
-        { who: 'rinne', text: '……巴洛的女兒。' },
-        { who: 'ode', text: '第七降臨隊，呼叫頌歌號。……頌歌號，請回答。' },
-        { who: 'ode', text: '…………' },
+        { who: 'c5_idris', text: '……錨，斷了。……塔，沒有掉。' },
+        { who: 'c5_idris', text: '原來它一直……浮得很好。我怕的，不是虛無。是有一天，連我也想放手。' },
+        { who: 'rinne', text: '……' },
+        { who: 'c5_idris', text: '……好輕。' },
+        { who: 'rinne', text: '（她替他闔上了眼。）' },
+        { who: 'ode', text: '下一道門，在河上。' },
       ],
     },
     codex: {
       people: [
-        { id: 'c5_dingding', name: '叮叮', en: 'DINGDING — MAINTENANCE UNIT F-12', portrait: 'c5_dingding', unlock: 'c5_met_dingding', tag: 'NPC｜第九中繼站的維修機',
-          body: ['頌歌之梯上段的維修機 F-12。梯子斷裂那天，工頭說「燈不能滅，我們會回來」，然後走進了最後一班電梯。', '它擦拭中繼站的每一盞燈，數著每一顆鎖緊過的螺栓。一百二十萬顆。數字還在增加。', '名字是一個小女孩取的。天線上的鈴，至今仍叮、叮地響。'] },
-        { id: 'c5_vela', name: '薇拉', en: 'VELA — THE LONGSHOT', portrait: 'c5_elite', unlock: 'c5_elite_seen', tag: '菁英敵人｜第五降臨隊・狙擊手',
-          body: ['第五降臨隊的狙擊手。船長下令封鎖上環之後，她獨自在風暴裡守了許多年。', '據說她看得見八百公尺外的心跳。她從不失手——只是有時，選擇不扣扳機。'] },
-        { id: 'c5_idris', name: '伊德里斯', en: 'CAPTAIN IDRIS — THE UNMOORED', portrait: 'c5_boss', unlock: 'c5_boss_seen', tag: '頭目｜第五降臨隊隊長・失聲者',
-          body: ['第五降臨隊隊長，舊時代的軌道拖船船長。途經鐘樓時，替村民修好了水塔，留下一句：「下錨的地方，就是家。」', '為了追上那首歌，他親手切斷了與方舟之間的纜索。後來，他把錨鏈纏在自己身上。', '「我不是不肯下錨。我只是……再也找不到能停靠的地方。」'] },
+        { id: 'c5_dingding', name: '叮叮', en: 'DINGDING — LAMP-SERVANT No.12', portrait: 'c5_dingding', unlock: 'c5_met_dingding', tag: 'NPC｜第九燈亭的燈俑',
+          body: ['一尊陪葬的燈俑，編號十二。從前有人把它和燈主一起埋進土裡，好讓燈主在冥界也有燈可點。', '門關上那天，燈主說「燈不能滅，我們會回來」，便帶著最後一批亡者往下走了。它擦拭燈亭的每一盞燈，數著每一根剪過的燈芯。一百二十萬根。數字還在增加。', '名字是一個小女孩取的。頭上的鈴，至今仍叮、叮地響。'] },
+        { id: 'c5_vela', name: '薇拉', en: 'VELA — THE NAVIGATOR', portrait: 'c5_elite', unlock: 'c5_elite_seen', tag: '菁英敵人｜倒懸之塔・領航員',
+          body: ['倒懸之塔的領航員。失了重量的亡者分不清上下，是她看著倒懸的星星，替他們指出往下的路。', '門關上之後，再沒有人需要指路。她在風暴裡守著錨長最後的命令，一守就是十八年。她從不失手——只是有時，選擇不扣扳機。'] },
+        { id: 'c5_idris', name: '伊德里斯', en: 'IDRIS — THE ANCHOR-WARDEN', portrait: 'c5_boss', unlock: 'c5_boss_seen', tag: '頭目｜倒懸之塔的錨長',
+          body: ['倒懸之塔的錨長。生前是溫陀港的船長，替港口修過燈塔，留下一句：「下錨的地方，就是家。」', '死後，他在這座塔上替失了重量的亡者下錨，一個一個送往下一道門。門關上之後，他打下一根又一根錨，最後把錨鏈纏在自己身上。', '「我不是不肯鬆手。我只是……再也找不到能停靠的地方。」'] },
       ],
       world: [
-        { id: 'c5_spire', name: '無重之塔', en: 'THE UNMOORED SPIRE', unlock: 'c5_arrived', body: ['頌歌之梯在雲層之上的一段。為了節省能源，維修局把這裡的人工重力降到了地表的六成。', '梯工們有句老話：越往上爬，身體越輕。到了頂端，連聲音都沒有重量。'] },
-        { id: 'c5_waystation', name: '第九中繼站', en: 'WAYSTATION NINE', unlock: 'c5_arrived', body: ['梯子上段最後一座有人駐守的中繼站。攀升艙在此換軌、加壓、補給。', '大寂靜之後，人都撤走了。燈沒有。'] },
-        { id: 'c5_descent5', name: '第五降臨隊', en: 'DESCENT V', unlock: 'note_c5_n5', body: ['方舟派出的第五支降臨隊，由伊德里斯船長率領。他們一路降到鐘樓，才發覺那首歌來自上方。', '於是他們切斷纜索，掉頭往上。', '隊員：伊德里斯、薇拉，及其他十一人。生還者：未登記。'] },
-        { id: 'c5_gap', name: '極光斷口', en: 'THE AURORA GAP', unlock: 't_c5_t_gap', body: ['梯子上段斷開的一截懸廊。橫越其上的，只剩一條纜車線。', '從車廂往下望，是整顆死去的星球，與在它上空靜靜燃燒的極光。'] },
+        { id: 'c5_spire', name: '倒懸之塔', en: 'THE INVERTED SPIRE', unlock: 'c5_arrived', body: ['冥界第四道門之後，天是倒過來的。塔從天上垂下，塔尖指著一片什麼都沒有的地方。', '過這道門的人，要交出自己的重量。錨手們有句老話：走到盡頭，連聲音都沒有重量。'] },
+        { id: 'c5_waystation', name: '第九燈亭', en: 'THE NINTH LAMP-HOUSE', unlock: 'c5_arrived', body: ['塔上最後一座有人看守的燈亭。失了重量的亡者在此繫上鏈子、提一盞燈，等錨手來接。', '門關上之後，人都走了。燈沒有。'] },
+        { id: 'c5_descent5', name: '錨手', en: 'THE ANCHOR CREW', unlock: 'note_c5_n5', body: ['錨長伊德里斯麾下的錨手。他們用鏈子拴住失了重量的亡者，一個一個送下錨台。', '門關上之後，下面不再收人。放手的亡者往天上墜，沒有人聽見他們落地。於是錨手們改用鏈子，拴住自己。', '錨手：伊德里斯、薇拉，及其他十一人。仍在塔上的：未登記。'] },
+        { id: 'c5_gap', name: '極光斷口', en: 'THE AURORA GAP', unlock: 't_c5_t_gap', body: ['塔身斷開的一截懸廊。橫越其上的，只剩一條纜車線。', '從車廂往下望，是倒懸的天，與在天底下靜靜燃燒的極光。'] },
       ],
       items: [
-        { id: 'c5_chime', name: '叮叮的鈴芯', en: "DINGDING'S CHIME", unlock: 'relic_c5_chime', relic: true, body: ['維修機 F-12 的節拍核心。它用這個記住每天走過的步數——也記住了一個孩子哼過的拍子。', '遺物效果：最大耐力 +15；每次完美格擋，回復 12 耐力。'] },
-        { id: 'c5_ribbon', name: '紅色布條', en: 'THE RED RIBBON', unlock: 'c5_got_ribbon', body: ['從一條紅色圍巾上撕下的布條，已經褪色。', '綁在天線上，就不會走丟。曾經有人這麼相信。'] },
+        { id: 'c5_chime', name: '叮叮的鈴芯', en: "DINGDING'S CHIME", unlock: 'relic_c5_chime', relic: true, body: ['燈俑十二號的鈴芯。它用這個記住每天走過的步數——也記住了一個孩子哼過的拍子。', '遺物效果：最大耐力 +15；每次完美格擋，回復 12 耐力。'] },
+        { id: 'c5_ribbon', name: '紅色布條', en: 'THE RED RIBBON', unlock: 'c5_got_ribbon', body: ['從一條紅色圍巾上撕下的布條，已經褪色。', '綁在鈴柄上，就不會走丟。曾經有個孩子這麼相信。'] },
       ],
       notes: [
-        { id: 'c5_n1', name: '第九中繼站 交接日誌', en: 'WAYSTATION NINE — HANDOVER LOG', body: ['【維修局・上段第九站　最後一班】', '電梯停了。下面說，梯子斷了。上級命令全員撤往方舟，重力降至六成以節省能源。', '維修機 F-12 繼續例行巡檢。燈不能滅。這是規定，也是我答應過的事。', 'F-12，聽好。我們會回來。在那之前，把燈擦亮。', '（交接人簽名欄，空白。）'] },
-        { id: 'c5_n2', name: '攀升艙貨運清單 #2241', en: 'CLIMBER MANIFEST #2241', body: ['【上行・最終班次・二十年前】', '乘員：成人一名（共鳴者，第一降臨隊隊長）。', '　　　兒童一名（未登記。無方舟居留證。依隊長權限放行）。', '隨身物品：紅色圍巾一條（已破損）。蠟筆一盒。', '備註：兒童全程都在哼歌。押運員表示：「聽了，很安心。」'] },
-        { id: 'c5_n3', name: '起重機艙裡的蠟筆畫', en: 'CRAYONS IN THE CRANE CAB', body: ['牆上貼著三張蠟筆畫。', '第一張，一台頭上有鈴鐺的機器人。旁邊寫著：「叮叮」。', '第二張，一口很大的鐘。寫著：「爸爸的鐘」。', '第三張，一個黑色長髮的女人，牽著圍紅圍巾的小女孩。下面歪歪扭扭地寫著：', '「我叫米菈。我今天沒有哭。」'] },
-        { id: 'c5_n4', name: '梯工的維修筆記', en: "LADDER RIGGER'S NOTES", body: ['斷口纜車的握索器又鬆了。第四次報告。沒有回音。', '另一件事，我不知道該向誰報告：梯頂的張力計，一直顯示一個不可能的讀數。', '梯子應該是被方舟「吊著」的。可是最近的張力，大得像是——方舟的更上面，有什麼抓著整條梯子往上拉。', '像一個拋向天空的錨。'] },
-        { id: 'c5_n5', name: '伊德里斯的航海日誌', en: "CAPTAIN IDRIS' LOG", body: ['第五降臨隊，第 211 日。我們不再往下走了。那首歌，是從「上面」傳來的。', '起重機艙裡有孩子的畫。中繼站那台維修機說，她叫米菈，二十年前跟著瑪絲緹娜往上去了。', '休止不在地底。它錨在梯子的頂端，比方舟還高。那孩子在錨的另一頭，替整個世界屏住呼吸。', '我下令切斷與方舟的纜索。從今天起，第五降臨隊不再下錨。', '……船員一個接一個安靜了。我把錨鏈纏在身上。我不會讓它把我也拉上去。'] },
-        { id: 'c5_n6', name: '薇拉的最後一封信', en: "VELA'S LAST LETTER", body: ['給方舟上的弟弟：', '我透過瞄準鏡，看了這塊甲板好多年。船長已經不說話了。我還守著他的命令：任何人，不准上去。', '今天有人來了。一個拿細刀的共鳴者。走路的樣子，很像薇格隊長。', '如果你讀到這封信——我沒有失手。我只是，選擇不扣扳機。'] },
+        { id: 'c5_n1', name: '第九燈亭 交接帳', en: 'LAMP-HOUSE NINE — HANDOVER LEDGER', body: ['【倒懸之塔・第九燈亭　最後一班】', '下面傳話上來：門關了。燈主命令全員撤往錨台，帶最後一批亡者往下。', '燈俑十二號留守。燈不能滅。這是規矩，也是我答應過的事。', '十二號，聽好。我們會回來。在那之前，把燈擦亮。', '（交接人畫押處，空白。）'] },
+        { id: 'c5_n2', name: '渡塔名冊 #2241', en: 'SPIRE ROLL #2241', body: ['【下行・門關前最後一個月】', '亡者：女童一名。溫陀王城，敲鐘人之女。病歿。', '隨身物品：紅色圍巾一條（已破損）。蠟筆一盒。', '引路燈：未領。本人說她認得路——爸爸的鐘聲，會一直往下傳。', '備註：女童全程都在哼歌。押送的錨手說：「聽了，很安心。」'] },
+        { id: 'c5_n3', name: '吊臂頂端的蠟筆畫', en: 'CRAYONS AT THE CRANE-TOP', body: ['牆上貼著三張蠟筆畫。', '第一張，一尊頭上掛著鈴的陶偶。旁邊寫著：「叮叮」。', '第二張，一口很大的鐘。寫著：「爸爸的鐘」。', '第三張，一個很高、穿黑衣的女人，牽著圍紅圍巾的小女孩。下面歪歪扭扭地寫著：', '「她說，從來沒有人唱歌給她聽。所以我唱給她聽。我今天沒有哭。」'] },
+        { id: 'c5_n4', name: '錨手的筆記', en: "AN ANCHOR-HAND'S NOTES", body: ['斷口纜車的握索又鬆了。第四次報告。沒有回音。', '另一件事，我不知道該向誰報告：錨鏈繃得太緊了，緊得不可能。', '塔應該是「掛」在天上的。可是最近，它像是被什麼往外拉——往塔尖那片什麼都沒有的地方。', '錨長說，那是錯覺。他又多打了三根錨。'] },
+        { id: 'c5_n5', name: '伊德里斯的錨帳', en: "IDRIS' ANCHOR LOG", body: ['門關後第 211 日。下面的門不開了。亡者擠在錨台上，等著往下。', '他們沒有重量，抓不住任何東西。一放手，就往天上墜。我看著他們變得像星星那麼小，然後不見。', '我下令所有錨手把鏈子纏在身上。從今天起，這座塔，不准再少一個人。', '……錨手一個接一個安靜了。我把最後一條錨鏈纏在自己身上。我不會讓這座塔掉下去。'] },
+        { id: 'c5_n6', name: '薇拉的最後一封信', en: "VELA'S LAST LETTER", body: ['給弟弟：', '我透過觀星鏡，看了這塊甲板十八年。錨長已經不說話了。我還守著他的命令：任何人，不准過去。', '今天有人來了。一個活人，身上沒有重量，也沒有名字。走路的樣子，像是要一直走到最底。', '如果你讀到這封信——我沒有失手。我只是，選擇不扣扳機。', '（你若已經死了，卻進不了門……就在門外等我。）'] },
       ],
     },
     relics: {
@@ -1597,8 +1596,8 @@
 
   // the elite's relic is normally defined by the foes author; provide a fallback so the drop never breaks
   if (!G.DATA.relics.c5_scope) {
-    data.relics.c5_scope = { name: '薇拉的瞄準鏡', desc: '完美格擋判定 +30ms' };
-    data.codex.items.push({ id: 'c5_scope', name: '薇拉的瞄準鏡', en: "VELA'S SCOPE", unlock: 'relic_c5_scope', relic: true, body: ['第五降臨隊狙擊手的瞄準鏡。鏡片上一道裂痕，正好劃過十字線。她說那道裂痕，讓她每一槍都多想了一下。', '遺物效果：完美格擋判定 +30ms。'] });
+    data.relics.c5_scope = { name: '薇拉的觀星鏡', desc: '完美格擋判定 +30ms' };
+    data.codex.items.push({ id: 'c5_scope', name: '薇拉的觀星鏡', en: "VELA'S STAR-SCOPE", unlock: 'relic_c5_scope', relic: true, body: ['領航員的觀星鏡。鏡片上一道裂痕，正好劃過十字線。她說那道裂痕，讓她每一發都多想了一下。', '遺物效果：完美格擋判定 +30ms。'] });
     if (!G.Relics.c5_scope) G.Relics.c5_scope = { apply(P2) { P2.parryWin += 0.03; } };
   }
   // Dingding's chime keeps the beat: +15 stamina, and every perfect guard gives 12 back. (Vela's scope already boosts
@@ -1746,13 +1745,13 @@
      REGISTER
      ========================================================================================= */
   G.Chapters.register({
-    id: 5, key: 'ch5', num: 'V', numZh: '五', title: '無重之塔', en: 'THE UNMOORED SPIRE',
+    id: 5, key: 'ch5', num: 'V', numZh: '五', title: '倒懸之塔', en: 'THE INVERTED SPIRE',
     intro: [
-      { t: '河道升降梯，把她們送回了梯子。\n這一次，只有往上。', s: 'THE RIVER LIFT RETURNS THEM TO THE LADDER. THIS TIME, ONLY UP.' },
-      { t: '雲在腳下，星辰很近。\n越往上，一切越輕——連聲音也是。', s: 'CLOUDS BELOW. STARS CLOSE. THE HIGHER YOU CLIMB, THE LIGHTER EVERYTHING BECOMES — EVEN SOUND.' },
+      { t: '第四道門，收走了她的重量。\n從這裡開始，天在腳下。', s: 'THE FOURTH GATE TAKES HER WEIGHT. FROM HERE ON, THE SKY LIES BELOW.' },
+      { t: '倒懸的塔，用錨釘在天上。\n放手的人，會往天上墜落。', s: 'THE SPIRE HANGS FROM THE SKY ON ANCHORS. THOSE WHO LET GO FALL INTO IT.' },
     ],
     enterDialog: 'c5_enter',
-    outro: '「燈都亮著。……沒有人回答。」',
+    outro: '「燈都亮著。……錨，鬆開了。」',
     level, pal,
     sky: { sun: false, shafts: false, clouds: false, ark: false, rays: 0 },
     bg: {

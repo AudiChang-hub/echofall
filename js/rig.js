@@ -594,6 +594,7 @@
     limbChain(ctx, [J.shB, J.elB, J.hdB], [3.9, 3.0, 2.3], C.shirtB);
     limb(ctx, lerpP(J.elB, J.hdB, 0.38), lerpP(J.elB, J.hdB, 0.9), 3.2, 2.7, C.leatherB, { spec: 0.2 });
     limb(ctx, J.hdB, lerpP(J.elB, J.hdB, 1.14), 2.6, 2.2, C.glove, { noHatch: true });
+    if (opts.offhand === 'dagger') drawOffhand(ctx, J, 'dagger', performance.now() / 1000);
     // --- back leg: trousers + tall boot ---
     limbChain(ctx, [J.hip, lerpP(J.hip, J.kneeB, 0.45), J.kneeB, lerpP(J.kneeB, J.ankB, 0.35), J.ankB], [7.2, 6.3, 4.3, 4.3, 2.7], C.pantsB);
     limb(ctx, lerpP(J.kneeB, J.ankB, 0.3), J.ankB, 4.4, 3.0, C.leatherB, { spec: 0.3 });
@@ -646,6 +647,8 @@
       ctx.moveTo(a.x - dx / d * 2 + dy / d * 3, a.y - dy / d * 2 - dx / d * 3); ctx.lineTo(b.x + dy / d * 2, b.y - dx / d * 2); ctx.stroke(); }
     // --- coat front flap over the near thigh ---
     clothPanel(ctx, cloth('coatF'), 3.0, 5.6, C.coat, C.lining, C.gold);
+    // shield and bell read in front of the body (the sword arm still passes over them)
+    if (opts.offhand === 'shield' || opts.offhand === 'bell') drawOffhand(ctx, J, opts.offhand, performance.now() / 1000);
 
     // --- neck, scarf wrap, head ---
     limb(ctx, J.chest, lerpP(J.chest, J.head, 0.55), 3.1, 2.9, C.skinS, { noHatch: true });
@@ -682,6 +685,7 @@
     const bl = opts.blade || null, lm = bl ? bl.len : 1, wm = bl ? bl.w : 1, edge = (bl && bl.col) || C.cyan;
     const b = J.hdF, pm = J.pommel, t = lm === 1 ? J.tip : { x: b.x + (J.tip.x - b.x) * lm, y: b.y + (J.tip.y - b.y) * lm };
     const dx = t.x - b.x, dy = t.y - b.y, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+    if (bl && bl.shape === 'fan') { drawFan(ctx, b, t, edge, pose, opts); return; }
     if (bl && bl.shape) { drawHafted(ctx, bl.shape, b, t, pm, dx / L, dy / L, nx, ny, L, edge, pose, opts); return; }
     // grip
     limb(ctx, pm, b, 1.6, 1.8, '#23252c');
@@ -767,6 +771,70 @@
     ctx.strokeStyle = U.rgba(edge, Math.min(1, glow)); ctx.lineWidth = 1.2;
     ctx.beginPath(); ctx.moveTo(edgeA.x, edgeA.y); ctx.lineTo(edgeB.x, edgeB.y); ctx.stroke();
     ctx.restore();
+  }
+
+  /* --------- class off-hand items (js/dnd.js picks one): a shield, a second dagger, a shaman's bell cluster --------- */
+  function drawOffhand(ctx, J, kind, t) {
+    const h = J.hdB, e = J.elB, ax = h.x - e.x, ay = h.y - e.y, L = Math.hypot(ax, ay) || 1, ux = ax / L, uy = ay / L, nx = -uy, ny = ux;
+    const P = (s, o) => ({ x: h.x + ux * s + nx * o, y: h.y + uy * s + ny * o });
+    if (kind === 'shield') {
+      // a kite shield strapped to the forearm: steel face, gold rim, the oath's sun
+      const c = { x: (h.x + e.x) / 2 + 2, y: (h.y + e.y) / 2 + 2 };
+      ctx.save(); ctx.translate(c.x, c.y);
+      ctx.beginPath(); ctx.moveTo(0, -17); ctx.quadraticCurveTo(13, -15, 12, -3); ctx.quadraticCurveTo(10, 10, 0, 19); ctx.quadraticCurveTo(-10, 10, -12, -3); ctx.quadraticCurveTo(-13, -15, 0, -17); ctx.closePath();
+      const g = ctx.createLinearGradient(-12, -16, 12, 16); g.addColorStop(0, '#f4f1ea'); g.addColorStop(0.45, '#b9bcc6'); g.addColorStop(1, '#5f6470');
+      ctx.fillStyle = g; ctx.fill(); ink(ctx, 0.8);
+      ctx.strokeStyle = '#e2b04f'; ctx.lineWidth = 1.6; ctx.stroke();
+      ctx.strokeStyle = '#e2b04f'; ctx.lineWidth = 1.1;
+      ctx.beginPath(); ctx.arc(0, -1, 4, 0, TAU); ctx.stroke();
+      for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; ctx.beginPath(); ctx.moveTo(Math.cos(a) * 5.5, -1 + Math.sin(a) * 5.5); ctx.lineTo(Math.cos(a) * 8, -1 + Math.sin(a) * 8); ctx.stroke(); }
+      ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.beginPath(); ctx.ellipse(-5, -9, 3, 5, -0.5, 0, TAU); ctx.fill();
+      ctx.restore();
+    } else if (kind === 'dagger') {
+      // reverse grip: the blade runs back along the forearm
+      const b0 = P(1, 0), tip = P(-22, 1.5);
+      limb(ctx, P(4, 0), b0, 1.4, 1.5, '#23252c');
+      limb(ctx, P(1.5, 3), P(1.5, -3), 0.9, 0.9, '#cfd3da');
+      ctx.beginPath(); ctx.moveTo(b0.x + nx * 1.8, b0.y + ny * 1.8); ctx.lineTo(tip.x, tip.y); ctx.lineTo(b0.x - nx * 1.2, b0.y - ny * 1.2); ctx.closePath();
+      const g = ctx.createLinearGradient(b0.x + nx * 2, b0.y + ny * 2, b0.x - nx * 2, b0.y - ny * 2); g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#6d7683');
+      ctx.fillStyle = g; ctx.fill(); ink(ctx, 0.5);
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = 'rgba(141,252,176,.6)'; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(b0.x, b0.y); ctx.lineTo(tip.x, tip.y); ctx.stroke(); ctx.restore();
+    } else if (kind === 'bell') {
+      // 巫鈴: a short handle, a cluster of brass bells, and the five-coloured ribbons of a shaman's rite
+      const top = P(2, 0), stem = { x: top.x, y: top.y + 7 };
+      limb(ctx, top, stem, 1.3, 1.3, '#7a4a28');
+      const sw = Math.sin(t * 9) * 1.4;
+      const bells = [[0, 10], [-4, 13], [4, 13], [-2, 17], [2, 17]];
+      for (const [bx, by] of bells) {
+        const x = stem.x + bx + sw * (by / 17), y = stem.y + by - 7;
+        const g = ctx.createRadialGradient(x - 1, y - 1, 0.3, x, y, 3.2); g.addColorStop(0, '#fff1c2'); g.addColorStop(0.5, '#e2b04f'); g.addColorStop(1, '#8a5a1c');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 2.6, 0, TAU); ctx.fill(); ink(ctx, 0.35);
+      }
+      const rib = ['#3a6fd8', '#d43b3f', '#e2b04f', '#f2efe8', '#2a2430'];
+      rib.forEach((col, i) => {
+        ctx.strokeStyle = col; ctx.lineWidth = 1.3; ctx.beginPath();
+        const x0 = top.x - 2 + i, y0 = top.y + 1;
+        ctx.moveTo(x0, y0); ctx.quadraticCurveTo(x0 - 4 + Math.sin(t * 3 + i) * 2, y0 + 10, x0 - 7 + Math.sin(t * 2.4 + i) * 3, y0 + 22); ctx.stroke();
+      });
+    }
+  }
+  // 巫扇: a folding fan opened in the sword hand (ribs, painted paper, a red sun)
+  function drawFan(ctx, b, t0, edge, pose, opts) {
+    const dx = t0.x - b.x, dy = t0.y - b.y, a = Math.atan2(dy, dx), R = 26;
+    const spread = 1.25, n = 9;
+    ctx.save(); ctx.translate(b.x, b.y);
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, R, a - spread / 2, a + spread / 2); ctx.closePath();
+    const g = ctx.createRadialGradient(0, 0, 4, 0, 0, R); g.addColorStop(0, '#f6efe0'); g.addColorStop(0.7, '#efe2c8'); g.addColorStop(1, '#d9c39a');
+    ctx.fillStyle = g; ctx.fill(); ink(ctx, 0.7);
+    ctx.fillStyle = '#d43b3f'; ctx.beginPath(); ctx.arc(Math.cos(a) * R * 0.62, Math.sin(a) * R * 0.62, 4.2, 0, TAU); ctx.fill();
+    ctx.strokeStyle = 'rgba(60,40,30,.55)'; ctx.lineWidth = 0.6;
+    for (let i = 0; i <= n; i++) { const q = a - spread / 2 + spread * i / n; ctx.beginPath(); ctx.moveTo(Math.cos(q) * 5, Math.sin(q) * 5); ctx.lineTo(Math.cos(q) * R, Math.sin(q) * R); ctx.stroke(); }
+    ctx.strokeStyle = '#7a4a28'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(0, 0, R, a - spread / 2, a + spread / 2); ctx.stroke();
+    const glow = 0.45 + (pose.glow || 0) * 0.55 + (opts.bladeGlow || 0);
+    ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = U.rgba(edge, Math.min(1, glow) * 0.8); ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.arc(0, 0, R + 1.5, a - spread / 2, a + spread / 2); ctx.stroke();
+    ctx.restore();
+    limb(ctx, b, { x: b.x - dx / (Math.hypot(dx, dy) || 1) * 5, y: b.y - dy / (Math.hypot(dx, dy) || 1) * 5 }, 1.8, 1.6, '#7a4a28');
   }
 
   /* --------- ghost silhouette (afterimage) --------- */

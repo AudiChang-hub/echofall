@@ -1,5 +1,5 @@
 'use strict';
-/* ECHOFALL — Chapter V boss: 斷錨船長・伊德里斯 CAPTAIN IDRIS, THE UNMOORED (Descent V)
+/* ECHOFALL — Chapter V boss: 錨長・伊德里斯 IDRIS, THE ANCHOR-WARDEN (the inverted spire)
    An old sky-captain fused to the anchor of his lost cargo lift. He fights like a ship in a storm: heavy, rhythmic, all weight.
    Phase 1 "BALLAST"   pendulum double swing (white·white) · leaping keel smash (red) → deck shockwaves (jump) ·
                        harpoon cast along a red aim line (dodge) that reels him into a white shoulder charge (parry!) ·
@@ -28,17 +28,17 @@
   /* ================================ data ================================ */
   const D = G.DATA;
   D.speakers.c5_idris = D.speakers.c5_idris || { name: '伊德里斯', en: 'IDRIS', color: '#8fffd0' };
-  D.barks.c5_bossP2 = { who: 'c5_idris', text: '起錨。……從此，這座塔上，再沒有「下」。' };
+  D.barks.c5_bossP2 = { who: 'c5_idris', text: '鬆錨。……讓妳也知道，往天上墜是什麼。' };
   D.hints.c5_bossHarpoon = '紅色瞄準線＝無法格擋的魚叉：看準時機 {dodge}，或離開那條線。接著他會順著鎖鏈衝過來——那一下是白光，可以完美格擋 {guard}。';
   D.hints.c5_bossFlip = '重力反轉：浮空時無法格擋——左右移動、用 {dodge} 躲開紅線魚叉。落地之後，就是反擊的時機。';
   D.hints.c5_bossWheel = '錨輪是紅光：別硬擋，拉開距離。錨砸進甲板之後他會卡住片刻——趁那時反擊。';
   D.codex.hushborn = D.codex.hushborn || [];
   if (!D.codex.hushborn.some((c) => c.id === 'c5_boss')) D.codex.hushborn.push({
-    id: 'c5_boss', name: '斷錨船長・伊德里斯', en: 'CAPTAIN IDRIS, THE UNMOORED', portrait: 'c5_boss', unlock: 'seen_c5_boss',
-    tag: '頭目｜失聲者・第五降臨隊',
+    id: 'c5_boss', name: '錨長・伊德里斯', en: 'IDRIS, THE ANCHOR-WARDEN', portrait: 'c5_boss', unlock: 'seen_c5_boss',
+    tag: '頭目｜失聲者・倒懸之塔的錨長',
     body: [
-      '第五降臨隊隊長，舊時代的軌道拖船船長。他親手切斷纜索，帶著船員追那首歌往上爬。船員一個接一個安靜了。他把錨鏈纏在身上，不讓「上面」把他也拉走。',
-      '寂靜沒有拉走他。它只是連同那條鏈子，把他一起凍在了原地。',
+      '倒懸之塔的錨長。門關上之後，放了手的亡者一個接一個往天上墜。他打下一根又一根錨，最後把錨鏈纏在自己身上，不讓這座塔也墜進虛無。',
+      '寂沒有拉走他。它只是連同那條鏈子，把他一起凍在了原地。',
       '第一階段「壓艙」：錨擺雙擊（白・白）、躍起重砸（紅，甲板衝擊波要跳過）、紅線魚叉——躲開之後，他會順著鎖鏈衝撞過來，那一下是白光，完美格擋能大幅削減架勢。還會召來一陣幽靈錨雨。',
       '第二階段「斷錨」：大衣崩裂、晶心外露，他讓整座平台的重力反轉。浮空時無法格擋，只能移動與閃避。錨輪是紅光，保持距離；四連鎖鏈抽擊是白光，跟上節奏全部格擋。',
       '弱點：每一套連段最後，錨都會咬進甲板——他得花一點時間把它拔出來。',
@@ -725,7 +725,7 @@
 
   /* ================================ the type ================================ */
   TYPES.c5_boss = Object.assign({
-    name: '斷錨船長・伊德里斯', en: 'CAPTAIN IDRIS, THE UNMOORED', w: 92, h: 240, hp: 2300, bal: 330, col: AUR, boss: true, shards: 760,
+    name: '錨長・伊德里斯', en: 'IDRIS, THE ANCHOR-WARDEN', w: 92, h: 240, hp: 2300, bal: 330, col: AUR, boss: true, shards: 760,
     kbMul: 0.5, spawnT: 2.5, poise: true, scale: S, portrait: [1.12, 0.86],
     defeatDialog: 'c5_bossDefeat', phase2Bark: 'c5_bossP2', phase2Music: 'c5_boss2',
     init(e) {

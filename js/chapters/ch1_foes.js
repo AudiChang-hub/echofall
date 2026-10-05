@@ -1,5 +1,5 @@
 'use strict';
-/* ECHOFALL — Chapter I foes (Ashport): 鐘鴉 Bell-Crow (c1_bellcrow) and 負柱者 Pillar-Bearer (c1_pillar).
+/* ECHOFALL — Chapter I foes (the royal city of Wendo): 鐘鴉 Bell-Crow (c1_bellcrow) and 負柱者 Pillar-Bearer (c1_pillar).
    Murmur / Sentinel / Shrieker / Graves / Maestrina live in js/enemies.js. */
 (function (G) {
   const K = G.EnemyKit, { TYPES, U, Rig, PI, TAU } = K;
@@ -658,16 +658,16 @@
     id: 'c1_bellcrow', name: '鐘鴉', en: 'BELL-CROW', portrait: 'c1_bellcrow', unlock: 'seen_c1_bellcrow',
     tag: '寂裔｜低階・飛行',
     body: [
-      '灰港的鐘樓曾經養著上千隻烏鴉。大寂靜之後，寂晶把牠們的身體掏空，只剩一口生鏽的小銅鐘掛在翅膀底下——每次振翅，都會發出走了音的鐘聲。',
+      '王城的鐘樓曾經養著上千隻烏鴉，報喪是牠們的老差事。十八年來，牠們報了無數次喪，沒有一次是真的。寂把牠們掏空，只剩翅膀底下一口生鏽的小銅鐘，每次振翅，都走一次音。',
       '攻擊模式：俯衝啄擊（白光，可格擋；完美格擋會把牠打落地面）／垂直墜擊（紅光，地面會出現紅色落點，必須閃避）。',
-      '弱點：墜擊之後，鳥喙會卡在地上好一陣子。歐德註：「牠們以前負責報時。現在只負責報喪。」',
+      '弱點：墜擊之後，鳥喙會卡在地上好一陣子。',
     ],
   });
   add({
     id: 'c1_pillar', name: '負柱者', en: 'PILLAR-BEARER', portrait: 'c1_pillar', unlock: 'seen_c1_pillar',
     tag: '寂裔｜中階・重裝',
     body: [
-      '大寂靜那一夜，一群石匠正把聖堂斷裂的石柱扛回工地。寂靜把他們和石柱熔成了一體——直到現在，他們還扛著它，在廢墟裡尋找那座再也蓋不起來的聖堂。',
+      '十八年前，石匠們奉命為國王的陵寢立柱。國王沒有死，陵寢也就一直蓋不完。他們後來死了，進不了門，仍扛著那根石柱在城裡走，找那座等不到主人的陵。',
       '攻擊模式：肩撞衝鋒（白光，可格擋）／石柱橫掃（白光）／高舉石柱砸地（紅光，無法格擋，必須閃避）。',
       '弱點：攻擊時具有霸體，輕攻擊打不斷。但砸地之後石柱會卡在地面——那是反擊的時機。',
     ],

@@ -165,6 +165,9 @@
     },
     openGate(game, g) {
       if (g.open) return;
+      // the gatekeeper's toll (js/events.js): from the second gate on, each door asks for something of yours
+      const ch = G.LEVEL.chapter || 1, F = game.save.flags;
+      if (ch >= 2 && !F['gate_' + ch + '_deal'] && G.Events && !g.asking) { g.asking = true; G.Events.gate(game, ch, () => { g.asking = false; F['gate_' + ch + '_deal'] = true; this.openGate(game, g); }); return; }
       g.open = true; G.Phys.dyn = G.Phys.dyn.filter((w) => w !== g.wall);
       G.SFX.play('door'); G.SFX.play('pylon', 0.6);
       G.FX.ring(g.x, g.y - 160, 10, 220, 0.7, '#ffd9a8', 6); G.FX.ember(g.x, g.y - 180, 40, '#ffd9a8', { w: 50, h: 340, up: 120 });
