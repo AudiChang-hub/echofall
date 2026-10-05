@@ -819,10 +819,21 @@
         const a = p.t * 30; ctx.strokeStyle = 'rgba(220,255,235,.95)'; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(p.x - Math.cos(a) * 9, p.y - Math.sin(a) * 9); ctx.lineTo(p.x + Math.cos(a) * 9, p.y + Math.sin(a) * 9); ctx.stroke();
         ctx.strokeStyle = 'rgba(141,252,176,.35)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 0.03, p.y - p.vy * 0.03); ctx.stroke(); continue;
       }
-      if (p.kind === 'wind') {   // 巫女's spirit wind: a rolling crescent of pale violet
-        const d = Math.sign(p.vx) || 1, k = Math.min(1, p.life * 3);
-        for (let i = 0; i < 3; i++) { ctx.strokeStyle = `rgba(226,214,255,${(0.7 - i * 0.2) * k})`; ctx.lineWidth = 3 - i * 0.6; ctx.beginPath(); ctx.ellipse(p.x - d * i * 9, p.y, p.r * (0.45 - i * 0.06), p.r * (1 - i * 0.12), 0, d > 0 ? -Math.PI / 2 : Math.PI / 2, d > 0 ? Math.PI / 2 : Math.PI * 1.5); ctx.stroke(); }
-        glow(ctx, p.x, p.y, p.r * 1.6, '#c9b6ff', 0.25 * k); continue;
+      if (p.kind === 'wind') {   // 巫女's spirit wind: a sweeping violet blade of air carrying spinning paper talismans
+        const d = Math.sign(p.vx) || 1, k = Math.min(1, p.life * 3, p.t * 12), R = p.r * 1.7;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.scale(d, 1);
+        const gr = ctx.createLinearGradient(-R, 0, R * 0.6, 0); gr.addColorStop(0, 'rgba(201,182,255,0)'); gr.addColorStop(0.7, `rgba(214,198,255,${0.55 * k})`); gr.addColorStop(1, `rgba(255,255,255,${0.85 * k})`);
+        ctx.fillStyle = gr; ctx.beginPath(); ctx.moveTo(-R * 0.9, -R); ctx.quadraticCurveTo(R * 0.9, -R * 0.4, R * 0.55, 0); ctx.quadraticCurveTo(R * 0.9, R * 0.4, -R * 0.9, R); ctx.quadraticCurveTo(R * 0.2, 0, -R * 0.9, -R); ctx.fill();
+        ctx.strokeStyle = `rgba(255,255,255,${0.7 * k})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-R * 0.6, -R * 0.85); ctx.quadraticCurveTo(R * 0.8, -R * 0.3, R * 0.5, 0); ctx.quadraticCurveTo(R * 0.8, R * 0.3, -R * 0.6, R * 0.85); ctx.stroke();
+        ctx.restore();
+        ctx.globalCompositeOperation = 'source-over';
+        for (let i = 0; i < 3; i++) {   // talismans: pale paper with a red seal, tumbling in the gust
+          const a = p.t * 9 + i * 2.1, ox = -d * (10 + i * 14), oy = Math.sin(p.t * 7 + i * 2) * p.r * 0.6;
+          ctx.save(); ctx.translate(p.x + ox, p.y + oy); ctx.rotate(a); ctx.globalAlpha = k;
+          ctx.fillStyle = '#f2e6cc'; ctx.fillRect(-4, -7, 8, 14); ctx.fillStyle = '#d43b3f'; ctx.fillRect(-2, -4, 4, 6); ctx.restore();
+        }
+        ctx.globalCompositeOperation = 'lighter';
+        glow(ctx, p.x, p.y, p.r * 2, '#c9b6ff', 0.3 * k); continue;
       }
       const col = p.friendly ? (p.kind === 'spirit' ? '#e2d6ff' : '#7ff4ff') : p.col;
       glow(ctx, p.x, p.y, p.r * 3.2, col, 0.55);

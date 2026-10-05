@@ -77,9 +77,9 @@
 
     /* ------------------------------ update ------------------------------ */
     update(dt) {
-      G.DnD.update(this, dt); G.DnD.spiritUpdate(this, dt);
+      G.DnD.update(this, dt); G.DnD.spiritUpdate(this, dt); G.DnD.echoUpdate(this, dt);
       const I = G.Input, g = this.game;
-      const stDt = dt * (this.state === 'light' || this.state === 'heavy' || this.state === 'air' || this.state === 'counter' ? G.Boons.atkSpeed() * (this.gear ? this.gear.speed * (1 + (this.gear.spd || 0)) : 1) : 1);
+      const stDt = dt * (this.state === 'light' || this.state === 'heavy' || this.state === 'air' || this.state === 'counter' ? G.Boons.atkSpeed() * G.DnD.atkSpeed() * (this.gear ? this.gear.speed * (1 + (this.gear.spd || 0)) : 1) : 1);
       this.t += dt; this.st += stDt;
       this.iframes = Math.max(0, this.iframes - dt);
       this.hurtInv = Math.max(0, this.hurtInv - dt);
@@ -287,7 +287,8 @@
       this.spendSta(STAM.light + ci * 2);
       this.vx = this.facing * LIGHT[ci].lunge;
       const mx = G.Input.moveX(); if (mx) this.facing = mx > 0 ? 1 : -1; else this.autoFace();
-      this.vx = this.facing * LIGHT[ci].lunge;
+      this.vx = this.facing * LIGHT[ci].lunge * G.DnD.lungeMul(ci);
+      G.DnD.onLightStart(this, ci);
       G.Boons.onLight(this);
       this.trail.clear(); this.queued = false;
     }
@@ -296,8 +297,11 @@
       this.vx = U.approach(this.vx, 0, (this.ci === 3 ? 900 : 1300) * dt);
       if (this.ci === 3 && this.st > 0.12 && this.st < 0.34) this.vx = this.facing * 260;
       if (this.st >= an.active[0] && this.st <= an.active[1]) {
-        if (!this.swung) { this.swung = true; G.SFX.play('slash', L.pitch, !!L.big); if (this.ci === 2) G.DnD.windlet(this); }
-        this.doHits(L.box, { dmg: L.dmg, bal: L.bal, big: L.big, launch: this.ci === 3 });
+        let first = false;
+        if (!this.swung) { this.swung = true; first = true; G.SFX.play('slash', L.pitch, !!L.big); }
+        const CL = G.DnD.light(L, this.ci);   // each class's own reach and weight
+        this.doHits(CL.box, { dmg: CL.dmg, bal: CL.bal, big: L.big, launch: this.ci === 3 });
+        if (first) G.DnD.onSwing(this, this.ci);
       } else if (this.st < an.active[0]) this.swung = false;
       if (this.ci === 3 && this.st > 0.36 && !this.slamFx) { this.slamFx = true; G.FX.dust(this.x + this.facing * 40, this.y, 14, { w: 60, speed: 220, size: 12 }); G.FX.ring(this.x + this.facing * 50, this.y, 6, 120, 0.35, '#7ff4ff', 4, { flat: 0.15 }); this.game.shake(0.25); }
       if (this.st < 0.1) this.slamFx = false;
@@ -326,8 +330,10 @@
       const an = A.air, I = G.Input;
       this.vx = U.approach(this.vx, (ctl ? I.moveX() : 0) * RUN * 0.7, 1500 * dt);
       if (this.st >= an.active[0] && this.st <= an.active[1]) {
-        if (!this.swung) { this.swung = true; G.SFX.play('slash', 1.15); }
+        let first = false;
+        if (!this.swung) { this.swung = true; first = true; G.SFX.play('slash', 1.15); }
         this.doHits({ x: -60, y: -150, w: 175, h: 170 }, { dmg: 12, bal: 9 });
+        if (first) G.DnD.onSwing(this, 0);
       }
       if (this.st >= an.dur) this.setState('move', 0.1);
     }
@@ -488,7 +494,7 @@
         const m = G.DnD.modHit(this, e, G.Gear.modHit(this, e, G.Boons.modHit(this, e, h)), h);
         const ok = e.takeHit({ dmg: m.dmg, bal: m.bal, big: h.big || m.crit, crit: m.crit, launch: h.launch, hx, hy, dir: this.facing > 0 ? -0.2 : PI + 0.2, kbx: this.facing * (h.big ? 300 : 170) });
         if (!ok) continue;
-        G.Boons.afterHit(this, e, m); G.Gear.afterHit(this, e, m);
+        G.Boons.afterHit(this, e, m); G.Gear.afterHit(this, e, m); G.DnD.onHit(this, e, m, h);
         g.addCombo();
         // impact: freeze, a camera kick along the blow, a streak across the body, a crunch, a buzz in the hand
         const heavy = h.big || m.crit;
@@ -497,8 +503,9 @@
         const sa = (this.state === 'light' ? [-0.55, 0.6, -0.15, 0.95][this.ci] : this.state === 'heavy' ? 0.05 : -0.4);
         const ang = this.facing > 0 ? sa : PI - sa;
         G.FX.slashMark(e.cx, hy, ang, heavy ? 190 : 130, '#ffffff', heavy ? 0.22 : 0.16, heavy ? 11 : 7);
-        G.FX.slashMark(e.cx, hy, ang + 0.08, heavy ? 150 : 100, '#7ff4ff', 0.2, heavy ? 6 : 4);
-        G.FX.ring(hx, hy, 4, heavy ? 70 : 44, 0.18, '#ffffff', heavy ? 4 : 2.5);
+        const cc = G.DnD.trailCol() || '#7ff4ff';   // the class's own colour on every impact
+        G.FX.slashMark(e.cx, hy, ang + 0.08, heavy ? 150 : 100, cc, 0.2, heavy ? 6 : 4);
+        G.FX.ring(hx, hy, 4, heavy ? 70 : 44, 0.18, cc, heavy ? 4 : 2.5);
         G.SFX.play('hit', heavy ? 1.2 : 0.85); G.SFX.play('flesh');
         if (heavy) G.SFX.play('impact');
         G.Input.rumble(heavy ? 1 : 0.45);
@@ -698,7 +705,7 @@
         { flash: this.flash, bladeGlow: this.counterT > 0 ? 0.6 : 0, blade: this.gear && this.gear.look, offhand: G.DnD.offhand(this.gear && this.gear.look), outfit: G.DnD.outfit(this.gear && this.gear.outfit) });
       ctx.globalAlpha = 1;
       G.DnD.drawSpirit(ctx, this);
-      this.trail.draw(ctx, now, 0.12, this.state === 'execute' ? '#ffffff' : (this.gear && this.gear.look && this.gear.look.col) || '#6ff3ff', '#ffffff');
+      if (!G.DnD.noTrail() || this.state === 'execute') this.trail.draw(ctx, now, 0.12, this.state === 'execute' ? '#ffffff' : G.DnD.trailCol() || (this.gear && this.gear.look && this.gear.look.col) || '#6ff3ff', '#ffffff');
     }
   }
   G.Player = Player;

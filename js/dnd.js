@@ -117,6 +117,7 @@
       P.skillMul = (1 + 0.1 * m('int')) * (this.is('shaman') ? 1.25 : 1);
       P.healMul = 1 + 0.06 * m('wis');
       const hc = document.getElementById('hudCls'); if (hc) hc.textContent = `${this.cls().name} · ${this.cls().en}`;
+      { const sn = document.getElementById('skName'), sk = this.skills(); if (sn) sn.textContent = (P.res || 0) >= sk.c2 ? sk.n2 : sk.n1; }
     },
     priceMul() { return this.st() ? U.clamp(1 - 0.05 * this.mod('cha'), 0.6, 1.25) : 1; },
     // the names on the skill button: [technique 1, technique 2] and what each costs
@@ -155,6 +156,107 @@
     },
     rest(P) { P.windUsed = false; },
     update(P, dt) { if (P.sneakT > 0) P.sneakT -= dt; if (P.smiteT > 0) P.smiteT -= dt; },
+
+    /* ------------------------------------------------ fighting styles: each class's plain attacks look and work differently
+       劍巫  heavy cleaves (slower, wider, harder) trailing embers; the combo ends in a ground-splitting slam
+       影行者 twin-blade flurry (much faster); every cut is followed by a shadow cut, the 3rd step dashes through, the finisher appears behind the foe
+       守誓者 measured strikes of light; the 2nd blow is a shield bash, the finisher calls a pillar of light down on the foe
+       巫女  the fan barely touches; every stroke throws spirit wind instead (mid range), the finisher a fan of three gusts */
+    STYLE: {
+      fighter: { name: '巨刃', speed: 0.86, dmg: 1.25, bal: 1.3, lunge: 1.1, w: 1.28, trail: '#ff8f6b' },
+      rogue: { name: '雙刃', speed: 1.38, dmg: 0.74, bal: 0.8, lunge: 1.0, w: 0.95, trail: '#8dfcb0' },
+      paladin: { name: '聖光', speed: 0.95, dmg: 1.05, bal: 1.1, lunge: 1.0, w: 1.0, trail: '#ffd27a' },
+      shaman: { name: '靈風', speed: 1.05, dmg: 0.55, bal: 0.6, lunge: 0.7, w: 0.8, trail: '#c9b6ff' },
+    },
+    style() { const d = this.st(); return d ? this.STYLE[d.cls] : null; },
+    atkSpeed() { const s = this.style(); return s ? s.speed : 1; },
+    trailCol() { const s = this.style(); return s ? s.trail : null; },
+    noTrail() { return this.is('shaman'); },
+    // the light-attack box and numbers for this class
+    light(L, ci) {
+      const s = this.style(); if (!s) return { box: L.box, dmg: L.dmg, bal: L.bal };
+      const box = { x: L.box.x, y: L.box.y, w: L.box.w * s.w, h: L.box.h };
+      let bal = L.bal * s.bal;
+      if (this.is('paladin') && ci === 1) { box.w *= 0.8; bal *= 2.4; }    // the shield bash
+      return { box, dmg: L.dmg * s.dmg, bal };
+    },
+    lungeMul(ci) { const s = this.style(); if (!s) return 1; return this.is('rogue') && ci === 2 ? 2.4 : s.lunge; },
+    onLightStart(P, ci) {
+      if (this.is('rogue') && ci === 3) {
+        // the finisher: step through the shadow and appear behind the nearest foe in front
+        let best = null, bd = 300;
+        for (const e of G.game.enemies) { if (e.dead || e.state === 'spawn') continue; const dx = (e.x - P.x) * P.facing, dy = Math.abs(e.y - P.y); if (dx > -20 && dx < bd && dy < 120) { bd = dx; best = e; } }
+        if (best) {
+          G.FX.ghost({ x: P.x, y: P.y, facing: P.facing, pose: Object.assign({}, P.pose) }, '#8dfcb0', 0.4, 0.7);
+          P.x = best.x + P.facing * (best.w / 2 + 44); P.facing = -P.facing; P.vx = 0; P.iframes = Math.max(P.iframes, 0.2);
+          G.SFX.play('dodge', 1.4); G.FX.ring(P.x, P.y - 70, 8, 70, 0.3, '#8dfcb0', 3);
+        }
+      }
+      if (this.is('rogue') && ci === 2) G.FX.ghost({ x: P.x, y: P.y, facing: P.facing, pose: Object.assign({}, P.pose) }, '#8dfcb0', 0.3, 0.5);
+    },
+    // the first frame a light attack is live
+    onSwing(P, ci) {
+      const f = P.facing, x = P.x, y = P.y, g = G.game;
+      if (this.is('fighter')) {
+        G.FX.slashMark(x + f * 70, y - 80, f > 0 ? -0.5 + ci * 0.3 : Math.PI + 0.5 - ci * 0.3, 210, '#ff8f6b', 0.36, 22);
+        G.FX.slashMark(x + f * 70, y - 80, f > 0 ? -0.5 + ci * 0.3 : Math.PI + 0.5 - ci * 0.3, 170, '#fff1e0', 0.22, 8);
+        G.FX.ember(x + f * 70, y - 80, 10, '#ff8f6b', { w: 80, h: 60, up: 60 });
+        if (ci === 3) {   // ground-splitting slam
+          g.shake(0.6); G.SFX.play('impact');
+          G.FX.ring(x + f * 80, y - 4, 10, 200, 0.45, '#ff8f6b', 7, { flat: 0.2 }); G.FX.dust(x + f * 80, y, 20, { w: 140, speed: 300, size: 14 });
+          this.area(P, { x: x + f * 80 - 170, y: y - 90, w: 340, h: 100 }, 10, 18);
+        }
+      } else if (this.is('rogue')) {
+        G.FX.ghost({ x: P.x - f * 26, y: P.y, facing: f, pose: Object.assign({}, P.pose) }, '#8dfcb0', 0.28, 0.55);
+        G.FX.slashMark(x + f * 55, y - 85, f > 0 ? 0.6 : Math.PI - 0.6, 120, '#b8ffd0', 0.22, 7);
+        G.FX.slashMark(x + f * 55, y - 85, f > 0 ? -0.6 : Math.PI + 0.6, 120, '#8dfcb0', 0.22, 7);
+      } else if (this.is('paladin')) {
+        G.FX.slashMark(x + f * 60, y - 80, f > 0 ? -0.2 : Math.PI + 0.2, 150, '#fff1c2', 0.3, 11);
+        if (ci === 1) { G.FX.flash(x + f * 40, y - 80, 110, 0.25, '#ffd27a'); G.FX.ring(x + f * 50, y - 80, 6, 80, 0.25, '#ffd27a', 4); G.SFX.play('parry', false); }
+        if (ci === 3) {   // a pillar of light falls on whatever stands in front
+          let tx = x + f * 160;
+          for (const e of g.enemies) if (!e.dead && Math.abs(e.y - y) < 140 && (e.x - x) * f > 0 && (e.x - x) * f < 360) { tx = e.x; break; }
+          G.FX.beam(tx, y - 520, tx, y, '#ffd27a', 0.45, 46); G.FX.beam(tx, y - 520, tx, y, '#ffffff', 0.3, 14);
+          G.FX.ring(tx, y - 4, 10, 140, 0.45, '#ffd27a', 6, { flat: 0.2 }); G.SFX.play('pylon', 1.5);
+          this.area(P, { x: tx - 60, y: y - 200, w: 120, h: 200 }, 14, 20);
+        }
+      } else if (this.is('shaman')) {
+        // the fan throws spirit wind; the finisher throws three
+        const gust = (vy, dmg, r) => g.projectiles.push({ x: x + f * 46, y: y - 74, vx: f * 640, vy, r, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: dmg, pbal: 6, life: 0.62, t: 0, col: '#c9b6ff' });
+        if (ci === 3) { gust(-150, 9, 26); gust(0, 11, 32); gust(150, 9, 26); } else gust(0, [6, 7, 8][ci] || 7, 26);
+        G.FX.ring(x, y - 2, 10, 70, 0.4, '#c9b6ff', 3, { flat: 0.25 }); G.FX.ring(x, y - 2, 6, 46, 0.4, '#f2e6cc', 2, { flat: 0.25 });   // the ritual circle
+        G.SFX.play('musicbox', 1.6 + ci * 0.15);   // the shaman's bell
+        for (let i = 0; i < 3; i++) G.FX.ember(x + f * 40, y - 80, 1, ['#f2e6cc', '#c9b6ff', '#d43b3f'][i], { w: 20, h: 20, up: 30 });
+        G.SFX.play('whoosh', 1.3 + ci * 0.05);
+      }
+    },
+    // a class flourish that strikes everything in a box (separate from the blade's own hit, so the same foe can take both)
+    area(P, box, dmg, bal) {
+      for (const e of G.game.enemies) {
+        if (e.dead || e.state === 'spawn' || !U.rectsOverlap(box, e.box)) continue;
+        const m = this.modHit(P, e, { dmg: dmg * P.dmgMul, bal, crit: false }, {});
+        e.takeHit({ dmg: m.dmg, bal: m.bal, crit: m.crit, big: true, hx: e.cx, hy: e.cy, echo: true });
+      }
+    },
+    // on every landed blow (melee): class-coloured impact, the rogue's shadow cut
+    onHit(P, e, m, h) {
+      if (!this.st() || (h && (h.noRes || h.echo))) return;
+      const c = this.trailCol();
+      G.FX.spark(e.cx, e.cy, 8, { col: c, speed: 520 });
+      if (this.is('rogue')) (P.echoQ || (P.echoQ = [])).push({ t: 0.09, e, dmg: m.dmg * 0.45 });
+      if (this.is('fighter')) G.FX.ember(e.cx, e.cy, 6, '#ff8f6b', { w: 30, h: 30, up: 50 });
+      if (this.is('paladin')) G.FX.star(e.cx, e.cy - 10, '#fff1c2', 46, 0.3);
+    },
+    echoUpdate(P, dt) {
+      const q = P.echoQ; if (!q || !q.length) return;
+      for (let i = q.length - 1; i >= 0; i--) {
+        const o = q[i]; o.t -= dt; if (o.t > 0) continue;
+        q.splice(i, 1);
+        if (o.e.dead) continue;
+        o.e.takeHit({ dmg: o.dmg, bal: 3, hx: o.e.cx, hy: o.e.cy, echo: true });
+        G.FX.slashMark(o.e.cx, o.e.cy - 10, Math.random() * Math.PI, 110, '#8dfcb0', 0.25, 6);
+      }
+    },
 
     /* ------------------------------------------------ class techniques (resonance skill 1; the shaman's skill 2) */
     SK: { fighter: 0.95, rogue: 0.5, paladin: 0.62, shaman: 0.62, summon: 0.55 },

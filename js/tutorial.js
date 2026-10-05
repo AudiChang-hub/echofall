@@ -141,7 +141,7 @@
       if (P.jumps >= 2) s.dj = true;
       if (P.state === 'light' && this.phantom && P.hitSet.has(this.phantom)) s.maxCi = Math.max(s.maxCi, P.ci);
       if (P.state === 'heavy' && this.phantom && P.hitSet.has(this.phantom)) s.heavy = true;
-      if (P.state === 'skill1' || P.state === 'skill2') s.skill = true;
+      if (P.state === 'skill1' || P.state === 'skill2' || P.state === 'cskill') s.skill = true;
       if (P.state === 'heal') s.healed = true;
       // keep it safe: training never kills
       P.hp = Math.max(P.hp, P.maxHp * 0.45);
