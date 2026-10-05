@@ -1440,7 +1440,7 @@
   const D = G.DATA, hush = D.codex.hushborn = D.codex.hushborn || [];
   const codex = (o) => { if (!hush.some((q) => q.id === o.id)) hush.push(o); };
   // Olin's phase-2 bark (his own signal call, see the note 「歐林的號譜」)
-  D.barks.c2_eliteP2 = D.barks.c2_eliteP2 || { who: 'c2_olin', text: '一長，不停——我在這裡！跟著聲音……走！' };
+  D.barks.c2_eliteP2 = D.barks.c2_eliteP2 || { who: 'c2_olin', text: '一長，不停……我在這裡。跟著聲音……走。' };
   codex({
     id: 'c2_rimehound', name: '霜鳴犬', en: 'RIMEHOUND', portrait: 'c2_rimehound', unlock: 'seen_c2_rimehound', tag: '寂裔｜低階・群獵',
     body: [
@@ -1455,7 +1455,7 @@
     body: [
       '鐘樓的老人說，以前每座山寺都有一口為死者敲的鐘。寂靜降臨後，敲鐘的人和鐘長成了同一個東西：頭顱是一口裂開的青銅鐘，鐘口裡吊著一顆發光的晶錘，代替他看著你。',
       '攻擊模式：高舉鐘槌後重砸（紅光，不可格擋），落地的鐘聲會沿著地面推出一道衝擊波——跳過去；橫掃鐘槌（白光，可格擋）。',
-      '弱點：重砸之後鐘槌會在地上停留很久。他揮槌時不會因輕擊而退縮，別貪刀。',
+      '弱點：重砸之後鐘槌會在地上停留很久。他揮槌時不會因輕擊而退縮，切勿貪攻。',
     ],
   });
   codex({
@@ -1477,9 +1477,9 @@
   codex({
     id: 'c2_elite', name: '冰封號手・歐林', en: 'OLIN, THE FROZEN BUGLER', portrait: 'c2_elite', unlock: 'seen_c2_elite', tag: '菁英｜第二降臨隊・信號手',
     body: [
-      '第二降臨隊的信號手。他的號角曾經在暴風雪裡替整支隊伍指路——直到某一天，號角吹出的不再是聲音，而是寂靜。',
+      '第二降臨隊的信號手。他的號角曾經在暴風雪裡替整支隊伍指路——直到某一天，號角吹出的不再是聲音，而是寂靜。', '鐘樓的孩子們還記得他。他們不知道，那首集合號，他後來又吹了十七年。',
       '他守在錨站上方的平台，背上的巨號與斧刃結成冰。號角聲會擴散成一圈聲環（白光，可完美格擋）；斧刃連擊之後，常接一記延遲的紅光劈砍。',
-      '第二階段：冰甲裂開，他會吹響衝鋒號、踏冰突進。不要在號聲裡貪刀。',
+      '第二階段：冰甲裂開，他會吹響衝鋒號、踏冰突進。號聲未歇，不可戀戰。',
     ],
   });
 

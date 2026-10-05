@@ -80,7 +80,7 @@
       if (b.kind === 'crystal') { G.FX.ring(b.x, b.y - h / 2, 6, 80, 0.35, col, 4); G.SFX.play('impact'); }
       game.hitstop(0.05); game.shake(0.15);
       // rewards: always a few shards, sometimes a smithing stone, rarely a piece of gear
-      const ch = (G.Chapters.cur && G.Chapters.cur.id) || 1, gt = game.player.gear || {};
+      const ch = G.Abyss.lootCh(), gt = game.player.gear || {};
       const n = Math.round((5 + Math.random() * 6 + ch * 2) * (b.kind === 'crystal' ? 1.6 : 1) * (1 + (gt.shard || 0)));
       for (let i = 0; i < 4; i++) {
         const a = -Math.PI / 2 + (Math.random() - 0.5) * 2, v = 200 + Math.random() * 240;
@@ -149,6 +149,7 @@
     spawnGates(game) {
       const L = G.LEVEL, F = game.save.flags, ch = L.chapter || 1;
       this.gates = [];
+      if (G.Abyss.active) return;   // Abyss chambers are their own arenas
       if (F['boss_' + ch] || (ch === 1 && F.boss_dead)) return;   // boss already down: the way stays open
       for (const id in L.encounters) {
         const E = L.encounters[id];

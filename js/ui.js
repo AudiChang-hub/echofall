@@ -121,6 +121,7 @@
     toTitle(first) {
       const g = G.game;
       g.state = 'title'; g.control = false; g.phase2 = false;
+      if (G.Abyss.active && g.save) { G.Abyss.recover(g.save); g.persist(); }   // quitting mid-run: back to the surface
       G.Chapters.load(1);
       g.save = g.defaultSave('normal'); g.diff = D.difficulty.normal; g.stats = g.save.stats;
       g.player = new G.Player(g); g.player.x = 470; g.player.y = 0; g.player.facing = 1; g.player.setState('move');
@@ -548,7 +549,7 @@
     openPylon(py, onLeave) {
       const g = G.game, sv = g.save, el = $('#pylon');
       $('#pyName').textContent = py.name;
-      const tabs = [['up', '共鳴之鏡'], ['gear', G.Gear && G.Gear.anyBetter(sv) ? '裝備・鍛造 ▲' : '裝備・鍛造'], ['travel', '旅行'], ['trade', '交易'], ['relic', '遺物'], ['codex', '檔案庫']];
+      const tabs = [['up', '共鳴之鏡'], ['gear', G.Gear && G.Gear.anyBetter(sv) ? '裝備・鍛造 ▲' : '裝備・鍛造'], ['abyss', '殘響深淵'], ['travel', '旅行'], ['trade', '交易'], ['relic', '遺物'], ['codex', '檔案庫']];
       let ti = 0;
       const info = $('#pyInfo');
       const taliaLines = ['「止弦的第三根弦有點走音，我幫你調一下。」', '「聽說方舟的刀都是手工打的？真浪漫。」', '「別死喔。我是說真的。修共鳴碑很花時間的。」', '「鐘樓今天又有兩個小孩出生了。你在下面要加油。」'];
@@ -609,7 +610,8 @@
       };
       const renderTab = () => {
         $('#pyTabs').innerHTML = tabs.map((t, k) => `<button class="tab ${k === ti ? 'on' : ''}" data-k="${k}">${t[1]}</button>`).join('');
-        $('#pyTabs').querySelectorAll('.tab').forEach((b) => b.onclick = () => { ti = +b.dataset.k; if (tabs[ti][0] === 'codex') { ti = 0; this.openCodex(); } else if (tabs[ti][0] === 'gear') { ti = 0; this.openGear({ forge: true, onClose: () => { shards(); renderTab(); } }); } else if (tabs[ti][0] === 'travel') { ti = 0; this.openTravel(); } else if (tabs[ti][0] === 'trade') { ti = 0; this.openTrade({}); } renderTab(); });
+        { const on = $('#pyTabs .tab.on'); if (on) on.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
+        $('#pyTabs').querySelectorAll('.tab').forEach((b) => b.onclick = () => { ti = +b.dataset.k; if (tabs[ti][0] === 'codex') { ti = 0; this.openCodex(); } else if (tabs[ti][0] === 'gear') { ti = 0; this.openGear({ forge: true, onClose: () => { shards(); renderTab(); } }); } else if (tabs[ti][0] === 'travel') { ti = 0; this.openTravel(); } else if (tabs[ti][0] === 'abyss') { ti = 0; if (sv.flags.boss_1 || sv.flags.boss_dead) this.openAbyss(); else this.toast('擊倒第一章的頭目後，深淵才會開啟', 'warn'); } else if (tabs[ti][0] === 'trade') { ti = 0; this.openTrade({}); } renderTab(); });
         const items = tabs[ti][0] === 'relic' ? buildRelic() : buildUp();
         menu = new Menu($('#pyMenu'), items, { delay: 0, clickSelects: true, start: menu && menu.items.length === items.length ? menu.i : 0, onFocus: showInfo });
         showInfo(menu.items[menu.i]);
@@ -620,7 +622,7 @@
       $('#pylonClose').onclick = () => { if (!this.stack.some((l) => l.id === 'pylon')) return; while (this.top() && this.top().id !== 'pylon') this.pop(); G.SFX.play('uiBack'); leave(); };
       this.push({ id: 'pylon', el, handle: () => {
         const In = I();
-        if (In.tap('tabL')) { ti = ti === 0 ? 4 : 0; renderTab(); G.SFX.play('ui'); }
+        if (In.tap('tabL')) { ti = ti === 0 ? tabs.findIndex((t) => t[0] === 'relic') : 0; renderTab(); G.SFX.play('ui'); }
         else if (In.tap('tabR')) { if (ti === 0) { this.openGear({ forge: true, onClose: () => { shards(); renderTab(); } }); } else { ti = 0; renderTab(); } G.SFX.play('ui'); }
         else if (In.tap('back')) { G.SFX.play('uiBack'); leave(); }
         else menu.handle();

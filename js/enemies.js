@@ -11,12 +11,12 @@
       const T = TYPES[type]; this.T = T; this.type = type;
       this.x = x; this.y = y; this.vx = 0; this.vy = 0; this.w = T.w; this.h = T.h; this.facing = -1;
       const d = G.game.diff;
-      this.maxHp = Math.round(T.hp * d.hp * ((G.game.dyn && G.game.dyn.hp) || 1)); this.hp = this.maxHp; this.maxBal = T.bal; this.bal = 0; this.balT = 0;
+      this.maxHp = Math.round(T.hp * d.hp * ((G.game.dyn && G.game.dyn.hp) || 1) * G.Abyss.hpMul()); this.hp = this.maxHp; this.maxBal = T.bal; this.bal = 0; this.balT = 0;
       this.state = 'spawn'; this.st = 0; this.t = Math.random() * 10; this.cd = 0.9 + Math.random() * 0.6;
       this.flash = 0; this.atk = null; this.hitsDone = {}; this.tellsDone = {}; this.evDone = {};
       this.fly = !!T.fly; this.boss = !!T.boss; this.elite = !!T.elite; this.enc = opts.enc; this.homeY = y;
       this.pose = null; this.dead = false; this.remove = false; this.showBar = 0; this.tellCol = null; this.tellT = 0;
-      this.speedMul = 1; this.phase = 1;
+      this.speedMul = G.Abyss.speedMul(); this.phase = 1;
       T.init && T.init(this);
     }
     get box() { return { x: this.x - this.w / 2, y: this.y - this.h, w: this.w, h: this.h }; }

@@ -64,11 +64,11 @@
 
   /* ================================ data: speaker, barks, hints, codex ================================ */
   D.speakers.c8_mira = D.speakers.c8_mira || { name: '米菈', en: 'MIRA', color: '#ffd6a0' };
-  D.barks.c8_bossP2 = { who: 'c8_mira', text: '爸爸說，一個人唱歌會怕的時候，就要有人跟著唱……那你要跟好喔。' };
-  D.barks.c8_bossP3 = { who: 'c8_mira', text: '不要過來！只要我一直憋著氣……就不會再有人消失了！' };
+  D.barks.c8_bossP2 = { who: 'c8_mira', text: '爸爸說，一個人唱會怕……就要有人跟著唱。妳要跟好喔。' };
+  D.barks.c8_bossP3 = { who: 'c8_mira', text: '不要過來……只要我一直憋著，就不會再有人消失。' };
   D.barks.c8_bossTaught = { who: 'c8_mira', text: '……下一個音。我想起來了。' };
-  D.barks.c8_bossHush = { who: 'ode', text: '聲音全被她吸走了。凜音——別用耳朵，用眼睛：看地板上的記號。' };
-  D.barks.c8_bossFinale = { who: 'c8_mira', text: '最後一個休止符……拜託，讓世界停在這裡就好。' };
+  D.barks.c8_bossHush = { who: 'ode', text: '……連她的呼吸，都聽不見了。' };
+  D.barks.c8_bossFinale = { who: 'c8_mira', text: '最後一個休止符……拜託，讓世界停在這裡。' };
   D.hints.c8_bossChime = '音樂盒的音符是白光：在音符碰到你的瞬間完美格擋 {guard}，它會飛回她的音樂盒。';
   D.hints.c8_bossTeach = '每一次完美格擋都是一句回答——她的顏色會一點一點回來。湊滿一整句旋律，她會想起下一個音。';
   D.hints.c8_bossSweep = '影子的手是紅光，無法格擋：手掌拍上地板的那一拍，{jump} 跳過它，或 {dodge} 穿過去。';

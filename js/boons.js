@@ -220,11 +220,11 @@
       const tag = cur ? (r > curR ? `${RARITY[r].name}　品質提升` : `Lv ${cur} → ${cur + 1}`) : `${RARITY[r].name}　新 NEW`;
       return { id, kind, def: d, lv: cur ? (r > curR ? cur : cur + 1) : 1, r: rr, tag, col: d.col, rcol: RARITY[rr].col, desc: d.desc(cur ? (r > curR ? cur : cur + 1) : 1, m) };
     },
-    offer(cb) {
+    offer(cb, opts) {
       const s = this.save, owned = Object.keys(DEFS).filter((id) => s[id] && s[id] < DEFS[id].max);
       const count = 3 + ((G.Mirror && G.Mirror.lv('chorus')) || 0);
       let cards;
-      if (owned.length >= 2 && Math.random() < 0.22) {
+      if (owned.length && ((opts && opts.fruit) || (owned.length >= 2 && Math.random() < 0.22))) {
         // 殘響果實: level up one Echo you already have
         const picks = owned.sort(() => Math.random() - 0.5).slice(0, Math.min(count, owned.length));
         cards = picks.map((id) => this.card(id, 'fruit'));

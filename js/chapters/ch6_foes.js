@@ -1419,10 +1419,10 @@
   D.barks = D.barks || {}; D.speakers = D.speakers || {};
   if (!D.speakers.c6_rook) D.speakers.c6_rook = { name: '洛克', en: 'ROOK', color: '#7dffcf' };
   const BK = {
-    c6_shieldHint: { who: 'ode', text: '正面打不穿那面盾。繞到背後，或用重擊把盾撞開。' },
-    c6_hushedWake: { who: 'ode', text: '他醒了——是聲音。放輕腳步，別在他們身邊揮劍。' },
-    c6_hushedSleep: { who: 'ode', text: '……又睡著了。只要夠安靜，他們就不會醒。' },
-    c6_hushedKilled: { who: 'ode', text: '那是市民。……我會記下來的。' },
+    c6_shieldHint: { who: 'ode', text: '那面盾……從正面，是打不穿的。' },
+    c6_hushedWake: { who: 'ode', text: '……他醒了。是聲音。' },
+    c6_hushedSleep: { who: 'ode', text: '……又睡了。' },
+    c6_hushedKilled: { who: 'ode', text: '……那是市民。我會記得。' },
     c6_eliteP2: { who: 'c6_rook', text: '……還有人在睡。我不能倒下。' },
   };
   for (const k in BK) if (!D.barks[k]) D.barks[k] = BK[k];
@@ -1465,6 +1465,6 @@
   for (const c of CODEX) if (!D.codex.hushborn.some((q) => q.id === c.id)) D.codex.hushborn.push(c);
   if (!D.codex.items.some((q) => q.id === 'c6_badge')) D.codex.items.push({
     id: 'c6_badge', name: '守夜者徽章', en: "SENTRY'S BADGE", unlock: 'relic_c6_badge', relic: true,
-    body: ['洛克胸前的第六隊徽章。背面密密麻麻刻滿細小的刻痕——每守過一個人的夜，他就刻一道。', '遺物效果：最大耐力 +25；格擋後以攻擊取回的可回復生命 +50%。'],
+    body: ['洛克胸前的第六隊徽章。背面密密麻麻，刻滿細小的刻痕——每守過一夜，他就刻一道。', '最後一道只刻了一半。', '遺物效果：最大耐力 +25；格擋後以攻擊取回的可回復生命 +50%。'],
   });
 })(window.G);

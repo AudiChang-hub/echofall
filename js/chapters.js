@@ -82,8 +82,11 @@
       const z = L.zoneAt(x); return (z && z.amb) || 'city';
     },
     music(kind) { const m = this.cur && this.cur.music; return (m && m[kind]) || ({ boss: 'boss', boss2: 'boss2', elite: 'duel', rest: 'rest', explore: 'explore' })[kind]; },
-    load(id) {
-      const def = this.byId[id] || this.byId[1];
+    // a chapter's level data (chapter 1 keeps its level in world.js)
+    levelOf(id) { const d = this.byId[id]; return (d && d.level) || (id === 1 ? CH1_LEVEL : null); },
+    load(id) { return this.loadDef(this.byId[id] || this.byId[1]); },
+    // load any chapter-shaped def (the Abyss passes a chapter's look with its own generated arena)
+    loadDef(def) {
       this.cur = def;
       const lv = def.level || {};
       for (const k of LEVEL_KEYS) L[k] = lv[k] !== undefined ? lv[k] : (k === 'gravity' ? 1 : k === 'zones' ? [] : Array.isArray(CH1_LEVEL[k]) ? [] : k === 'encounters' ? {} : CH1_LEVEL[k]);

@@ -143,10 +143,10 @@
   const D = G.DATA;
   D.speakers.c3_mog = D.speakers.c3_mog || { name: '莫格', en: 'MOG', color: '#ff9a4d' };
   Object.assign(D.barks, {
-    c3_eliteP2: { who: 'c3_mog', text: '引信……已經點著了。誰都別想再往下走一步！' },
-    c3_bk_shield: { who: 'ode', text: '晶盾碎了！現在打本體！' },
-    c3_bk_heard: { who: 'ode', text: '牠聽見你了。……下次，腳步放輕一點。' },
-    c3_bk_borer: { who: 'ode', text: '牠鑽進地底了——盯著地面上的晶鰭。' },
+    c3_eliteP2: { who: 'c3_mog', text: '引信……已經點著了。誰都別想再往下。' },
+    c3_bk_shield: { who: 'ode', text: '……碎了。' },
+    c3_bk_heard: { who: 'ode', text: '……牠聽見了。' },
+    c3_bk_borer: { who: 'ode', text: '……在底下。' },
   });
   Object.assign(D.hints, {
     c3_h_carapace: '晶甲蟹的盾從正面打不穿。在鉗擊命中前按 {guard} <b>完美格擋</b> 可以震碎晶盾，或用 {dodge} 繞到牠背後。',
@@ -155,7 +155,7 @@
   });
   D.relics.c3_fuse = { name: '引信', desc: '對菁英與頭目的處決傷害 +50%' };
   const pushCodex = (k, entry) => { D.codex[k] = D.codex[k] || []; if (!D.codex[k].some((q) => q.id === entry.id)) D.codex[k].push(entry); };
-  pushCodex('items', { id: 'c3_fuse', name: '引信', en: 'THE FUSE', unlock: 'relic_c3_fuse', relic: true, body: ['莫格用來引爆最後一批炸藥的引信，末端還留著一點不肯熄滅的火星。', '遺物效果：對菁英與頭目的處決傷害 +50%。'] });
+  pushCodex('items', { id: 'c3_fuse', name: '引信', en: 'THE FUSE', unlock: 'relic_c3_fuse', relic: true, body: ['莫格留下的最後一條引信。末端一點火星，十年不肯熄。', '遺物效果：對菁英與頭目的處決傷害 +50%。'] });
   [
     { id: 'c3_carapace', name: '晶甲蟹', en: 'CARAPACE', tag: '寂裔｜中階・重甲', body: [
       '棲息在共鳴器官化石之間的大型甲殼類。牠把寂靜結晶養成一面塔盾，一輩子扛在身前。',
@@ -164,7 +164,7 @@
     { id: 'c3_echobat', name: '回音蝠', en: 'ECHO BAT', tag: '寂裔｜低階・飛行群聚', body: [
       '沒有眼睛的洞穴蝙蝠，一對碟形巨耳能聽見三條隧道外的心跳。總是三、四隻一起盤旋，輪流出手。',
       '攻擊模式：先發出一圈聲納掃描，再俯衝撲擊（白光）；也會吐出聲波彈（白光，完美格擋可反彈）。',
-      '弱點：俯衝之後會貼著地面滑行一小段，那是砍牠的時機。被擊落後會掉在地上掙扎。', '歐德註：「牠們聽得見你。所以，別說話。……我是在跟我自己說。」'] },
+      '弱點：俯衝之後會貼著地面滑行一小段，那是砍牠的時機。被擊落後會掉在地上掙扎。', '鑽井營的礦工說，牠們在黑暗裡聽的不是獵物，是自己的回音。'] },
     { id: 'c3_listener', name: '深聽者', en: 'DEEP LISTENER', tag: '寂裔｜中階・潛伏', body: [
       '高瘦、沒有眼睛的東西。頭顱後方張著兩片巨大的耳扇，一動也不動地站在黑暗裡「聽」。',
       '牠靠聲音狩獵：奔跑、攻擊、翻滾都會被聽見——耳扇越亮，代表牠聽得越清楚。停下腳步，聲音會慢慢散去。',
@@ -177,7 +177,7 @@
     { id: 'c3_elite', name: '爆破手・莫格', en: 'MOG THE SAPPER', tag: '菁英｜第三降臨隊爆破手', body: [
       '第三降臨隊的爆破專家。隊伍在斷層深處失聯後，他仍然守著最後一批炸藥——和一條他不肯讓任何人通過的隧道。',
       '攻擊模式：十字鎬二連擊（白光）／高舉後停頓的延遲重劈（白光，別太早格擋）／低掃（白光）／投擲晶體炸藥（落地後紅圈，離開範圍）／重鎬砸地，晶刺沿地面竄出（紅光）。',
-      '半血之後，背包裡的晶體炸藥全數覺醒：一次投出三枚，並會接上更長的連擊。', '「我把隧道炸塌，是為了讓上面的人活下來。……你們為什麼還要下來？」'] },
+      '半血之後，背包裡的晶體炸藥全數覺醒：一次投出三枚，並會接上更長的連擊。', '「我把隧道炸塌，是為了讓上面的人活下來。……為什麼，還要下來？」'] },
   ].forEach((c) => pushCodex('hushborn', Object.assign({ portrait: c.id, unlock: 'seen_' + c.id }, c)));
 
   /* =========================== 晶甲蟹 CARAPACE =========================== */

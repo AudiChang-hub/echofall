@@ -2249,8 +2249,8 @@
   /* ================================ data: codex, relic, barks, hint ================================ */
   const pushOnce = (arr, en) => { if (arr && !arr.some((q) => q.id === en.id)) arr.push(en); };
   D.barks = D.barks || {}; D.hints = D.hints || {}; D.dialog = D.dialog || {}; D.relics = D.relics || {};
-  D.barks.c8_eliteKneel = { who: 'ode', text: '旗手倒下了——不，他跪在旗下。只要另外兩個還站著，那面旗就不會倒。' };
-  D.barks.c8_eliteAlone = { who: 'ode', text: '只剩旗手了。……他的旗子在發抖。' };
+  D.barks.c8_eliteKneel = { who: 'ode', text: '……他跪在旗下。旗，不肯倒。' };
+  D.barks.c8_eliteAlone = { who: 'ode', text: '只剩旗手了。……他的旗在發抖。' };
   D.hints.c8_cling = '噤聲童影抱住你時會吸走耐力、拖慢腳步——按 {dodge} 閃避，把牠們全部甩下來。';
   // the chapter's world file owns these; they are only a safety net (its register() overwrites them)
   if (!D.dialog.c8_eliteIntro) D.dialog.c8_eliteIntro = [
@@ -2260,13 +2260,13 @@
   ];
   if (!D.dialog.c8_eliteDefeat) D.dialog.c8_eliteDefeat = [
     { who: 'rinne', text: '第一降臨隊……任務結束。' },
-    { who: 'ode', text: '旗子留下來了。我想，他們是要你帶著它走完剩下的路。' },
+    { who: 'ode', text: '……旗留下了。' },
   ];
   D.relics.c8_banner = D.relics.c8_banner || { name: '第一降臨隊的軍旗', desc: '最大生命 +25、最大耐力 +15' };
   G.Relics.c8_banner = G.Relics.c8_banner || { apply(P) { P.maxHp += 25; P.maxSta += 15; } };
   pushOnce(D.codex.items, {
     id: 'c8_banner', name: '第一降臨隊的軍旗', en: "THE FIRST DESCENT'S BANNER", unlock: 'relic_c8_banner', relic: true,
-    body: ['第一降臨隊的隊旗。象牙色的布上繡著緋紅的冠冕與五線譜——她的顏色。它在休止之所裡飄了二十年，終於可以放下了。', '遺物效果：最大生命 +25、最大耐力 +15。'],
+    body: ['第一降臨隊的隊旗。象牙色的布上繡著緋紅的冠冕與五線譜——她的顏色。', '它在甲板上飄了二十年，等一個不會回來的人。如今，終於可以放下了。', '遺物效果：最大生命 +25、最大耐力 +15。'],
   });
   const HB = D.codex.hushborn;
   pushOnce(HB, {

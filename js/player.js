@@ -44,7 +44,7 @@
       this.maxSta = 100 + 20 * (up.tempo || 0);
       this.parryWin = this.game.diff.parry + 0.025 * (up.still || 0) + (rel.includes('hushbell') ? 0.04 : 0);
       this.resMul = (1 + 0.3 * (up.echo || 0)) * (G.Boons ? G.Boons.resMul() : 1);
-      this.maxTonic = 3 + (up.tonic || 0) + (rel.includes('blessing') ? 1 : 0);
+      this.maxTonic = Math.max(0, 3 + (up.tonic || 0) + (rel.includes('blessing') ? 1 : 0) - G.Abyss.tonicMinus());
       this.rallyMul = rel.includes('dawnstring') ? 2 : 1;
       // relics added by chapters: G.Relics[id].apply(player) adjusts these same fields
       for (const id of rel) if (G.Relics && G.Relics[id] && G.Relics[id].apply) G.Relics[id].apply(this);
@@ -503,6 +503,7 @@
     receiveHit(src, info) {
       const g = this.game;
       if (this.state === 'dead' || this.state === 'execute' || this.state === 'rest' || this.state === 'cine') return 'ignored';
+      if (G.Abyss.active) info = Object.assign({}, info, { dmg: info.dmg * G.Abyss.dmgMul() });
       const fromX = info.waveFrom ?? (src && src.x != null ? src.x : info.hx);
       const front = (fromX - this.x) * this.facing >= -12;
       if (this.iframes > 0) {
@@ -517,7 +518,11 @@
         if (since <= this.parryWin + (this.assist ? 0.06 : 0) + (g.tutBonus || 0)) { this.perfectParry(src, info); return 'parried'; }
         this.block(src, info); return 'blocked';
       }
+      const hp0 = this.hp;
       this.takeDamage(info.dmg * g.diff.dmg * (this.dmgTaken || 1) * ((g.dyn && g.dyn.dmg) || 1) * G.Boons.dmgTakenMul(this), src, info);
+      // 苦難契約・脆弱: every wound also tears at what is already missing
+      const fr = G.Abyss.active && G.Abyss.pact().frail;
+      if (fr && this.hp > 1 && this.hp < hp0) this.hp = Math.max(1, this.hp - (this.maxHp - this.hp) * 0.1 * fr);
       return 'hit';
     }
     perfectParry(src, info) {

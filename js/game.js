@@ -4,7 +4,7 @@
   const U = G.U, L = G.LEVEL, PI = Math.PI, TAU = PI * 2;
   const VIEW_H = 640;
 
-  const FREEZE = new Set(['pylon', 'gear', 'build', 'travel', 'trade', 'codex', 'savecode', 'settings', 'controls', 'note', 'relic', 'boon', 'choice', 'pause']);
+  const FREEZE = new Set(['pylon', 'gear', 'build', 'travel', 'trade', 'codex', 'savecode', 'settings', 'controls', 'note', 'relic', 'boon', 'choice', 'pause', 'abyss', 'abyssEnd']);
   const DEFAULT_SETTINGS = { master: 0.8, music: 0.6, sfx: 0.85, shake: 1, flashes: true, hints: true, textSpeed: 1, touchAssist: true, fps: 'auto' };
 
   const Game = G.game = {
@@ -67,6 +67,7 @@
     /* ------------------------------ flow ------------------------------ */
     hasSave() { const s = G.Store.get('save', null); return !!(s && s.v === 1 && (s.checkpoint || (s.chapter || 1) > 1)); },
     newGame(diffKey) {
+      G.Abyss.active = false; G.Abyss.run = null;
       G.Chapters.load(1);
       this.save = this.defaultSave(diffKey); G.Mirror.st(this.save); this.save.mirrorInit = true;
       this.diff = G.DATA.difficulty[diffKey]; this.stats = this.save.stats;
@@ -104,6 +105,7 @@
         return;
       }
       this.save = Object.assign(this.defaultSave(s.diff), s); G.Mirror.migrate(this.save);
+      if (this.save.abyssRun || G.Abyss.active) G.Abyss.recover(this.save);
       this.diff = G.DATA.difficulty[this.save.diff] || G.DATA.difficulty.normal; this.stats = this.save.stats;
       G.Chapters.load(this.save.chapter || 1);
       this.player = new G.Player(this);
@@ -460,6 +462,7 @@
         G.UI.bossBar(null); this.bossRef = null;
         this.slowmo(1.2, 0.3);
         const T = e.T;
+        if (G.Abyss.active) return;
         this.save.flags['elite_' + e.type] = true;
         setTimeout(() => {
           if (G.Chapters.hook('eliteDefeated', this, e) === true) return;
@@ -476,6 +479,7 @@
         this.lootVacuum = true;   // whatever dropped flies to Rinne before the chapter moves on (js/gear.js)
         const t0 = performance.now();
         const waitLoot = (fn) => (this.pickups.some((p) => p.kind === 'loot') && performance.now() - t0 < 9000 ? setTimeout(() => waitLoot(fn), 250) : fn());
+        if (G.Abyss.active) { setTimeout(() => waitLoot(() => { this.control = true; this.lootVacuum = false; }), 2200); return; }
         setTimeout(() => waitLoot(() => {
           const ch = G.Chapters.cur;
           this.save.flags['boss_' + ch.id] = true; if (ch.id === 1) this.save.flags.boss_dead = true;
@@ -544,6 +548,7 @@
       for (const it of L.items) if (!F[it.flag]) list.push({ kind: 'item', x: it.x, y: it.y, ref: it, label: '拾取' });
       for (const n of L.npcs) list.push({ kind: 'npc', x: n.x, y: n.y, ref: n, label: '交談' });
       for (const g of G.Props.gates) if (!g.open) list.push({ kind: 'gate', x: g.x - 50, y: g.y, ref: g, label: '進入王房' });
+      for (const d of G.Abyss.doorNear(this)) list.push(d);
       return list;
     },
     updInteract() {
@@ -566,6 +571,7 @@
       const F = this.save.flags, P = this.player;
       if (G.Chapters.hook('interact', this, it) === true) return;
       if (it.kind === 'gate') { G.Props.openGate(this, it.ref); return; }
+      if (it.kind === 'door') { G.Abyss.go(this, it.ref); return; }
       if (it.kind === 'pylon') this.restAt(it.ref);
       else if (it.kind === 'note') {
         F['note_' + it.ref.id] = true; if (it.ref.id === 'n3') F.note_mira = true; if (it.ref.flag) F[it.ref.flag] = true;
@@ -629,7 +635,8 @@
     // and scale the Hushborn's health and damage to match - stronger builds meet tougher foes, struggling ones get a little slack
     dynScale() {
       const P = this.player, ch = (G.Chapters.cur && G.Chapters.cur.id) || 1;
-      if (!P || ch < 3) return { hp: 1, dmg: 1 };
+      // the Abyss always measures Rinne against the biome she is in, so early biomes still bite a late-game build
+      if (!P || (ch < 3 && !G.Abyss.active)) return { hp: 1, dmg: 1 };
       const EXP_OFF = [1, 1, 1.25, 1.5, 1.75, 2.0, 2.3, 2.6, 2.9], EXP_EHP = [100, 100, 120, 140, 160, 180, 200, 220, 240];
       const echoes = Object.values(this.save.boons || {}).reduce((a, b) => a + b, 0);
       const spd = P.gear ? P.gear.speed * (1 + (P.gear.spd || 0)) : 1;
@@ -654,6 +661,7 @@
     },
     onPlayerDeath() {
       this.control = false; this.stats.deaths++;
+      if (G.Abyss.active) { this.slowmo(1.5, 0.3); G.Music.play(null); setTimeout(() => G.Abyss.end(this, false), 2200); return; }
       if (this.save.shards > 0) this.save.drop = { x: this.player.x, y: this.player.y, amt: this.save.shards };
       else this.save.drop = null;
       this.save.shards = 0;

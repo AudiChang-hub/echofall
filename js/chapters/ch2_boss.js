@@ -910,7 +910,7 @@
   /* ------------------------------------------------------------------ data -------------------------------------- */
   const D = G.DATA;
   D.speakers.c2_calla = D.speakers.c2_calla || { name: '卡菈修女', en: 'SISTER CALLA', color: '#9fe6ff' };
-  D.barks.c2_bossP2 = D.barks.c2_bossP2 || { who: 'c2_calla', text: '（鐘聲裡傳出她的聲音）……沒關係。這口鐘，會替我把讚歌唱完。' };
+  D.barks.c2_bossP2 = D.barks.c2_bossP2 || { who: 'c2_calla', text: '（鐘聲裡，有她的聲音。）……沒關係。這口鐘……會替我唱完。' };
   if (!D.codex.hushborn.some((c) => c.id === 'c2_boss')) {
     D.codex.hushborn.push({
       id: 'c2_boss', name: '失聲者・卡菈修女', en: 'SISTER CALLA, THE TONGUELESS BELL', portrait: 'c2_boss', unlock: 'seen_c2_boss',

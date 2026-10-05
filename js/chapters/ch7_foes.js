@@ -1813,7 +1813,7 @@
 
   /* ================================ data: codex, relic, barks ================================ */
   const pushOnce = (arr, en) => { if (!arr.some((q) => q.id === en.id)) arr.push(en); };
-  D.barks.c7_eliteP2 = { who: 'graves', text: '……很好。那就把這支舞跳完吧——第二樂章。' };
+  D.barks.c7_eliteP2 = { who: 'graves', text: '……很好。第二樂章。' };
   // the chapter's world file owns these; they are only a safety net (its register() overwrites them)
   if (!D.dialog.c7_eliteIntro) D.dialog.c7_eliteIntro = [{ who: 'graves', text: '方舟的劍。……不，現在是你的劍了。' }, { who: 'graves', text: '來吧。讓我聽聽，這首歌你唱到哪裡了。' }];
   if (!D.dialog.c7_eliteDefeat) D.dialog.c7_eliteDefeat = [{ who: 'graves', text: '……好劍。這一次，換你帶著它走。' }, { who: 'graves', text: '替我把歌唱完。我會在休止符裡聽。' }];
@@ -1834,7 +1834,7 @@
   };
   pushOnce(D.codex.items, {
     id: 'c7_oath', name: '斷弦之誓', en: 'OATH OF THE BROKEN STRING', unlock: 'relic_c7_oath', relic: true,
-    body: ['葛雷夫留在休止之所裡的誓言。第一次，他要人斬斷它；這一次，他只要你帶著它往前走。', '遺物效果：生命高於 70% 時，劍擊傷害 +15%。'],
+    body: ['葛雷夫留在休止之所裡的誓言。第一次，他求人斬斷它；這一次，他只求你帶著它往前走。', '斷過一次的弦，再也不會在同一處斷。', '遺物效果：生命高於 70% 時，劍擊傷害 +15%。'],
   });
   const HB = D.codex.hushborn;
   pushOnce(HB, {

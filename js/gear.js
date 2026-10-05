@@ -397,7 +397,7 @@
     /* ---------------------------------------------------------------- drops */
     onEnemyDeath(game, e) {
       const sv = game.save; G_.ensure(sv);
-      const ch = (G.Chapters.cur && G.Chapters.cur.id) || 1;
+      const ch = G.Abyss.lootCh();
       const tot = G_.totals(sv), bonus = (tot.drop || 0) + 0.2 * G.Mirror.lv('fortune');
       const drops = [];
       if (e.boss) {

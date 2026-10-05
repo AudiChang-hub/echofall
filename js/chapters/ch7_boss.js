@@ -43,9 +43,9 @@
   D.speakers = D.speakers || {};
   if (!D.speakers.vega) D.speakers.vega = { name: '艾蓮・薇格', en: 'ELAINE VEGA', color: '#ffffff' };
   Object.assign(D.barks, {
-    c7_bossP2: { who: 'vega', text: '……凜音。原來是你。——那就別留手。我也不會。' },
+    c7_bossP2: { who: 'vega', text: '……這把刀，我認得。——別留手。我也不會。' },
     c7_vegaLine1: { who: 'vega', text: '站穩。呼吸。你的刀比你的心快半拍。' },
-    c7_vegaLine2: { who: 'vega', text: '別看刀，看肩膀。人出手之前，肩膀會先說話。' },
+    c7_vegaLine2: { who: 'vega', text: '別看刀，看肩膀。出手之前，肩膀會先說話。' },
     c7_vegaLine3: { who: 'vega', text: '會怕就對了。怕，代表你還想活下去。' },
     c7_vegaLine4: { who: 'vega', text: '最後一課，凜音——不是贏。是往前走。' },
     c7_vegaParry: { who: 'vega', text: '太急了。' },

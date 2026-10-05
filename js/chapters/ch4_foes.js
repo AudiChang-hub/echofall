@@ -1364,7 +1364,7 @@
   const D = G.DATA;
   D.relics.c4_rosin = D.relics.c4_rosin || { name: '松香', desc: '攻擊速度 +12%' };
   D.speakers.c4_valentin = D.speakers.c4_valentin || { name: '瓦倫丁', en: 'VALENTIN', color: '#ff7a8f' };
-  D.barks.c4_eliteP2 = D.barks.c4_eliteP2 || { who: 'c4_valentin', text: '……弦，調好了。第二樂章——請別離席。' };
+  D.barks.c4_eliteP2 = D.barks.c4_eliteP2 || { who: 'c4_valentin', text: '……弦，調好了。第二樂章。請別離席。' };
   const addCodex = (k, e) => { D.codex[k] = D.codex[k] || []; if (!D.codex[k].some((q) => q.id === e.id)) D.codex[k].push(e); };
   addCodex('items', { id: 'c4_rosin', name: '松香', en: 'ROSIN', unlock: 'relic_c4_rosin', relic: true, body: ['瓦倫丁琴盒裡最後一塊松香，琥珀色，摸起來還有點溫度。他說過：弓毛沒有松香，就只是一束安靜的馬尾。', '遺物效果：攻擊速度 +12%。'] });
   [

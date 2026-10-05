@@ -1471,13 +1471,12 @@
 
   /* =========================== data: bark, codex, portrait =========================== */
   D.speakers.c3_hadal = D.speakers.c3_hadal || { name: '哈德爾', en: 'HADAL', color: '#ffb35c' };
-  D.barks.c3_bossP2 = { who: 'c3_hadal', text: '聽見了嗎？鑽頭在唱歌……再深一點——就能鑽穿這片寂靜！' };
+  D.barks.c3_bossP2 = { who: 'c3_hadal', text: '聽見了嗎……鑽頭在唱歌。再深一點……再深一點……' };
   // fallbacks only — the chapter file (ch3.js) registers after this one and its own lines replace these
   if (!D.dialog.c3_bossDefeat) {
     D.dialog.c3_bossDefeat = [
-      { who: 'c3_hadal', text: '……鑽頭……停了。好安靜。' },
-      { who: 'c3_hadal', text: '二十年前，她就站在這裡……她說，休止不是終點，是換氣。' },
-      { who: 'ode', text: '他的引擎熄了。凜音，上面有光——我們可以爬出去。' },
+      { who: 'c3_hadal', text: '……鑽頭……停了。' },
+      { who: 'c3_hadal', text: '原來……它不是沉默。是在換氣。' },
     ];
   }
   if (!D.codex.hushborn.some((c) => c.id === 'c3_boss')) {
@@ -1485,11 +1484,11 @@
       id: 'c3_boss', name: '鑽井王・哈德爾', en: 'HADAL, THE BORE-KING', portrait: 'c3_boss', unlock: 'seen_c3_boss',
       tag: '頭目｜失聲者・斷層之井',
       body: [
-        '第三降臨隊隊長。十年前，他帶著整支鑽井隊向下挖，想找到寂靜的源頭——最後把自己焊進了鑽井履帶車的駕駛座，再也沒有出來。',
+        '第三降臨隊隊長。十年前帶著鑽井隊向下挖，要找寂靜的源頭。隊員一個個沉默之後，他把自己焊進鑽井履帶車的駕駛座，再也沒有出來。',
         '第一樂章：鑽臂兩連掃（白光）、鑽頭突進（紅光——突進後鑽頭會卡進地面，是反擊的好時機）、鐵爪三連搥（白光，第三下會停頓一拍）、鐵爪擒拿（紅光）、近身車體衝撞（白光）、天井落石。',
         '第二樂章：鑽頭化為寂晶。潛地突襲（地面裂光——紅色，閃開）、螺旋晶雨（白光，完美格擋可以把晶片彈回去）、地脈裂晶（紅色，跳過去）。',
         '弱點：履帶車轉身很慢，繞到背後就能痛擊——但別待太久，排氣管會噴出滾燙的蒸氣（紅光）。',
-        '歐德註：「三連搥的節奏是『噹、噹——……噹』。數拍子。我會幫你數。」',
+        '操控台上焊著一行字：「只要鑽頭還在轉，寂靜就不會贏。」',
       ],
     });
   }
