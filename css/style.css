@@ -1139,3 +1139,12 @@ html.touch .loot-card { padding: 6px 9px; }
 .cs-range .rg i.on { background: var(--cc); box-shadow: 0 0 6px var(--cc); }
 .cs-range b { font: 600 11px/1 var(--sans); color: var(--cc); }
 @media (max-width: 760px), (max-height: 480px) { .cs-range em { display: none; } .cs-range .rg i { width: 9px; } }
+
+/* pause button: the mouse can always stop the game (Esc is often eaten by fullscreen / an embedding page) */
+.hud-pause { position: absolute; right: 100%; top: -4px; margin-right: 22px; display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 10px 0 9px; pointer-events: auto; cursor: pointer; border: 1px solid rgba(239,233,223,.22); border-radius: 15px; background: rgba(8,7,12,.5); color: rgba(239,233,223,.82); font: 500 11px/1 var(--sans); letter-spacing: .22em; white-space: nowrap; transition: border-color .25s, background .25s, color .25s; touch-action: manipulation; }
+.hud-pause i { width: 9px; height: 11px; border-left: 3px solid currentColor; border-right: 3px solid currentColor; box-sizing: border-box; }
+.hud-pause kbd { min-width: 0; height: auto; font: 600 10px/1 var(--mono); letter-spacing: .05em; padding: 3px 5px; border: 1px solid rgba(239,233,223,.35); border-radius: 4px; background: transparent; color: rgba(239,233,223,.85); }
+.hud-pause:hover, .hud-pause:focus-visible { border-color: rgba(127,244,255,.7); background: rgba(12,20,26,.75); color: #e8fdff; outline: none; }
+html.touch .hud-pause { display: none; }
+#hud.cine .hud-pause { pointer-events: none; }
+#hud:not(.show) .hud-pause { pointer-events: none; }

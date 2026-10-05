@@ -128,7 +128,7 @@ window.G = window.G || {};
   };
   const GLYPH_KB = {
     move: 'A / D', left: 'A', right: 'D', jump: 'Space', light: 'J', dodge: 'L', guard: 'K', skill: 'U',
-    heal: 'F', interact: 'E', pause: 'Esc', confirm: 'Enter', back: 'Esc', tabL: 'Q', tabR: 'E',
+    heal: 'F', interact: 'E', pause: 'P', confirm: 'Enter', back: 'Esc', tabL: 'Q', tabR: 'E',
     menuUp: '↑', menuDown: '↓', menuLeft: '←', menuRight: '→',
   };
   const GLYPH_PAD = {

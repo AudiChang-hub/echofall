@@ -3,8 +3,9 @@
    districts that both come out beyond the rubble. 險路 is the fighting road (more fights, an elite, rare gear);
    幽徑 is the searching road (climbs, hidden chests, smithing stones, a letter). Pick either: no tokens to collect,
    no backtracking. Once a road is walked the rubble stays open, and both doors stay for anyone who wants to farm.
-   Districts are built from modules (steps, ledges, ditches, arenas, an elite hall, a shrine) seeded per chapter,
-   so each chapter's two roads always have the same shape. They use the chapter's own art, foes and gravity. */
+   Districts are built from a library of modules (terraces, pits, broken bridges, standing stones, two-storey halls,
+   a climbing tower, ledges, ditches, arenas, an elite hall, a shrine) drawn and ordered by a seed per chapter and road,
+   so no two roads share a shape, yet each road always keeps its own. A landmark fills each road's sky (js/landmarks.js). They use the chapter's own art, foes and gravity. */
 (function (G) {
   const U = G.U, D = G.DATA;
 
@@ -147,18 +148,77 @@
       const floor = (x0, w, y = fy) => solids.push({ x: x0, y, w, h: fy + 900 - y, kind: K });
       const lore = LORE[ch][road];
       const chest = (cx, cy, key, label, take) => items.push({ id: id(key), x: cx, y: cy, flag: `${id(key)}_got`, name: label, kind: 'key', sfx: 'pickup', chest: true, onTake: take });
+      const pick = (arr) => arr[Math.floor(r() * arr.length)];
+      const shuffle = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+      const eid = () => id('e' + Object.keys(encounters).length);
+      const flyers = pool.filter((k) => T[k].fly);
       const M = {
         entry() { floor(x, 600); x += 600; },
+        // a flat killing floor, walls up
         arena(n) {
-          const w = 1150; floor(x, w);
-          encounters[id('e' + Object.keys(encounters).length)] = { trigger: x + 220, arena: [x + 40, x + w - 40], respawn: true, wallBottom: fy + 40, waves: [wave(n, x + 520, x + w - 140), wave(Math.max(2, n - 1), x + 300, x + w - 140)] };
+          const w = 1050 + Math.floor(r() * 250); floor(x, w);
+          encounters[eid()] = { trigger: x + 220, arena: [x + 40, x + w - 40], respawn: true, wallBottom: fy + 40, waves: [wave(n, x + 520, x + w - 140), wave(Math.max(2, n - 1), x + 300, x + w - 140)] };
           x += w;
         },
+        // up and over a hump
         steps() {
-          const h1 = 95, h2 = 190;
+          const h1 = 85 + Math.floor(r() * 20), h2 = h1 * 2;
           floor(x, 180); floor(x + 180, 240, fy - h1); floor(x + 420, 380, fy - h2); floor(x + 800, 240, fy - h1); floor(x + 1040, 160);
           if (r() < 0.6) oneways.push({ x: x + 520, y: fy - h2 - 150, w: 180 });
           x += 1200;
+        },
+        // three rising terraces; the foes hold the top one and you fight your way uphill (no walls)
+        terraces(n) {
+          const rise = 95 + Math.floor(r() * 25), tw = 330 + Math.floor(r() * 90);
+          floor(x, 220);
+          for (let i = 1; i <= 3; i++) floor(x + 220 + (i - 1) * tw, tw, fy - rise * i);
+          const t0 = x + 220 + 2 * tw, e = x + 220 + 3 * tw;
+          floor(e, 220, fy - rise * 2); floor(e + 220, 220, fy - rise); floor(e + 440, 200);
+          encounters[eid()] = { trigger: x + 160, respawn: true, waves: [wave(n, t0 + 60, t0 + tw - 60, fy - rise * 3)] };
+          x = e + 640;
+        },
+        // a pit: drop into a walled chamber below, fight, climb out on the far side
+        pit(n) {
+          const d = 300, w = 720;
+          floor(x, 220); floor(x + 220, w - 10, fy + d);
+          floor(x + 210 + w, 130, fy + d - 100); floor(x + 340 + w, 130, fy + d - 200); floor(x + 470 + w, 220);
+          encounters[eid()] = { trigger: x + 250, yMin: fy + 60, arena: [x + 230, x + 200 + w], respawn: true, wallBottom: fy + d + 40, waves: [wave(n, x + 420, x + 140 + w, fy + d), wave(Math.max(2, n - 1), x + 300, x + 140 + w, fy + d)] };
+          x += 690 + w;
+        },
+        // a broken bridge of planks over a drop; flyers come at you mid-crossing (a fall only costs the climb back)
+        bridge(n) {
+          const span = 900 + Math.floor(r() * 160), d = 340;
+          floor(x, 260); floor(x + 260, span, fy + d); floor(x + 260 + span, 280);
+          for (let px = x + 300; px < x + 260 + span - 150; px += 230 + Math.floor(r() * 40)) oneways.push({ x: px, y: fy - Math.floor(r() * 3) * 30, w: 110 + Math.floor(r() * 30) });
+          oneways.push({ x: x + 260 + span - 260, y: fy + d - 150, w: 150 }, { x: x + 260 + span - 120, y: fy + d - 300, w: 110 });
+          const air = flyers.length ? Array.from({ length: n }, (_, i) => ({ t: pick(flyers), x: Math.round(x + 400 + (span - 200) * (i + 0.5) / n), y: -240 })) : wave(n, x + 400, x + span, fy + d);
+          encounters[eid()] = { trigger: x + 200, respawn: true, waves: [air] };
+          x += 540 + span;
+        },
+        // a hall of standing stones to vault between
+        pillars(n) {
+          const w = 1250;
+          floor(x, 260); floor(x + 260, 90, fy - 150); floor(x + 350, 290); floor(x + 640, 110, fy - 210); floor(x + 750, 250); floor(x + 1000, 90, fy - 150); floor(x + 1090, 160);
+          oneways.push({ x: x + 530, y: fy - 105, w: 90 }, { x: x + 770, y: fy - 105, w: 90 });
+          encounters[eid()] = { trigger: x + 200, arena: [x + 40, x + w - 40], respawn: true, wallBottom: fy + 40, waves: [wave(n, x + 420, x + w - 120)] };
+          x += w;
+        },
+        // two storeys: the floor and a long upper walkway, foes on both
+        split(n) {
+          const w = 1250; floor(x, w);
+          oneways.push({ x: x + 60, y: fy - 90, w: 110 }, { x: x + 200, y: fy - 180, w: 880 });
+          const up = Math.ceil(n / 2);
+          encounters[eid()] = { trigger: x + 220, arena: [x + 40, x + w - 40], respawn: true, wallBottom: fy + 40, waves: [wave(up, x + 500, x + 1000, fy - 180).concat(wave(n - up + 1, x + 450, x + w - 140))] };
+          x += w;
+        },
+        // a shaft of zig-zag ledges up to a roof: something waits up there, beside a chest
+        tower(n, key, reward, locked) {
+          const w = 760; floor(x, w);
+          for (let k = 1; k <= 4; k++) oneways.push({ x: x + (k % 2 ? 120 : 400), y: fy - 150 * k, w: 200 });
+          const top = fy - 750; oneways.push({ x: x + 140, y: top, w: 480 });
+          chest(x + 560, top, key, '塔頂的箱子', reward); if (locked) items[items.length - 1].locked = true;
+          encounters[eid()] = { trigger: x + 60, yMax: top + 20, respawn: true, echo: false, waves: [wave(n, x + 260, x + 520, top)] };
+          x += w;
         },
         // a dungeon-master event: a lone shrine lit in the dark (js/events.js)
         event() {
@@ -176,9 +236,9 @@
         },
         ditch(n) {
           const w = 1300, d = 210;
-          floor(x, 300); floor(x + 300, 700, fy + d); floor(x + 860, 140, fy + d - 105); floor(x + 1000, 300);
+          floor(x, 300); floor(x + 300, 560, fy + d); floor(x + 860, 140, fy + d - 105); floor(x + 1000, 300);
           oneways.push({ x: x + 420, y: fy - 40, w: 160 }, { x: x + 640, y: fy - 40, w: 160 });
-          encounters[id('e' + Object.keys(encounters).length)] = { trigger: x + 380, arena: [x + 310, x + 990], respawn: true, wallBottom: fy + d + 40, waves: [wave(n, x + 520, x + 940, fy + d)] };
+          encounters[eid()] = { trigger: x + 380, arena: [x + 310, x + 990], respawn: true, wallBottom: fy + d + 40, waves: [wave(n, x + 520, x + 840, fy + d)] };
           x += w;
         },
         elite() {
@@ -198,13 +258,25 @@
       const sv = game.save, gearAt = (tier) => (g) => G.Gear.spawnLoot(g, { cx: g.player.x + 60, cy: g.player.y - 80, y: g.player.y }, G.Gear.roll(ch, tier, 0.1), 0, 1);
       const stones = (n) => (g) => { sv.stones = (sv.stones || 0) + n; g.toast(`鍛造石　+${n}`, 'item'); };
       const crystals = (n) => () => G.Mirror.gain(n, '寶箱');
+      // each chapter and road draws its own order from the module set (seeded: the same road always keeps its shape)
+      const seq = [];
       M.entry();
       if (road === 'a') {
-        M.arena(3); M.steps(); M.event(); M.ditch(3); M.arena(4); M.elite();
+        const fights = shuffle(['arena', 'pit', 'bridge', 'pillars', 'split', 'terraces']).slice(0, 4);
+        fights.splice(1 + Math.floor(r() * 3), 0, 'event');
+        fights.splice(1 + Math.floor(r() * (fights.length - 1)), 0, pick(['steps', 'ditch']));
+        for (const m of fights) { seq.push(m); m === 'event' || m === 'steps' ? M[m]() : M[m](3 + Math.floor(r() * 2)); }
+        seq.push('elite'); M.elite();
         M.shrine((g) => { gearAt(2)(g); crystals(15)(g); });
       } else {
-        M.steps(); M.ledge('c1', (g) => { stones(2)(g); sv.shards += 120; g.toast('殘響碎片　+120', 'good'); });
-        M.arena(3); M.event(); M.ditch(2); M.ledge('c2', crystals(12), true); M.arena(3);
+        const order = shuffle(['ledge', 'tower', 'event', pick(['terraces', 'bridge']), pick(['pit', 'split', 'ditch']), pick(['arena', 'pillars']), 'steps']);
+        for (const m of order) {
+          seq.push(m);
+          if (m === 'ledge') M.ledge('c1', (g) => { stones(2)(g); sv.shards += 120; g.toast('殘響碎片　+120', 'good'); });
+          else if (m === 'tower') M.tower(2, 'c2', crystals(12), true);
+          else if (m === 'event' || m === 'steps') M[m]();
+          else M[m](2 + Math.floor(r() * 2));
+        }
         M.shrine((g) => { gearAt(1)(g); stones(2)(g); });
       }
       const x1 = x;
@@ -223,6 +295,7 @@
         zones: [{ x: -1e9, name: lore[0], en: lore[1], tint: z0.tint || 0, music: z0.music || (base.music && base.music.explore) || 'explore', amb: z0.amb }],
         tintAt: () => tint,
       };
+      const sky = G.Landmarks.plan(ch, ch * 10 + (road === 'b' ? 5 : 0), ch + (road === 'b' ? 2 : 0));
       const bh = base.hooks || {};
       const safe = (fn) => (fn ? function () { try { return fn.apply(this, arguments); } catch (e) { return undefined; } } : undefined);
       const def = Object.assign(Object.create(base), {
@@ -231,10 +304,12 @@
         bg: base.bg ? Object.assign({}, base.bg, { props: () => [] }) : base.bg,
         // sky and weather only: the chapter's set pieces (stations, houses, cars) are pinned to its own terrain
         hooks: { drawSky: safe(bh.drawSky), drawAtmos: safe(bh.drawAtmos),
+          // the road's own skyline: a great silhouette on the horizon, ruins passing before it (js/landmarks.js)
+          afterLayer: safe((k, ctx, cam, W, H, S, time) => G.Landmarks.draw(k, ctx, cam, W, H, S, time, sky, ox, x1 - ox, fy)),
           drawFront: (ctx, g) => R.drawExit(ctx, g) },
       });
       G.Chapters.loadDef(def);
-      this.active = { ch, road, f };
+      this.active = { ch, road, f, seq };
       game.resetWorld();
       const P = game.player;
       P.reset(level.start.x, fy); P.vx = 0;

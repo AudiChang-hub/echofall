@@ -462,6 +462,94 @@
     return pts;
   }
 
+
+  /* -------- chapter 1's districts: the old harbour (cranes, masts, warehouses) and the funeral avenue (banners) -------- */
+  const HARBOUR = 2700, AVENUE = 6400;
+  // mid layer: a dock crane, a moored ship's masts, or a long warehouse (all drawn on a baseline at `base`)
+  function harbourMid(g, rr, x, base, w, h, C, kind) {
+    g.fillStyle = C.body; g.strokeStyle = C.body;
+    if (kind === 0) {
+      const tw = Math.max(24, w * 0.3), th = h * 1.15, jl = 150 + rr() * 110, top = base - th;
+      g.fillRect(x, top, tw, th + 600);
+      g.fillStyle = C.dark;
+      for (let y = top + 8; y < base; y += 24) { g.beginPath(); g.moveTo(x + 3, y); g.lineTo(x + tw - 3, y + 18); g.lineTo(x + tw - 3, y + 21); g.lineTo(x + 3, y + 3); g.fill(); }
+      g.fillStyle = C.body; g.fillRect(x - 40, top - 12, tw + 40 + jl, 10); g.fillRect(x + tw / 2 - 3, top - 64, 6, 54);
+      g.lineWidth = 2; g.beginPath(); g.moveTo(x + tw / 2, top - 62); g.lineTo(x - 40, top - 8); g.moveTo(x + tw / 2, top - 62); g.lineTo(x + tw + jl, top - 8); g.stroke();
+      const hy = top + 70 + rr() * 90; g.lineWidth = 1.5; g.beginPath(); g.moveTo(x + tw + jl - 14, top - 2); g.lineTo(x + tw + jl - 14, hy); g.stroke();
+      g.fillRect(x + tw + jl - 26, hy, 24, 18);
+      g.fillStyle = C.lit; g.fillRect(x - 40, top - 13, tw + 40 + jl, 2);
+    } else if (kind === 1) {
+      const hl = w * 2.6 + 160;
+      g.beginPath(); g.moveTo(x - 30, base - 46); g.lineTo(x + hl, base - 56); g.lineTo(x + hl + 40, base - 90); g.lineTo(x + hl + 10, base - 40); g.lineTo(x + hl - 20, base + 600); g.lineTo(x, base + 600); g.closePath(); g.fill();
+      for (let i = 0; i < 3; i++) {
+        const mx = x + 40 + i * hl * 0.34, mh = h * (1.1 - i * 0.18) + 80;
+        g.fillRect(mx, base - 50 - mh, 6, mh);
+        for (let k = 0; k < 3; k++) { const yw = 70 - k * 16; g.fillRect(mx - yw / 2, base - 50 - mh + 30 + k * mh * 0.28, yw, 4); }
+        g.lineWidth = 1; g.beginPath(); g.moveTo(mx + 3, base - 50 - mh); g.lineTo(mx + 3 + hl * 0.3, base - 54); g.moveTo(mx + 3, base - 50 - mh); g.lineTo(mx - 50, base - 48); g.stroke();
+        if (rr() < 0.6) { g.fillStyle = C.win; g.beginPath(); g.moveTo(mx + 4, base - 30 - mh * 0.75); g.lineTo(mx + 46, base - 30 - mh * 0.7); g.lineTo(mx + 38, base - 40 - mh * 0.4); g.lineTo(mx + 4, base - 44 - mh * 0.42); g.fill(); g.fillStyle = C.body; }
+      }
+      g.fillStyle = C.lit; g.fillRect(x - 30, base - 47, hl + 30, 2);
+    } else {
+      const ww = w * 2.2 + 80, wh = h * 0.45 + 40, top = base - wh;
+      g.fillRect(x, top, ww, wh + 600);
+      g.beginPath(); g.moveTo(x - 10, top); g.lineTo(x + ww / 2, top - 46 - rr() * 30); g.lineTo(x + ww + 10, top); g.closePath(); g.fill();
+      g.fillStyle = C.dark;
+      for (let dx = 20; dx < ww - 40; dx += 70) g.fillRect(x + dx, base - wh * 0.6, 40, wh * 0.6);
+      g.fillStyle = C.win; for (let dx = 24; dx < ww - 20; dx += 34) g.fillRect(x + dx, top + 12, 12, 8);
+      g.fillStyle = C.lit; g.fillRect(x - 10, top - 1, ww + 20, 2);
+    }
+  }
+  // near layer: a warehouse front with cargo, the bow of a beached ship, or pier pilings and a coiled hawser
+  function harbourNear(g, rr, x, base, w, h, C, kind) {
+    g.fillStyle = C.body;
+    if (kind < 0.4) {
+      const ww = w * 1.6 + 60, wh = h * 0.8 + 40, top = base - wh;
+      g.fillRect(x, top, ww, wh + 700);
+      g.beginPath(); g.moveTo(x - 14, top + 4); g.lineTo(x + ww * 0.5, top - 40); g.lineTo(x + ww + 14, top + 4); g.closePath(); g.fill();
+      g.fillStyle = C.dark; g.fillRect(x + ww * 0.25, base - wh * 0.55, ww * 0.5, wh * 0.55);
+      g.fillStyle = C.win; for (let dx = 16; dx < ww - 16; dx += 40) g.fillRect(x + dx, top + 16, 16, 20);
+      // crates and barrels stacked by the door
+      g.fillStyle = C.lit;
+      for (let i = 0; i < 3; i++) { const cx = x + ww + 6 + i * 34, cs = 30 - i * 3; g.fillRect(cx, base - cs, cs, cs); g.fillStyle = C.dark; g.fillRect(cx + 2, base - cs + cs / 2, cs - 4, 2); g.fillStyle = C.lit; }
+      g.fillRect(x + ww + 12, base - 58, 28, 26);
+      g.fillStyle = C.rim ? U.rgba(C.rim, 0.25) : C.lit; g.fillRect(x - 14, top + 2, ww + 28, 2);
+      if (rr() < 0.6) {   // the harbour's painted sign: 王港, 鹽倉, 漁會
+        const sx = x + 14, sy = top + 46, wd = ['王港', '鹽倉', '漁會', '船塢'][Math.floor(rr() * 4)];
+        g.fillStyle = '#16141a'; g.fillRect(sx, sy, 24, 62);
+        g.fillStyle = 'rgba(255,200,140,0.5)'; g.font = 'bold 17px "Noto Serif TC", serif'; g.textAlign = 'center';
+        g.fillText(wd[0], sx + 12, sy + 24); g.fillText(wd[1], sx + 12, sy + 50);
+      }
+    } else if (kind < 0.7) {
+      const bl = w * 1.8 + 120, bh = h * 0.9 + 60;
+      g.beginPath(); g.moveTo(x, base + 700); g.lineTo(x, base - 20); g.quadraticCurveTo(x + bl * 0.55, base - bh * 0.4, x + bl, base - bh); g.lineTo(x + bl + 10, base - bh + 16); g.quadraticCurveTo(x + bl * 0.7, base - 30, x + bl * 0.9, base + 700); g.closePath(); g.fill();
+      g.fillRect(x + bl - 6, base - bh - 4, 140, 7);   // the bowsprit
+      g.strokeStyle = C.body; g.lineWidth = 1.5; g.beginPath(); g.moveTo(x + bl + 130, base - bh); g.lineTo(x + bl * 0.5, base - bh * 0.3 - 10); g.stroke();
+      g.fillStyle = C.dark; for (let i = 0; i < 4; i++) g.fillRect(x + 30 + i * bl * 0.18, base - 22 - i * bh * 0.09, 14, 10);
+      g.fillStyle = U.rgba(C.rim || '#ffc27a', 0.28); g.beginPath(); g.moveTo(x + bl * 0.4, base - bh * 0.32); g.quadraticCurveTo(x + bl * 0.7, base - bh * 0.6, x + bl, base - bh); g.lineTo(x + bl, base - bh + 3); g.quadraticCurveTo(x + bl * 0.7, base - bh * 0.6 + 3, x + bl * 0.4, base - bh * 0.32 + 3); g.fill();
+    } else {
+      const pl = w * 2 + 100, py = base - 70 - rr() * 40;
+      g.fillRect(x, py, pl, 12);
+      for (let dx = 10; dx < pl; dx += 60) g.fillRect(x + dx, py + 12, 12, base - py + 700);
+      g.fillStyle = C.dark; for (let dx = 4; dx < pl; dx += 120) { g.beginPath(); g.ellipse(x + dx + 30, py - 8, 18, 8, 0, 0, Math.PI * 2); g.fill(); }
+      g.strokeStyle = C.body; g.lineWidth = 3; g.beginPath(); g.moveTo(x + pl * 0.3, py + 12); g.quadraticCurveTo(x + pl * 0.45, py + 60, x + pl * 0.6, py + 12); g.stroke();
+    }
+  }
+  // the avenue's mourning: white cloth hung from a ruin's brow and a string of paper lanterns
+  function mourning(g, rr, x, base, w, h) {
+    const top = base - h * 0.92;
+    g.fillStyle = 'rgba(232,224,212,0.5)';
+    const n = 1 + Math.floor(rr() * 3);
+    for (let i = 0; i < n; i++) {
+      const cx = x + w * (0.15 + 0.7 * rr()), cl = 60 + rr() * h * 0.5, cw = 9 + rr() * 7;
+      g.beginPath(); g.moveTo(cx, top); g.lineTo(cx + cw, top); g.lineTo(cx + cw + 3, top + cl); g.lineTo(cx + cw / 2, top + cl - 10); g.lineTo(cx - 2, top + cl); g.closePath(); g.fill();
+    }
+    if (rr() < 0.5) {
+      const ly = top + 24, lw = w + 120;
+      g.strokeStyle = 'rgba(20,16,22,0.8)'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(x, ly); g.quadraticCurveTo(x + lw / 2, ly + 40, x + lw, ly); g.stroke();
+      for (let k = 1; k < 6; k++) { const t = k / 6, lx = x + lw * t, yy = ly + 40 * 2 * t * (1 - t) + 6; g.fillStyle = 'rgba(255,214,150,0.55)'; g.beginPath(); g.ellipse(lx, yy, 6, 8, 0, 0, Math.PI * 2); g.fill(); g.fillStyle = 'rgba(255,240,200,0.4)'; g.fillRect(lx - 1, yy - 2, 2, 4); }
+    }
+  }
+
   function genMid() {
     const rng = U.mulberry32(4242), objs = [];
     const f = 0.22, len = 9400 * f + 900;
@@ -477,6 +565,12 @@
       const r2 = rng() * 1e6, lean = rng() < 0.15 ? (rng() - 0.5) * 0.22 : 0, bx = x;
       const crystalOn = (rng() < 0.3 && t > 0.15) || rng() < 0.12;
       const cath = wx > 6500 && rng() < 0.5;
+      const harbour = wx < HARBOUR, hk = Math.floor(rng() * 3);
+      if (harbour) {
+        objs.push({ x: bx - 120, y: -h * 1.3 - 260, w: w * 3 + 600, h: h * 1.3 + 900, draw(g) { harbourMid(g, U.mulberry32(r2 | 0), bx, 30, w, h, C, hk); } });
+        x += w * (hk === 0 ? 1.4 : hk === 1 ? 3.2 : 2.6) * (0.8 + rng() * 0.5);
+        continue;
+      }
       objs.push({ x: bx - 140, y: -h - 220, w: w + 280, h: h + 900, draw(g) {
         const rr = U.mulberry32(r2 | 0);
         g.translate(bx + w / 2, 30); g.rotate(lean); g.translate(-(bx + w / 2), -30);
@@ -508,6 +602,11 @@
       };
       const r2 = rng() * 1e6, bx = x, kind = rng();
       const cath = wx > 6400;
+      if (!gap && wx < HARBOUR) {
+        objs.push({ x: bx - 160, y: -h * 1.6 - 280, w: w * 2.4 + 520, h: h * 1.6 + 1000, draw(g) { harbourNear(g, U.mulberry32(r2 | 0), bx, 40, w, h, C, kind); } });
+        x += w * (kind < 0.4 ? 2.2 : kind < 0.7 ? 2.4 : 2.6);
+        continue;
+      }
       if (!gap) objs.push({ x: bx - 160, y: -h * 1.6 - 280, w: w + 320, h: h * 1.6 + 1000, draw(g) {
         const rr = U.mulberry32(r2 | 0);
         if (cath && kind < 0.55) {
@@ -518,6 +617,7 @@
           return;
         }
         ruinTower(g, rr, bx, 40, w, h, C, { winGap: 18, collapse: 0.45 });
+        if (wx >= HARBOUR && wx < AVENUE && kind > 0.35) mourning(g, rr, bx, 40, w, h);
         if (rr() < 0.35) {
           const sx = bx + w * 0.18, sy = 40 - h * (0.35 + rr() * 0.3);
           g.fillStyle = '#16141a'; g.fillRect(sx, sy, 26, 70);

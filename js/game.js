@@ -220,7 +220,8 @@
       // while you are tuning, equipping, travelling, trading, reading or choosing an Echo
       if (this.state === 'play' && G.UI.stack.some((l) => FREEZE.has(l.id))) { this.dtVis = 0; return; }
       // pause
-      if (this.state === 'play' && G.Input.tap('pause') && !G.UI.modalOpen()) { G.UI.openPause(); return; }
+      if (this.state === 'play' && (G.Input.tap('pause') || this.wantPause) && !G.UI.modalOpen()) { this.wantPause = false; G.UI.openPause(); return; }
+      this.wantPause = false;
       // time dilation
       if (this.slowT > 0) { this.slowT -= rdt; this.timeScale = U.lerp(this.timeScale, this.slowScale, 0.3); }
       else this.timeScale = U.lerp(this.timeScale, 1, 0.15);
@@ -362,7 +363,7 @@
         const E = L.encounters[id], st = this.encState[id];
         if (st === 'idle' && !E.manual) {
           const hi = E.arena ? E.arena[1] - 40 : E.trigger + 900;
-          if (P.x >= E.trigger && P.x <= hi && (E.yMin == null || P.y >= E.yMin)) this.startEncounter(id);
+          if (P.x >= E.trigger && P.x <= hi && (E.yMin == null || P.y >= E.yMin) && (E.yMax == null || P.y <= E.yMax)) this.startEncounter(id);
         } else if (st === 'active') {
           const alive = this.enemies.some((e) => e.enc === id && !e.dead);
           if (!alive) {

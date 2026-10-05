@@ -77,27 +77,42 @@
       // floor of the original boss room
       let fy = 1e9; for (const s of lv.solids) if (mid >= s.x && mid <= s.x + s.w && s.y >= -500 && s.y < fy) fy = s.y;
       if (fy > 1e8) fy = 0;
-      const solids = [
-        { x: a0 - 700, y: fy, w: (a1 - a0) + 1400, h: 900 },
-        { x: a0 - 740, y: fy - 1800, w: 60, h: 1800 }, { x: a1 + 680, y: fy - 1800, w: 60, h: 1800 },
-      ];
-      const oneways = [];
-      if (kind === 'room') {
+      // the chamber's floor: guardians keep the flat old boss room; the others take one of several shapes
+      // (the entry and the doors at the far end always stand on the old floor level)
+      const solids = [], oneways = [];
+      const lo = a0 + 360, hi = a1 - 470, span = hi - lo;
+      const prof = [];   // [x, w, y] raised or sunken stretches inside lo..hi
+      const tpl = kind === 'boss' || span < 360 ? 'flat' : ['ledges', 'pit', 'tiers', 'pillars', 'mound', 'gallery'][(r.depth * 7 + (r.tplSeed || (r.tplSeed = 1 + Math.floor(Math.random() * 6)))) % 6];
+      const n3 = Math.floor(span / 3);
+      if (tpl === 'pit') prof.push([lo + 60, span - 120, fy + 150]);
+      else if (tpl === 'tiers') prof.push([lo, n3, fy - 70], [lo + n3, span - 2 * n3, fy - 140], [hi - n3, n3, fy - 70]);
+      else if (tpl === 'pillars') for (let i = 0; i < 3; i++) prof.push([Math.round(lo + (span - 80) * (i / 2)), 80, fy - 130 + (i === 1 ? -0 : 30)]);
+      else if (tpl === 'mound') prof.push([lo + n3 * 0.5, span - n3, fy - 90]);
+      else if (tpl === 'gallery') oneways.push({ x: lo - 140, y: fy - 90, w: 110 }, { x: lo, y: fy - 180, w: span });
+      else if (tpl === 'ledges') {
         const n = 1 + Math.floor(Math.random() * 3);
         for (let i = 0; i < n; i++) oneways.push({ x: Math.round(U.lerp(a0 + 180, a1 - 380, (i + 0.5) / n) + (Math.random() - 0.5) * 120), y: fy - (160 + Math.floor(Math.random() * 2) * 110), w: 200 });
       }
+      { let x = a0 - 700; const x1 = a1 + 700;
+        for (const [px, w, y] of prof.map((q) => q.map(Math.round))) { if (px > x) solids.push({ x, y: fy, w: px - x, h: 900 }); solids.push({ x: px, y, w, h: fy + 900 - y }); x = px + w; }
+        solids.push({ x, y: fy, w: x1 - x, h: 900 }); }
+      solids.push({ x: a0 - 740, y: fy - 1800, w: 60, h: 1800 }, { x: a1 + 680, y: fy - 1800, w: 60, h: 1800 });
+      r.tpl = tpl;
       const waves = this.waves(ch, kind, BE, a0, a1, fy);
       const level = {
         start: { x: a0 + 140, y: fy }, bounds: [a0 - 600, a1 + 600], gravity: (lv.gravity || 1),
         solids, oneways, pylons: [], notes: [], items: [], npcs: [], triggers: [],
-        encounters: { abyss: { manual: true, respawn: true, echo: false, boss: kind === 'boss', elite: kind === 'elite', arena: [a0, a1], waves } },
+        encounters: { abyss: { manual: true, respawn: true, echo: false, boss: kind === 'boss', elite: kind === 'elite', arena: [a0, a1], wallBottom: fy + 200, waves } },
         zones: [{ x: -1e9, name: `無底冥井　第 ${r.depth} 層`, en: `THE BOTTOMLESS WELL — DEPTH ${r.depth}`, music: kind === 'boss' ? (base.music && base.music.boss) || 'boss' : (base.music && base.music.explore) || 'explore' }],
       };
+      const sky = G.Landmarks.plan(ch, r.depth * 31 + (r.tplSeed || 0), r.depth + (r.tplSeed || 0));
       const bh = base.hooks || {};
       const safe = (f) => (f ? function () { try { return f.apply(this, arguments); } catch (e) { return undefined; } } : undefined);
       const def = Object.assign(Object.create(base), {
         level, intro: null, enterDialog: null, musicAt: null,
-        hooks: { drawSky: safe(bh.drawSky), afterLayer: safe(bh.afterLayer), drawAtmos: safe(bh.drawAtmos),
+        hooks: { drawSky: safe(bh.drawSky), drawAtmos: safe(bh.drawAtmos),
+          // every chamber has its own skyline (js/landmarks.js) over the chapter's own backdrop
+          afterLayer: safe((k, ctx, cam, W, H, S, time, WK) => { if (bh.afterLayer) bh.afterLayer(k, ctx, cam, W, H, S, time, WK); G.Landmarks.draw(k, ctx, cam, W, H, S, time, sky, a0 - 600, a1 - a0 + 1200, fy); }),
           update: (g, dt) => this.update(g, dt), drawFront: (ctx, g) => this.drawDoors(ctx, g) },
       });
       G.Chapters.loadDef(def);

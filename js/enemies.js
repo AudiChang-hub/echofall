@@ -784,7 +784,10 @@
       p.x += p.vx * dt; p.y += p.vy * dt;
       if (Math.random() < 0.6) G.FX.ember(p.x, p.y, 1, p.friendly ? '#7ff4ff' : p.col, { w: 6, h: 6, up: 10, sp: 20, life: 0.3 });
       let dead = p.life <= 0;
-      for (const s of G.Phys.allSolids()) if (p.x > s.x && p.x < s.x + s.w && p.y > s.y && p.y < s.y + s.h) dead = true;
+      for (const s of G.Phys.allSolids()) if (p.x > s.x && p.x < s.x + s.w && p.y > s.y && p.y < s.y + s.h) {
+        // a downward gust meets the floor and runs along it instead of vanishing
+        if (p.kind === 'wind' && p.vy > 0 && p.y - s.y < 60) { p.y = s.y - 34; p.vy = 0; p.rh = 40; } else dead = true;
+      }
       if (!p.friendly && !dead) {
         const hb = P.hurtbox;
         if (p.x + p.r > hb.x && p.x - p.r < hb.x + hb.w && p.y + p.r > hb.y && p.y - p.r < hb.y + hb.h && !p.passed) {
@@ -799,7 +802,8 @@
         for (const e of g.enemies) {
           if (e.dead) continue;
           const b = e.box;
-          if (p.x > b.x - p.r && p.x < b.x + b.w + p.r && p.y > b.y - p.r && p.y < b.y + b.h + p.r) {
+          const rh = p.rh || p.r;   // wind is a tall wall of air: it catches crawlers along the floor too
+          if (p.x > b.x - p.r && p.x < b.x + b.w + p.r && p.y > b.y - rh && p.y < b.y + b.h + rh) {
             if (p.pierce) { if (p.hit.has(e)) continue; p.hit.add(e); }
             const pm = p.pdmg != null ? G.DnD.modHit(P, e, { dmg: p.pdmg * P.dmgMul, bal: p.pbal, crit: false }, { noRes: p.kind === 'wind' || p.kind === 'spirit' }) : null;
             e.takeHit(pm ? { dmg: pm.dmg, bal: pm.bal, crit: pm.crit, hx: p.x, hy: p.y, big: pm.crit } : { dmg: 26 * P.dmgMul, bal: 40, hx: p.x, hy: p.y, big: true });

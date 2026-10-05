@@ -108,6 +108,11 @@
     },
   };
 
+  const CH1_MARKS = [
+    { kind: 'ship', x: 1100, r: 1300, dx: -0.12, f: 0.07 },
+    { kind: 'bell', x: 4400, r: 1300, dx: 0.1, f: 0.07 },
+    { kind: 'gate', x: 7000, r: 400, dx: 0.05, f: 0.07, a: 0.8 },
+  ];
   // chapter 1: everything already lives in world.js / data.js / audio.js
   Ch.register({
     id: 1, key: 'ch1', num: 'I', numZh: '一', title: '送葬之城', en: 'THE FUNERAL CITY',
@@ -119,6 +124,10 @@
     defaultBg: true,
     next: 2,
     // chapter 1 ends on Maestrina: the Ark falls silent — on to the Ladder
-    hooks: {},
+    // each district has its own landmark on the horizon: a ship run aground off the old harbour, the funeral avenue's
+    // great bell, the gate of the cathedral (js/landmarks.js)
+    hooks: {
+      afterLayer(k, ctx, cam, W, H, S, time) { if (!G.Abyss.active && !G.Routes.active) G.Landmarks.drawPlaced(k, ctx, cam, W, H, S, time, CH1_MARKS, 0); },
+    },
   });
 })(window.G);

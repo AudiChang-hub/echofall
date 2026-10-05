@@ -227,7 +227,9 @@
         }
       } else if (this.is('shaman')) {
         // the fan throws spirit wind; the finisher throws three
-        const gust = (vy, dmg, r) => g.projectiles.push({ x: x + f * 46, y: y - 74, vx: f * 720, vy: vy * 0.7, r, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: dmg, pbal: 6, life: 0.88, t: 0, col: '#c9b6ff' });
+        // hold down / up while swinging to send the wind slanting down / up (reach a lower ledge, a flier above)
+        const aim = G.Input.down('down') ? 1 : G.Input.down('up') ? -1 : 0;
+        const gust = (vy, dmg, r) => g.projectiles.push({ x: x + f * 46, y: y - 66, vx: f * 720 * (aim ? 0.86 : 1), vy: vy * 0.7 + aim * 400, r, rh: aim ? r : 66, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: dmg, pbal: 6, life: 0.88, t: 0, col: '#c9b6ff' });
         if (ci === 3) { gust(-150, 9, 26); gust(0, 11, 32); gust(150, 9, 26); } else gust(0, [6, 7, 8][ci] || 7, 26);
         G.FX.ring(x, y - 2, 10, 70, 0.4, '#c9b6ff', 3, { flat: 0.25 }); G.FX.ring(x, y - 2, 6, 46, 0.4, '#f2e6cc', 2, { flat: 0.25 });   // the ritual circle
         G.SFX.play('musicbox', 1.6 + ci * 0.15);   // the shaman's bell
@@ -296,7 +298,7 @@
         [0.1, 0.18, 0.26].forEach((t0, i) => {
           if (st >= t0 && P.csDone <= i) {
             P.csDone = i + 1;
-            g.projectiles.push({ x: P.x + f * 30, y: P.y - 78, vx: f * 1150, vy: (i - 1) * 70, r: 9, owner: null, friendly: true, kind: 'knife', pdmg: 11, pbal: 9, life: 0.62, t: 0, col: '#8dfcb0' });
+            g.projectiles.push({ x: P.x + f * 30, y: P.y - 58, vx: f * 1150, vy: (i - 1) * 70, r: 9, rh: 22, owner: null, friendly: true, kind: 'knife', pdmg: 11, pbal: 9, life: 0.62, t: 0, col: '#8dfcb0' });
             G.SFX.play('slash', 1.6 + i * 0.1);
           }
         });
@@ -314,7 +316,7 @@
         P.vx = U.approach(P.vx, 0, 2000 * dt);
         if (st >= 0.2 && !P.csDone) {
           P.csDone = 1;
-          g.projectiles.push({ x: P.x + f * 40, y: P.y - 70, vx: f * 720, vy: 0, r: 34, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: 18, pbal: 22, life: 0.95, t: 0, col: '#c9b6ff' });
+          g.projectiles.push({ x: P.x + f * 40, y: P.y - 70, vx: f * 720, vy: 0, r: 34, rh: 70, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: 18, pbal: 22, life: 0.95, t: 0, col: '#c9b6ff' });
           G.SFX.play('whoosh', 0.9); G.FX.ring(P.x + f * 40, P.y - 70, 8, 90, 0.35, '#c9b6ff', 4);
         }
         if (st >= this.SK.shaman) P.setState('move', 0.12);
@@ -345,7 +347,7 @@
     // 巫女: the closing fan stroke of the combo throws a small gust
     windlet(P) {
       if (!this.is('shaman')) return;
-      G.game.projectiles.push({ x: P.x + P.facing * 50, y: P.y - 72, vx: P.facing * 620, vy: 0, r: 20, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: 7, pbal: 6, life: 0.42, t: 0, col: '#c9b6ff' });
+      G.game.projectiles.push({ x: P.x + P.facing * 50, y: P.y - 66, vx: P.facing * 620, vy: 0, r: 20, rh: 66, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: 7, pbal: 6, life: 0.42, t: 0, col: '#c9b6ff' });
     },
     // the summoned spirit: follows your shoulder and looses homing motes at the nearest foe
     spiritUpdate(P, dt) {

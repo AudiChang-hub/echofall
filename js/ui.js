@@ -363,7 +363,7 @@
         ['攻擊：連按連段・按住重擊・自動處決', 'light', 'J / 滑鼠左鍵', 'Ⓧ', '攻（按住重擊）'], ['格擋・完美格擋', 'guard', 'K / 滑鼠右鍵', 'LB', '擋'],
         ['閃避', 'dodge', 'L / Shift', 'Ⓑ', '閃'], ['共鳴技（自動選擇）', 'skill', 'U / Q', 'Ⓨ', '技（能量足夠時出現）'],
         ['回復（喝調和劑）', 'heal', 'F', 'RT', '右上「回復」'], ['互動', 'interact', 'E', '十字鍵 ▼', '點擊畫面上的提示'],
-        ['下跳穿越平台', 'down', 'S + Space', '▼ + Ⓐ', '搖桿往下 + 跳'], ['暫停', 'pause', 'Esc', '☰', '右上 ☰']];
+        ['下跳穿越平台', 'down', 'S + Space', '▼ + Ⓐ', '搖桿往下 + 跳'], ['暫停', 'pause', 'P / Esc', '☰', '右上 ☰']];
       const col = G.Input.device === 'pad' ? 3 : G.Input.device === 'touch' ? 4 : 2;
       $('#ctlGrid').innerHTML = rows.map((r) => `<div><span>${r[0]}</span><span>${r[col]}</span></div>`).join('');
       $('#controlsClose').onclick = () => { if (this.top() && this.top().id === 'controls') { G.SFX.play('uiBack'); this.pop(); } };
