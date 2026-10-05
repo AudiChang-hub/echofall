@@ -123,7 +123,7 @@
     },
     resetWorld() {
       this.enemies = []; this.projectiles = []; this.hazards = []; this.pickups = []; G.FX.clear(); G.Boons.clear(); this.combo = 0; this.comboT = 9;
-      this.arena = null; G.Phys.dyn = []; this.encState = {}; this.bossRef = null; this.phase2 = false; this.focus = null; this.resting = false;
+      this.arena = null; G.Phys.dyn = []; this.encState = {}; this.lootVacuum = false; this.bossRef = null; this.phase2 = false; this.focus = null; this.resting = false;
       for (const id in L.encounters) {
         const E = L.encounters[id];
         if (E.respawn) delete this.save.cleared[id];
@@ -452,14 +452,17 @@
         this.hazards = []; this.projectiles = [];
         for (const o of this.enemies) if (o !== e && !o.dead) o.die(); // summoned adds fall with their master
         this.control = false;
-        setTimeout(() => {
+        this.lootVacuum = true;   // whatever dropped flies to Rinne before the chapter moves on (js/gear.js)
+        const t0 = performance.now();
+        const waitLoot = (fn) => (this.pickups.some((p) => p.kind === 'loot') && performance.now() - t0 < 9000 ? setTimeout(() => waitLoot(fn), 250) : fn());
+        setTimeout(() => waitLoot(() => {
           const ch = G.Chapters.cur;
           this.save.flags['boss_' + ch.id] = true; if (ch.id === 1) this.save.flags.boss_dead = true;
           this.persist();
           if (G.Chapters.hook('bossDefeated', this, e) === true) return;
           const dlg = e.T.defeatDialog;
           if (dlg) this.dialog(dlg, () => this.completeChapter()); else this.completeChapter();
-        }, 2200);
+        }), 2200);
       }
     },
     bossPhase2(e) {
@@ -577,6 +580,7 @@
       const P = this.player, F = this.save.flags;
       P.setState('rest', 0.3); this.control = false; this.resting = true;
       this.save.checkpoint = py.id;
+      const vp = this.save.visited || (this.save.visited = {}); vp[py.id] = L.chapter || 1;
       G.SFX.play('pylon');
       G.FX.ring(py.x, py.y - 80, 10, 200, 0.8, '#7ff4ff', 4); G.FX.ember(py.x, py.y - 90, 40, '#7ff4ff', { w: 40, h: 140, up: 200 });
       // souls-like: resting revives the Hushborn
@@ -592,6 +596,21 @@
       else setTimeout(open, 500);
     },
     persist() { this.save.flags = this.save.flags || {}; G.Store.set('save', this.save); },
+    // furthest chapter this journey has reached (older saves: derive it from completed-chapter flags)
+    reachedChapter() {
+      const s = this.save, F = s.flags || {}; let m = Math.max(s.maxChapter || 1, s.chapter || 1);
+      for (let n = 1; n <= G.Chapters.LAST; n++) if (F['ch_done_' + n]) m = Math.max(m, Math.min(G.Chapters.LAST, n + 1));
+      return m;
+    },
+    // fast travel to a pylon of any reached chapter (farm earlier areas; the save keeps every chapter's progress)
+    travelTo(ch, pylonId) {
+      this.save.maxChapter = this.reachedChapter();
+      this.save.chapter = ch; this.save.checkpoint = pylonId; this.save.drop = null;
+      this.persist();
+      G.UI.stack.slice().forEach(() => G.UI.pop());
+      this.fadeA = 1; this.control = false;
+      this.continueGame();
+    },
     onPlayerDeath() {
       this.control = false; this.stats.deaths++;
       if (this.save.shards > 0) this.save.drop = { x: this.player.x, y: this.player.y, amt: this.save.shards };
@@ -753,7 +772,7 @@
       for (const n of L.npcs) {
         if (n.draw) n.draw(ctx, n.x, n.y, t, this); else this.drawBarrow(ctx, n.x, n.y, t);
         const pending = n.pending ? n.pending(this) : (n.id === 'barrow' && (!F.met_barrow || (F.got_musicbox && !F.gave_musicbox)));
-        if (pending) this.drawBeacon(ctx, n.x, n.y, '#9cf7b0', '…', n.label || '交談', false, t, true);
+        if (pending) this.drawBeacon(ctx, n.x, n.y, '#9cf7b0', '…', n.label || '交談', false, t, true, n._seed != null ? n._seed : (n._seed = Math.random() * 100));
       }
       // souls drop
       const d = this.save.drop;
@@ -771,17 +790,18 @@
     },
     // collectible beacon: a light pillar visible from afar, a pulsing ground ring, a floating inked icon,
     // and a label once you are close. `done` keeps a faint pillar so read notes are still findable.
-    drawBeacon(ctx, x, y, col, icon, label, done, t, small) {
+    drawBeacon(ctx, x, y, col, icon, label, done, t, small, seed) {
+      const ph = seed != null ? seed : x;
       const P = this.player, d = Math.hypot(P.x - x, (P.y - y) * 1.5);
       ctx.save(); ctx.globalCompositeOperation = 'lighter';
-      const H = small ? 160 : 360, a = done ? 0.07 : 0.2 + 0.07 * Math.sin(t * 2.4 + x * 0.01);
+      const H = small ? 160 : 360, a = done ? 0.07 : 0.2 + 0.07 * Math.sin(t * 2.4 + ph * 0.01);
       const pg = ctx.createLinearGradient(0, y - H, 0, y);
       pg.addColorStop(0, U.rgba(col, 0)); pg.addColorStop(0.7, U.rgba(col, a * 0.6)); pg.addColorStop(1, U.rgba(col, a));
       ctx.fillStyle = pg; ctx.fillRect(x - 16, y - H, 32, H);
       ctx.fillStyle = pg; ctx.fillRect(x - 3, y - H, 6, H);
       if (!done) {
         for (let i = 0; i < 2; i++) {
-          const k = (t * 0.7 + i * 0.5 + x * 0.0007) % 1;
+          const k = (t * 0.7 + i * 0.5 + ph * 0.0007) % 1;
           ctx.strokeStyle = U.rgba(col, (1 - k) * 0.7); ctx.lineWidth = 2;
           ctx.beginPath(); ctx.ellipse(x, y - 2, 10 + 44 * k, (10 + 44 * k) * 0.22, 0, 0, TAU); ctx.stroke();
         }
@@ -790,7 +810,7 @@
       if (done || this.state === 'title') return;   // the title backdrop keeps only the light pillar
       // floating sigil
       // floats above the heroine's head so standing on a note never hides its label behind her
-      const iy = y - (small ? 128 : 136) + Math.sin(t * 2.2 + x) * 5, r = 11;
+      const iy = y - (small ? 128 : 136) + Math.sin(t * 2.2 + ph) * 5, r = 11;
       ctx.save();
       ctx.beginPath(); ctx.moveTo(x, iy - r - 3); ctx.lineTo(x + r + 3, iy); ctx.lineTo(x, iy + r + 3); ctx.lineTo(x - r - 3, iy); ctx.closePath();
       ctx.fillStyle = '#0b0612'; ctx.fill();

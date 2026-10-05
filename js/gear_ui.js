@@ -49,6 +49,66 @@
   }
 
   Object.assign(G.UI, {
+    /* -------------------------------------------------------- fast travel between reached chapters (pylons) */
+    openTravel() {
+      const g = G.game, sv = g.save, Ch = G.Chapters, F = sv.flags;
+      let el = $('#travelScreen');
+      if (!el) {
+        el = document.createElement('section'); el.id = 'travelScreen'; el.className = 'screen modal';
+        el.innerHTML = '<div class="travel"><header class="gr-head"><div class="gr-title"><b>旅行</b><em>FAST TRAVEL</em></div><span class="tv-sub">回到已經過的章節刷寶；會重生的敵人每次休息都會回來</span><button type="button" class="x-close tv-close" aria-label="關閉">✕</button></header><div class="tv-body"><nav class="tv-ch"></nav><div class="tv-py"></div></div></div>';
+        document.getElementById('ui').appendChild(el);
+      }
+      const reach = g.reachedChapter(), here = Ch.cur ? Ch.cur.id : 1;
+      let ci = here, pi = 0;
+      const open = (ch) => {
+        const pys = Ch.pylonsOf(ch);
+        return pys.filter((py, i) => i === 0 || F['ch_done_' + ch] || (sv.visited && sv.visited[py.id]) || (ch === here && sv.checkpoint === py.id));
+      };
+      const renderCh = () => {
+        let h = '';
+        for (let n = 1; n <= reach; n++) {
+          const m = Ch.info(n), boss = F['boss_' + n] || (n === 1 && F.boss_dead);
+          h += `<button type="button" class="tv-c ${n === ci ? 'on' : ''}" data-n="${n}"><span class="tv-n">第${m.numZh}章</span><b>${m.title}</b>
+            <em>${n === here ? '<i class="tv-here">目前所在</i>' : ''}${boss ? '頭目已擊倒' : '進行中'}</em></button>`;
+        }
+        el.querySelector('.tv-ch').innerHTML = h;
+        el.querySelectorAll('.tv-c').forEach((b) => { b.onclick = () => { ci = +b.dataset.n; pi = 0; G.SFX.play('ui'); render(); }; });
+      };
+      const renderPy = () => {
+        const host = el.querySelector('.tv-py');
+        if (!Ch.loaded(ci)) {
+          host.innerHTML = '<p class="tv-wait">正在下載這一章…</p>';
+          Ch.ensure(ci).then(() => { if (this.top() && this.top().id === 'travel') render(); }).catch(() => { host.innerHTML = '<p class="tv-wait">下載失敗，請確認網路</p>'; });
+          return;
+        }
+        const list = open(ci);
+        pi = Math.min(pi, list.length - 1);
+        host.innerHTML = `<h4>共鳴碑</h4>${list.map((py, i) => `<button type="button" class="tv-p ${i === pi ? 'on' : ''}" data-i="${i}"><i class="tv-dot"></i>${py.name || py.id}${ci === here && sv.checkpoint === py.id ? '<em>上次休息</em>' : ''}</button>`).join('')}
+          <p class="tv-note">${Ch.pylonsOf(ci).length > list.length ? '還沒造訪的共鳴碑不會顯示。' : ''}</p>
+          <button type="button" class="gb-act main tv-go">前往「${(list[pi] && (list[pi].name || list[pi].id)) || ''}」</button>`;
+        host.querySelectorAll('.tv-p').forEach((b) => { b.onclick = () => { pi = +b.dataset.i; G.SFX.play('ui'); renderPy(); }; });
+        host.querySelector('.tv-go').onclick = go;
+      };
+      const render = () => { renderCh(); renderPy(); };
+      const go = () => {
+        if (!Ch.loaded(ci)) return;
+        const py = open(ci)[pi]; if (!py) return;
+        G.SFX.play('pylon'); g.travelTo(ci, py.id);
+      };
+      const close = () => { if (this.top() && this.top().id === 'travel') { G.SFX.play('uiBack'); this.pop(); } };
+      el.querySelector('.tv-close').onclick = close;
+      render();
+      this.push({ id: 'travel', el, handle: () => {
+        const In = I();
+        if (In.tap('back')) close();
+        else if (In.tap('menuUp')) { ci = Math.max(1, ci - 1); pi = 0; G.SFX.play('ui'); render(); }
+        else if (In.tap('menuDown')) { ci = Math.min(reach, ci + 1); pi = 0; G.SFX.play('ui'); render(); }
+        else if (In.tap('menuLeft')) { pi = Math.max(0, pi - 1); G.SFX.play('ui'); renderPy(); }
+        else if (In.tap('menuRight')) { pi = pi + 1; G.SFX.play('ui'); renderPy(); }
+        else if (In.tap('confirm')) go();
+      } });
+    },
+
     /* -------------------------------------------------------- chapter download overlay */
     loading(on, text) {
       let el = $('#chLoad');

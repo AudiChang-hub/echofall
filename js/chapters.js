@@ -49,6 +49,8 @@
       this._chain = p.catch(() => {});   // a failed download can be retried later
       return p;
     },
+    // pylons of a chapter (chapter 1 keeps its level in world.js) — for the fast-travel list
+    pylonsOf(id) { const d = this.byId[id]; return (d && d.level && d.level.pylons) || (id === 1 ? CH1_LEVEL.pylons : null) || []; },
     prefetch() { if (!this._pre) { this._pre = true; this.ensure(LAST).catch(() => { this._pre = false; }); } },
     register(def) {
       if (this.byId[def.id]) console.warn('chapter registered twice', def.id);

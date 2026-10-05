@@ -384,6 +384,13 @@
         if (p.vy > 0 && p.y >= p.gy - 14) { p.y = p.gy - 14; p.landed = true; G.SFX.play('land', 1.6); }
       }
       const P = game.player;
+      // after a boss falls everything left on the floor homes in on Rinne
+      if (game.lootVacuum && p.t > 0.9) {
+        const tx = P.x, ty = P.y - 50, d = Math.hypot(tx - p.x, ty - p.y) || 1, sp = Math.min(1400, 300 + (p.t - 0.9) * 1600);
+        p.landed = true; p.x += (tx - p.x) / d * Math.min(d, sp * dt); p.y += (ty - p.y) / d * Math.min(d, sp * dt);
+        if (d < 30) { G_.collect(game, p); return true; }
+        return false;
+      }
       if (p.t > 0.5 && P.state !== 'dead' && Math.abs(P.x - p.x) < 56 && Math.abs(P.y - 40 - p.y) < 110) { G_.collect(game, p); return true; }
       return false;
     },
