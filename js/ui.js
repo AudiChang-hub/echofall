@@ -70,6 +70,7 @@
       };
       window.addEventListener('keydown', () => { if (!this.booted) go(); });
       boot.addEventListener('pointerdown', go);
+      document.documentElement.classList.add('booted');
       if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
         boot.querySelector('.boot-press span').textContent = '點擊畫面開始';
         boot.querySelector('.boot-press em').textContent = 'TAP TO START';

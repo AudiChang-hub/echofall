@@ -37,6 +37,8 @@
     checking = false; apply();
   };
   G.Update = { check, get latest() { return latest; } };
+  // permanent install (GitHub Pages): keep every file offline so home-screen launches open instantly
+  if ('serviceWorker' in navigator && /github\.io$/.test(location.hostname)) navigator.serviceWorker.register('sw.js').catch(() => {});
   window.addEventListener('load', () => setTimeout(check, 1200));
   document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
   window.addEventListener('pageshow', (e) => { if (e.persisted) check(); });
