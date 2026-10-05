@@ -934,3 +934,44 @@ html.touch .loot-card { padding: 6px 9px; }
 #pyTabs::-webkit-scrollbar { display: none; }
 #pyTabs .tab { flex: none; white-space: nowrap; }
 @media (max-width: 900px) { #pyTabs .tab { padding: 7px 10px; font-size: 13px; letter-spacing: .14em; } }
+
+/* 共鳴之鏡 rows: both faces side by side, the live one lit — click a face (or ← →) to switch */
+.py-list .mi.mr { padding: 3px 0; grid-template-columns: 30px 1fr; align-items: center; }
+.py-list .mi.mr .l { display: none; }
+.mi.mr .xtra { grid-column: 2; min-width: 0; }
+.mr-pair { display: grid; grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr); align-items: center; gap: 6px; }
+.mr-or { font: 400 12px/1 var(--sans); color: var(--faint); text-align: center; letter-spacing: 0; }
+.mr-f { min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: 8px; align-items: center;
+  padding: 6px 9px; border: 1px solid transparent; border-radius: 6px; cursor: pointer; opacity: .42; transition: opacity .2s, border-color .2s, background .2s; }
+.mr-f:hover { opacity: .75; }
+.mr-f.on { opacity: 1; border-color: rgba(111,243,255,.45); background: rgba(111,243,255,.07); }
+.mr-f.b.on { border-color: rgba(255,179,71,.5); background: rgba(255,179,71,.07); }
+.mr-tag { font: 700 11px/1 var(--sans); padding: 4px 5px; border-radius: 5px; letter-spacing: 0; background: rgba(111,243,255,.18); color: var(--cyan); }
+.mr-f.b .mr-tag { background: rgba(255,179,71,.18); color: #ffb347; }
+.mr-nm { font: 500 15px/1.15 var(--serif); letter-spacing: .14em; color: var(--bone); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mr-pips { display: flex; gap: 5px; }
+.mr-pips i { width: 7px; height: 7px; border: 1px solid var(--faint); transform: rotate(45deg); }
+.mr-f.on .mr-pips i.on { background: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+.mr-f.b.on .mr-pips i.on { background: #ffb347; border-color: #ffb347; box-shadow: 0 0 6px #ffb347; }
+.mr-f:not(.on) .mr-pips i.on { background: var(--dim); border-color: var(--dim); }
+.mi.mr.focus { transform: translateX(6px); }
+.mr-guide { margin-bottom: 12px; padding: 10px 14px; border: 1px solid rgba(156,247,176,.35); border-radius: 8px; background: rgba(156,247,176,.06); }
+.mr-guide b { font: 600 13px/1 var(--sans); letter-spacing: .2em; color: #9cf7b0; }
+.mr-guide ol { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; font: 400 12.5px/1.6 var(--sans); color: rgba(239,233,223,.85); letter-spacing: .03em; }
+.mr-guide u { text-decoration: none; color: var(--bone); font-weight: 600; }
+.t { display: inline-block; font: 700 10.5px/1 var(--sans); font-style: normal; padding: 3px 5px; margin: 0 3px; border-radius: 5px; background: rgba(111,243,255,.18); color: var(--cyan); letter-spacing: 0; }
+.t.b { background: rgba(255,179,71,.18); color: #ffb347; }
+.cry { color: #c08bff; font-weight: 600; }
+.mr-k .t { margin: 0 8px 0 0; }
+.mr-face .py-buy { flex-direction: column; gap: 3px; }
+.py-buy small { font: 500 11px/1 var(--mono); letter-spacing: .12em; color: #c08bff; }
+.mr-where { margin-top: 8px !important; font-size: 12px !important; line-height: 1.5 !important; color: var(--dim) !important; }
+.mr-face:not(.on) { opacity: .8; }
+.mr-face:not(.on) .py-buy { min-height: 34px; min-width: 0; font-size: 13px; }
+@media (max-height: 480px) {
+  .py-list .mi.mr { padding: 3px 0; }
+  .mr-f { padding: 4px 7px; column-gap: 6px; row-gap: 3px; grid-template-columns: auto minmax(0, 1fr); }
+  .mr-tag { grid-row: 1 / 3; } .mr-pips { grid-column: 2; gap: 4px; } .mr-pips i { width: 5px; height: 5px; }
+  .mr-nm { font-size: 13px; letter-spacing: .04em; }
+  .mr-guide { padding: 6px 10px; margin-bottom: 8px; } .mr-guide ol { font-size: 11.5px; line-height: 1.45; }
+}

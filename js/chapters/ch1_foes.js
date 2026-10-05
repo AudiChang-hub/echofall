@@ -125,7 +125,8 @@
         if (e.grounded > 1.1 && e.onGround) { e.fly = true; e.vy = -330; G.SFX.play('c1_flap'); G.FX.dust(e.x, e.y, 8, { w: 40, speed: 160, size: 10 }); }
         return;
       }
-      if (e.hov == null) { const g0 = G.Phys.groundBelow(e.x, e.homeY); e.hov = g0 < 1e8 ? U.clamp(g0 - e.homeY, 150, 320) : 230; }
+      // it cruises just inside sword reach (Rinne's ground slashes top out around 140-160): above that it read as invulnerable
+      if (e.hov == null) e.hov = 100 + Math.random() * 14;
       const dx = P.x - e.x, d = Math.abs(dx);
       // keep a wary distance on its own side of the player, bobbing on slow wingbeats
       const sideS = e.x < P.x ? -1 : 1, want = d > 700 ? e.x : P.x + sideS * 240;

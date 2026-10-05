@@ -13,9 +13,9 @@
       this.el.innerHTML = '';
       this.btns = this.items.map((it, k) => {
         const b = document.createElement('button');
-        b.className = 'mi' + (it.disabled ? ' disabled' : '');
+        b.className = 'mi' + (it.cls ? ' ' + it.cls : '') + (it.disabled ? ' disabled' : '');
         b.style.animationDelay = (this.opts.delay ?? 0.05) + k * 0.06 + 's';
-        b.innerHTML = `<span class="n">${String(k + 1).padStart(2, '0')}</span><span class="l">${it.label}${it.en ? `<span class="en">${it.en}</span>` : ''}</span>${it.val ? `<span class="val">${it.val()}</span>` : ''}${it.extra ? it.extra() : ''}`;
+        b.innerHTML = `<span class="n">${String(k + 1).padStart(2, '0')}</span><span class="l">${it.label}${it.en ? `<span class="en">${it.en}</span>` : ''}</span>${it.val ? `<span class="val">${it.val()}</span>` : ''}${it.extra ? `<span class="xtra">${it.extra()}</span>` : ''}`;
         b.addEventListener('mousemove', () => { if (this.i !== k) this.focus(k, true); });
         // clickSelects: a click/tap only selects (read the details first); the screen offers its own commit button
         b.addEventListener('click', () => { if (this.opts.clickSelects) { this.focus(k); return; } this.focus(k); this.activate(); });
@@ -27,7 +27,7 @@
     refresh() {
       this.items.forEach((it, k) => {
         const v = this.btns[k].querySelector('.val'); if (v && it.val) v.innerHTML = it.val();
-        const x = this.btns[k].querySelector('.lv'); if (x && it.extra) x.outerHTML = it.extra();
+        const x = this.btns[k].querySelector('.xtra'); if (x && it.extra) x.innerHTML = it.extra();
         this.btns[k].classList.toggle('disabled', !!(typeof it.disabled === 'function' ? it.disabled() : it.disabled));
       });
     }
@@ -556,21 +556,34 @@
       const taliaLines = ['「止弦的第三根弦有點走音，我幫你調一下。」', '「聽說方舟的刀都是手工打的？真浪漫。」', '「別死喔。我是說真的。修共鳴碑很花時間的。」', '「鐘樓今天又有兩個小孩出生了。你在下面要加油。」'];
       const shards = () => { $('#pyShards').textContent = Math.floor(sv.shards); $('#pyCrystals').textContent = sv.crystals || 0; };
       G.Mirror.st(sv);
+      if (!sv.flags.mirror_gift) { sv.flags.mirror_gift = true; G.Mirror.gain(12, '共鳴之鏡'); }
       let menu;
       // 共鳴之鏡 (Hades' Mirror of Night): each slot has two faces; Enter / the buy button strengthens the active face
       const MR = G.Mirror;
+      const pips = (n, r) => Array.from({ length: n }, (_, k) => `<i class="${k < r ? 'on' : ''}"></i>`).join('');
+      const learnt = () => { if (!sv.flags.mirror_learnt) { sv.flags.mirror_learnt = true; } };
+      const swapTo = (slot, side) => {
+        if (MR.side(slot, sv) === side) return;
+        MR.setSide(slot, side, sv); learnt();
+        g.player.recalc(); sv.tonic = Math.min(sv.tonic, g.player.maxTonic);
+        G.SFX.play('ui'); menu.refresh(); showInfo(menu.items[menu.i]); g.persist();
+      };
       const buildUp = () => MR.SLOTS.map((slot) => {
-        const fa = () => MR.face(slot, MR.side(slot, sv));
+        const chip = (side) => {
+          const f = MR.face(slot, side), r = MR.rank(slot, side, sv), on = MR.side(slot, sv) === side;
+          return `<span class="mr-f ${side} ${on ? 'on' : ''}" data-face="${side}"><b class="mr-tag">${side === 'a' ? '甲' : '乙'}</b><span class="mr-nm">${f.name}</span><span class="mr-pips">${pips(f.max, r)}</span></span>`;
+        };
         return {
-          label: '', en: '', slot,
-          extra: () => { const sd = MR.side(slot, sv), f = MR.face(slot, sd), r = MR.rank(slot, sd, sv); return `<span class="mr-name">${f.name}<em class="mr-side ${sd}">${sd === 'a' ? '甲' : '乙'}</em></span><span class="lv">${Array.from({ length: f.max }, (_, k) => `<i class="${k < r ? 'on' : ''}"></i>`).join('')}</span>`; },
+          label: '', en: '', slot, cls: 'mr',
+          left: () => swapTo(slot, 'a'), right: () => swapTo(slot, 'b'),
+          extra: () => `<span class="mr-pair">${chip('a')}<span class="mr-or" aria-hidden="true">⇄</span>${chip('b')}</span>`,
           action: () => {
             const sd = MR.side(slot, sv);
             if (!MR.buy(slot, sd, sv)) { G.SFX.play('uiBack'); return; }
             g.player.recalc();
             if (slot.id === 'tonic' && sd === 'a') sv.tonic = g.player.maxTonic;
             if (slot.id === 'vit' && sd === 'a') g.player.hp = g.player.maxHp;
-            G.SFX.play('pylon'); shards(); menu.refresh(); showInfo(menu.items[menu.i]); g.persist(); void fa;
+            learnt(); G.SFX.play('pylon'); shards(); menu.refresh(); showInfo(menu.items[menu.i]); g.persist();
           },
         };
       });
@@ -591,14 +604,20 @@
       const showInfo = (it) => {
         if (!it) return;
         if (it.slot) {
-          const slot = it.slot, sd = MR.side(slot, sv);
-          const faceHtml = (side) => {
-            const f = MR.face(slot, side), r = MR.rank(slot, side, sv), c = MR.cost(slot, side, sv), on = side === sd;
-            return `<div class="mr-face ${on ? 'on' : ''}"><p class="mr-k">${side === 'a' ? '甲面' : '乙面'}${on ? '　啟用中' : ''}</p><h4>${f.name}<em> Lv ${r} / ${f.max}</em></h4><p>${f.desc(Math.max(1, r))}</p>
-              <div class="mr-btns">${on ? `<button type="button" class="py-buy" data-buy ${c == null || sv.crystals < c ? 'disabled' : ''}>${c == null ? '已達上限' : sv.crystals < c ? `結晶不足（${c}）` : `強化（-${c} 結晶）`}</button>` : `<button type="button" class="py-buy py-swap" data-swap="${side}">切換到這一面（免費）</button>`}</div></div>`;
-          };
-          info.innerHTML = `${faceHtml('a')}${faceHtml('b')}<p class="talia">兩面只能擇一生效，可以隨時免費切換；兩面的等級分開計算。<br>殘響結晶：打倒頭目、菁英與深淵取得。</p>`;
-          info.querySelectorAll('[data-swap]').forEach((b) => { b.onclick = () => { MR.setSide(slot, b.dataset.swap, sv); g.player.recalc(); sv.tonic = Math.min(sv.tonic, g.player.maxTonic); G.SFX.play('ui'); menu.refresh(); showInfo(it); g.persist(); }; });
+          const slot = it.slot, sd = MR.side(slot, sv), od = sd === 'a' ? 'b' : 'a';
+          const f = MR.face(slot, sd), r = MR.rank(slot, sd, sv), c = MR.cost(slot, sd, sv), have = sv.crystals || 0;
+          const o = MR.face(slot, od), orank = MR.rank(slot, od, sv);
+          const guide = sv.flags.mirror_learnt ? '' : `<div class="mr-guide"><b>共鳴之鏡怎麼用</b><ol>
+            <li>每一列都有 <em class="t a">甲</em><em class="t b">乙</em> 兩種能力，<u>只有亮起的那一面會生效</u>。</li>
+            <li>點另一面（或按 ← →）就能<u>免費切換</u>，兩面的等級各自保留。</li>
+            <li>用 <span class="cry">殘響結晶</span> 強化亮起的那一面（碎片是買裝備用的）。</li></ol></div>`;
+          const btn = c == null ? '<button type="button" class="py-buy" disabled>已達最高等級</button>'
+            : have < c ? `<button type="button" class="py-buy" disabled>結晶不足：需要 ${c}・持有 ${have}</button><p class="mr-where">殘響結晶來自：菁英、頭目、岔路盡頭的寶箱、殘響深淵</p>`
+            : `<button type="button" class="py-buy" data-buy>強化到 Lv ${r + 1}<small>－${c} 結晶</small></button>`;
+          info.innerHTML = `${guide}<div class="mr-face on"><p class="mr-k"><em class="t ${sd}">${sd === 'a' ? '甲' : '乙'}</em>生效中</p><h4>${f.name}<em> Lv ${r} / ${f.max}</em></h4><p>${f.desc(Math.max(1, r))}</p>${btn}</div>
+            <div class="mr-face"><p class="mr-k"><em class="t ${od}">${od === 'a' ? '甲' : '乙'}</em>另一面・未生效</p><h4>${o.name}<em> Lv ${orank} / ${o.max}</em></h4><p>${o.desc(Math.max(1, orank))}</p>
+            <button type="button" class="py-buy py-swap" data-swap="${od}">改用這一面（免費）</button></div>`;
+          info.querySelectorAll('[data-swap]').forEach((b) => { b.onclick = () => swapTo(slot, b.dataset.swap); });
           const bb = info.querySelector('[data-buy]'); if (bb) bb.onclick = () => { if (!bb.disabled && this.top() && this.top().id === 'pylon') menu.activate(); };
           return;
         } else if (it.rk) {
@@ -615,6 +634,17 @@
         $('#pyTabs').querySelectorAll('.tab').forEach((b) => b.onclick = () => { ti = +b.dataset.k; if (tabs[ti][0] === 'codex') { ti = 0; this.openCodex(); } else if (tabs[ti][0] === 'gear') { ti = 0; this.openGear({ forge: true, onClose: () => { shards(); renderTab(); } }); } else if (tabs[ti][0] === 'travel') { ti = 0; this.openTravel(); } else if (tabs[ti][0] === 'abyss') { ti = 0; if (sv.flags.boss_1 || sv.flags.boss_dead) this.openAbyss(); else this.toast('擊倒第一章的頭目後，深淵才會開啟', 'warn'); } else if (tabs[ti][0] === 'trade') { ti = 0; this.openTrade({}); } renderTab(); });
         const items = tabs[ti][0] === 'relic' ? buildRelic() : buildUp();
         menu = new Menu($('#pyMenu'), items, { delay: 0, clickSelects: true, start: menu && menu.items.length === items.length ? menu.i : 0, onFocus: showInfo });
+        $('#pyMenu').onclick = (ev) => {
+          const fc = ev.target.closest('[data-face]'); if (!fc) return;
+          const row = fc.closest('.mi'), k = menu.btns.indexOf(row), it = menu.items[k];
+          if (it && it.slot) swapTo(it.slot, fc.dataset.face);
+        };
+        const gl = (a) => `<kbd>${G.Input.glyph(a)}</kbd>`;
+        $('#pyFoot').innerHTML = tabs[ti][0] === 'up'
+          ? (G.Input.device === 'touch' ? '點一下甲或乙就能切換　按「強化」升級亮起的那一面'
+            : G.Input.device === 'pad' ? `十字鍵 ↑↓ 選擇　←→ 換甲／乙面　${gl('confirm')} 強化　${gl('back')} 離開`
+            : `<kbd>↑</kbd><kbd>↓</kbd> 選擇　<kbd>←</kbd><kbd>→</kbd> 換甲／乙面　${gl('confirm')} 強化　${gl('back')} 離開`)
+          : `${gl('tabL')}${gl('tabR')} 切換　${gl('confirm')} 確認　${gl('back')} 離開共鳴碑`;
         showInfo(menu.items[menu.i]);
       };
       shards(); renderTab();

@@ -53,7 +53,7 @@
       const bossTr = (lv.triggers || []).find((t) => t.startEnc && bossE && lv.encounters[t.startEnc] === bossE);
       const limit = Math.min(bossE && bossE.arena ? bossE.arena[0] : lv.bounds[1], bossTr ? bossTr.x : 1e9) - 900;
       // hard: notes/items/NPCs/pylons keep their space; the rubble never splits a fight; doors never sit inside an arena
-      const spots = [], fights = [], arenas = [];
+      const spots = [], fights = [], arenas = [], wakes = [];
       for (const n of (lv.notes || []).concat(lv.items || [])) spots.push([n.x - 100, n.x + 100]);
       for (const n of lv.npcs || []) spots.push([n.x - 160, n.x + 160]);
       for (const p of lv.pylons || []) spots.push([p.x - 200, p.x + 200]);
@@ -62,18 +62,27 @@
         if (E.trigger != null) xs.push(E.trigger);
         if (E.arena) { xs.push(E.arena[0], E.arena[1]); arenas.push([E.arena[0] - 60, E.arena[1] + 60]); }
         if (xs.length) fights.push([Math.min(...xs) - 120, Math.max(...xs) + 120]);
+        // a respawning fight wakes anywhere from its trigger to trigger + 900 (game.js): doors there would bring
+        // the same foes back every time you return to them
+        if (E.respawn && E.trigger != null && !E.manual) wakes.push([E.trigger - 60, (E.arena ? E.arena[1] : E.trigger + 900) + 60]);
       }
       const hit = (list, a, b) => list.some(([p, q]) => a < q && b > p);
       const x0 = lv.start.x + 900, mid = (x0 + limit) / 2;
       let best = null, bestS = 1e9;
+      // doors that wake a respawning fight every time you come back to them feel like the foes never stay dead:
+      // first look for a spot clear of every fight window, and only then settle for one beside a fight
+      for (const strict of [true, false]) {
+      if (best) break;
       for (let x = x0; x <= limit; x += 20) {
         const g0 = ground(x); if (!g0) continue;
         let ok = true;
         for (let dx = -470; dx <= 90 && ok; dx += 15) { const g = ground(x + dx); if (!g || g.y !== g0.y) ok = false; }
         if (!ok || hit(spots, x - 470, x + 90) || hit(fights, x - 20, x + 40) || hit(arenas, x - 470, x + 90)) continue;
         // soft: prefer the middle of the chapter, and doors that are not in the middle of a roaming fight
+        if (strict && hit(wakes, x - 470, x + 90)) continue;
         const sc = Math.abs(x - mid) + (hit(fights, x - 470, x - 20) ? 1500 : 0);
         if (sc < bestS) { bestS = sc; best = { x, y: g0.y, kind: g0.kind }; }
+      }
       }
       return (this.forks[ch] = best);
     },
@@ -115,6 +124,8 @@
     /* ------------------------------------------------ building a district */
     enter(game, road) {
       const ch = G.LEVEL.chapter || 1, f = this.fork(ch); if (!f) return;
+      // walking a road is not resting: fights already won on the main path stay won when you come back
+      this.won = Object.keys(game.encState).filter((id) => game.encState[id] === 'cleared');
       game.control = false; G.SFX.play('pylon');
       G.UI.curtain(true);
       setTimeout(() => this.build(game, ch, road, f), 420);
@@ -241,6 +252,8 @@
       setTimeout(() => {
         this.detach();
         game.resetWorld();
+        for (const id of this.won || []) if (game.encState[id] !== undefined) { game.encState[id] = 'cleared'; game.save.cleared[id] = true; }
+        this.won = null;
         const P = game.player;
         P.reset(a.f.x + 170, a.f.y); P.facing = 1;
         game.cam.x = game.cam.tx = P.x + 200; game.cam.y = a.f.y - 160; game.camGround = a.f.y;
