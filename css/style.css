@@ -1132,3 +1132,10 @@ html.touch .loot-card { padding: 6px 9px; }
   .cs-feat .ico-badge { width: 34px !important; height: 34px !important; }
   .cs-feat p { font-size: 12px; }
 }
+.cs-range { display: flex; align-items: center; gap: 6px; font: 400 11px/1 var(--sans); color: var(--dim); }
+.cs-range em { font-style: normal; letter-spacing: .1em; }
+.cs-range .rg { display: flex; gap: 3px; }
+.cs-range .rg i { width: 14px; height: 5px; border-radius: 2px; background: rgba(239,233,223,.15); }
+.cs-range .rg i.on { background: var(--cc); box-shadow: 0 0 6px var(--cc); }
+.cs-range b { font: 600 11px/1 var(--sans); color: var(--cc); }
+@media (max-width: 760px), (max-height: 480px) { .cs-range em { display: none; } .cs-range .rg i { width: 9px; } }

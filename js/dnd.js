@@ -163,12 +163,17 @@
        守誓者 measured strikes of light; the 2nd blow is a shield bash, the finisher calls a pillar of light down on the foe
        巫女  the fan barely touches; every stroke throws spirit wind instead (mid range), the finisher a fan of three gusts */
     STYLE: {
-      fighter: { name: '巨刃', speed: 0.86, dmg: 1.25, bal: 1.3, lunge: 1.1, w: 1.28, trail: '#ff8f6b' },
-      rogue: { name: '雙刃', speed: 1.38, dmg: 0.74, bal: 0.8, lunge: 1.0, w: 0.95, trail: '#8dfcb0' },
-      paladin: { name: '聖光', speed: 0.95, dmg: 1.05, bal: 1.1, lunge: 1.0, w: 1.0, trail: '#ffd27a' },
-      shaman: { name: '靈風', speed: 1.05, dmg: 0.55, bal: 0.6, lunge: 0.7, w: 0.8, trail: '#c9b6ff' },
+      // w = how far the blade reaches (× the base swing box); range = the 1–4 shown on the class card
+      fighter: { name: '巨刃', speed: 0.86, dmg: 1.25, bal: 1.3, lunge: 1.1, w: 1.5, range: 3, trail: '#ff8f6b' },
+      rogue: { name: '雙刃', speed: 1.38, dmg: 0.82, bal: 0.8, lunge: 1.15, w: 0.7, range: 1, trail: '#8dfcb0' },
+      paladin: { name: '聖光', speed: 0.95, dmg: 1.05, bal: 1.1, lunge: 1.0, w: 1.0, range: 2, trail: '#ffd27a' },
+      shaman: { name: '靈風', speed: 1.05, dmg: 0.55, bal: 0.6, lunge: 0.6, w: 0.6, range: 4, trail: '#c9b6ff' },
     },
     style() { const d = this.st(); return d ? this.STYLE[d.cls] : null; },
+    rangeHtml(c) {
+      const r = this.STYLE[c].range, words = ['', '近身', '中距離', '長兵器', '遠距離'];
+      return `<span class="cs-range"><em>攻擊距離</em><span class="rg">${[1, 2, 3, 4].map((k) => `<i class="${k <= r ? 'on' : ''}"></i>`).join('')}</span><b>${words[r]}</b></span>`;
+    },
     atkSpeed() { const s = this.style(); return s ? s.speed : 1; },
     trailCol() { const s = this.style(); return s ? s.trail : null; },
     noTrail() { return this.is('shaman'); },
@@ -222,7 +227,7 @@
         }
       } else if (this.is('shaman')) {
         // the fan throws spirit wind; the finisher throws three
-        const gust = (vy, dmg, r) => g.projectiles.push({ x: x + f * 46, y: y - 74, vx: f * 640, vy, r, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: dmg, pbal: 6, life: 0.62, t: 0, col: '#c9b6ff' });
+        const gust = (vy, dmg, r) => g.projectiles.push({ x: x + f * 46, y: y - 74, vx: f * 720, vy: vy * 0.7, r, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: dmg, pbal: 6, life: 0.88, t: 0, col: '#c9b6ff' });
         if (ci === 3) { gust(-150, 9, 26); gust(0, 11, 32); gust(150, 9, 26); } else gust(0, [6, 7, 8][ci] || 7, 26);
         G.FX.ring(x, y - 2, 10, 70, 0.4, '#c9b6ff', 3, { flat: 0.25 }); G.FX.ring(x, y - 2, 6, 46, 0.4, '#f2e6cc', 2, { flat: 0.25 });   // the ritual circle
         G.SFX.play('musicbox', 1.6 + ci * 0.15);   // the shaman's bell
@@ -413,7 +418,7 @@
         <div class="cs-cards">${ORDER.map((c, k) => { const C = CLASSES[c]; return `<button type="button" class="cs-card" data-k="${k}" style="--cc:${C.col}">
           <canvas class="cs-por" width="240" height="300"></canvas>
           <span class="cs-name">${G.Icons.svg(C.icon, 22)}<b>${C.name}</b><em>${C.en}</em></span>
-          <span class="cs-style">${C.style}</span></button>`; }).join('')}</div>
+          <span class="cs-style">${C.style}</span>${this.rangeHtml(c)}</button>`; }).join('')}</div>
         <div class="cs-detail"></div>
         <footer><button type="button" class="gb-act main cs-go">以這條道路出發</button></footer></div>`;
       const cards = [...el.querySelectorAll('.cs-card')];
