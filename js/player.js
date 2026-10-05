@@ -3,12 +3,7 @@
 (function (G) {
   const U = G.U, Rig = G.Rig, A = Rig.ANIM, PI = Math.PI;
   const RUN = 390, GRAV = 2500, JUMP = -940, DJUMP = -880, MAXFALL = 1300;
-  const LIGHT = [
-    { dmg: 10, bal: 7, lunge: 140, cancel: 0.26, box: { x: 0, y: -140, w: 118, h: 140 }, pitch: 1.0 },
-    { dmg: 11, bal: 7, lunge: 150, cancel: 0.22, box: { x: 0, y: -160, w: 112, h: 160 }, pitch: 1.1 },
-    { dmg: 13, bal: 9, lunge: 170, cancel: 0.26, box: { x: -10, y: -140, w: 128, h: 140 }, pitch: 0.95 },
-    { dmg: 24, bal: 20, lunge: 330, cancel: 0.5, box: { x: -40, y: -170, w: 175, h: 175 }, pitch: 0.8, big: true },
-  ];
+  // light-attack steps (reach, timing, damage) belong to the weapon's form: js/forms.js
   const STAM = { light: 9, heavy: 20, dodge: 17, air: 8 };
   const ATTACK_STATES = ['light', 'air', 'heavy', 'skill1', 'skill2', 'execute', 'counter'];
 
@@ -283,27 +278,42 @@
     }
 
     startLight(ci) {
-      this.ci = ci; this.setState('light', ci === 0 ? 0.05 : 0.03);
+      // the weapon decides the move (js/forms.js): a spear thrusts, a hammer smashes, a scythe reaps
+      this.ci = ci; this.step = G.Forms.step(this, ci); this.hitWin = -1; this.setState('light', ci === 0 ? 0.05 : 0.03);
       this.spendSta(STAM.light + ci * 2);
-      this.vx = this.facing * LIGHT[ci].lunge;
       const mx = G.Input.moveX(); if (mx) this.facing = mx > 0 ? 1 : -1; else this.autoFace();
-      this.vx = this.facing * LIGHT[ci].lunge * G.DnD.lungeMul(ci);
+      this.vx = this.facing * this.step.lunge * G.DnD.lungeMul(ci);
       G.DnD.onLightStart(this, ci);
       G.Boons.onLight(this);
       this.trail.clear(); this.queued = false;
     }
     updLight(dt, ctl) {
-      const I = G.Input, an = A.light[this.ci], L = LIGHT[this.ci];
+      const I = G.Input, L = this.step || (this.step = G.Forms.step(this, this.ci)), an = L.anim;
+      const wins = L.hits || [an.active], last = wins[wins.length - 1];
       this.vx = U.approach(this.vx, 0, (this.ci === 3 ? 900 : 1300) * dt);
-      if (this.ci === 3 && this.st > 0.12 && this.st < 0.34) this.vx = this.facing * 260;
-      if (this.st >= an.active[0] && this.st <= an.active[1]) {
+      if (L.drive && this.st > L.drive[0] && this.st < L.drive[1]) this.vx = this.facing * L.drive[2];
+      if (L.dash && this.st > L.dash[0] && this.st < L.dash[1]) {
+        // the iai: through the foe, untouchable while passing
+        if (!this.dashFx) { this.dashFx = true; G.FX.ghost({ x: this.x, y: this.y, facing: this.facing, pose: Object.assign({}, this.pose) }, G.DnD.trailCol() || '#7ff4ff', 0.4, 0.7); G.SFX.play('dodge', 1.2); }
+        this.vx = this.facing * L.dash[2]; this.iframes = Math.max(this.iframes, 0.12);
+      } else if (L.dash && this.st > L.dash[1] && this.st < L.dash[1] + 0.05) this.vx = this.facing * 120;
+      if (this.st < 0.05) this.dashFx = false;
+      const wi = wins.findIndex((w) => this.st >= w[0] && this.st <= w[1]);
+      if (wi >= 0) {
         let first = false;
-        if (!this.swung) { this.swung = true; first = true; G.SFX.play('slash', L.pitch, !!L.big); }
-        const CL = G.DnD.light(L, this.ci);   // each class's own reach and weight
-        this.doHits(CL.box, { dmg: CL.dmg, bal: CL.bal, big: L.big, launch: this.ci === 3 });
+        if (wi !== this.hitWin) {
+          // each hit window strikes afresh (twinblades cut twice, the rapier thrusts three times)
+          if (this.hitWin >= 0) this.hitSet.clear();
+          first = this.hitWin < 0; this.hitWin = wi;
+          G.SFX.play('slash', L.pitch * (1 + wi * 0.06), !!L.big && wi === wins.length - 1);
+          G.Forms.fx(this, this.ci, L, wi);
+        }
+        this.swung = true;
+        const CL = G.DnD.light(L, this.ci);   // the class's own touch (the paladin's shield bash)
+        this.doHits(CL.box, { dmg: CL.dmg, bal: CL.bal, big: L.big && wi === wins.length - 1, launch: !!L.launch });
         if (first) G.DnD.onSwing(this, this.ci);
-      } else if (this.st < an.active[0]) this.swung = false;
-      if (this.ci === 3 && this.st > 0.36 && !this.slamFx) { this.slamFx = true; G.FX.dust(this.x + this.facing * 40, this.y, 14, { w: 60, speed: 220, size: 12 }); G.FX.ring(this.x + this.facing * 50, this.y, 6, 120, 0.35, '#7ff4ff', 4, { flat: 0.15 }); this.game.shake(0.25); }
+      } else if (this.st < wins[0][0]) { this.swung = false; this.hitWin = -1; }
+      if (L.slam && this.st > L.slam && !this.slamFx) { this.slamFx = true; G.FX.dust(this.x + this.facing * 40, this.y, 14, { w: 60, speed: 220, size: 12 }); G.FX.ring(this.x + this.facing * 50, this.y, 6, 120, 0.35, '#7ff4ff', 4, { flat: 0.15 }); this.game.shake(0.25); }
       if (this.st < 0.1) this.slamFx = false;
       if (!ctl) { if (this.st >= an.dur) this.setState('move', 0.12); return; }
       // holding the attack button through the wind-up turns the opener into a charged heavy
@@ -318,7 +328,7 @@
           if (ex) { I.consume('light'); this.startExecute(ex); return; }
           if (this.sta > 0) { I.consume('light'); this.startLight(this.ci + 1); return; }
         }
-        if (this.st > an.active[1] && this.tryCancel(false)) return;
+        if (this.st > last[1] && this.tryCancel(false)) return;
       }
       if (this.st >= an.dur) this.setState('move', 0.14);
     }
@@ -630,7 +640,7 @@
         case 'guard': return Rig.full(A.guard(t));
         case 'parried': return Rig.sample(A.parried, st);
         case 'blocked': return Rig.sample(A.blocked, st);
-        case 'light': return Rig.sample(A.light[this.ci], st);
+        case 'light': return Rig.sample((this.step && this.step.anim) || A.light[this.ci], st);
         case 'air': return Rig.sample(A.air, st);
         case 'charge': return Rig.full(A.charge(t, this.chargeK));
         case 'heavy': return Rig.sample(A.heavy, st);
@@ -648,7 +658,7 @@
       return Rig.full(A.idle(t));
     }
     animFor(s) {
-      return { light: A.light[this.ci], air: A.air, heavy: A.heavy, counter: A.light[2], skill1: A.skill1, execute: A.execute, skill2: A.skill2 }[s];
+      return { light: (this.step && this.step.anim) || A.light[this.ci], air: A.air, heavy: A.heavy, counter: A.light[2], skill1: A.skill1, execute: A.execute, skill2: A.skill2 }[s];
     }
     sampleTrail(st0, st1, now) {
       const an = this.animFor(this.state); if (!an) return;

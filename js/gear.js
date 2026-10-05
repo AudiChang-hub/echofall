@@ -291,7 +291,7 @@
         }
       }
       const w = G_.get(sv, sv.gear.weapon), C = w ? CLASSES[def(w).cls] : CLASSES.katana;
-      t.look = { cls: w ? w.cls : null, len: C.len, w: C.w, shape: C.shape || null, col: w && w.aff && AFF[w.aff] ? AFF[w.aff].col : null, r: w ? w.r : 0 };
+      t.look = { cls: w ? def(w).cls : null, len: C.len, w: C.w, shape: C.shape || null, col: w && w.aff && AFF[w.aff] ? AFF[w.aff].col : null, r: w ? w.r : 0 };
       // paper doll: what Rinne wears on her head and body (js/rig.js redraws her outfit from these)
       const hd = G_.get(sv, sv.gear.head), bd = G_.get(sv, sv.gear.body);
       t.outfit = { head: hd ? hd.base : null, body: bd ? bd.base : null };

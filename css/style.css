@@ -1148,3 +1148,6 @@ html.touch .loot-card { padding: 6px 9px; }
 html.touch .hud-pause { display: none; }
 #hud.cine .hud-pause { pointer-events: none; }
 #hud:not(.show) .hud-pause { pointer-events: none; }
+/* the weapon's moveset, under its scaling (each family fights differently: js/forms.js) */
+.gd-form { margin-top: 6px; font: 400 12px/1.55 var(--sans); color: var(--dim); }
+.gd-form b { display: inline-block; margin-right: 8px; padding: 2px 7px; border: 1px solid rgba(127,244,255,.35); border-radius: 3px; font: 600 11px/1.3 var(--sans); letter-spacing: .12em; color: var(--cyan); }

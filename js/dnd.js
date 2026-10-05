@@ -75,11 +75,12 @@
       const sc = SCALE[wc] || {}, d = this.st();
       const grades = Object.keys(sc).map((k) => { const a = ATTRS.find((q) => q.id === k); return `<span class="wg" style="--ac:${a.col}">${G.Icons.svg(k, 13)}${a.name}<b>${sc[k]}</b></span>`; }).join('');
       const prof = !d ? '' : this.proficient(wc) ? `<span class="wp on">${G.Icons.svg(CLASSES[d.cls].icon, 13)}${CLASSES[d.cls].name}熟練　傷害 +10%</span>` : '<span class="wp">非本職業武器</span>';
-      return `<p class="gd-scale">屬性補正 ${grades}${prof}</p>`;
+      const fm = G.Forms && G.Forms.info(wc);
+      return `<p class="gd-scale">屬性補正 ${grades}${prof}</p>` + (fm ? `<p class="gd-form"><b>招式・${fm.name}</b>${fm.desc}</p>` : '');
     },
-    // loot: about seven in ten weapons are ones your class is trained in
+    // loot: about eight in ten weapons are ones your class is trained in
     pickWeapon(keys, defOf) {
-      const d = this.st(); if (!d || Math.random() > 0.7) return null;
+      const d = this.st(); if (!d || Math.random() > 0.8) return null;
       const mine = keys.filter((k) => PROF[d.cls].includes(defOf(k).cls));
       return mine.length ? mine[Math.floor(Math.random() * mine.length)] : null;
     },
@@ -157,35 +158,38 @@
     rest(P) { P.windUsed = false; },
     update(P, dt) { if (P.sneakT > 0) P.sneakT -= dt; if (P.smiteT > 0) P.smiteT -= dt; },
 
-    /* ------------------------------------------------ fighting styles: each class's plain attacks look and work differently
-       劍巫  heavy cleaves (slower, wider, harder) trailing embers; the combo ends in a ground-splitting slam
-       影行者 twin-blade flurry (much faster); every cut is followed by a shadow cut, the 3rd step dashes through, the finisher appears behind the foe
-       守誓者 measured strikes of light; the 2nd blow is a shield bash, the finisher calls a pillar of light down on the foe
-       巫女  the fan barely touches; every stroke throws spirit wind instead (mid range), the finisher a fan of three gusts */
+    /* ------------------------------------------------ class techniques laid over the weapon's own moves
+       The weapon decides how a combo moves, reaches and lands (js/forms.js); the class adds its touch on top:
+       劍巫  a little heavier; embers on every blow; the finisher splits the ground
+       影行者 a little quicker; every blow is followed by a shadow cut, the 3rd step dashes, the finisher appears behind the foe
+       守誓者 with the shield on the arm the 2nd blow is a shield bash; the finisher calls a pillar of light
+       巫女  the fan throws spirit wind; with any other weapon, the finisher still lets one gust go */
     STYLE: {
-      // w = how far the blade reaches (× the base swing box); range = the 1–4 shown on the class card
-      fighter: { name: '巨刃', speed: 0.86, dmg: 1.25, bal: 1.3, lunge: 1.1, w: 1.5, range: 3, trail: '#ff8f6b' },
-      rogue: { name: '雙刃', speed: 1.38, dmg: 0.82, bal: 0.8, lunge: 1.15, w: 0.7, range: 1, trail: '#8dfcb0' },
-      paladin: { name: '聖光', speed: 0.95, dmg: 1.05, bal: 1.1, lunge: 1.0, w: 1.0, range: 2, trail: '#ffd27a' },
-      shaman: { name: '靈風', speed: 1.05, dmg: 0.55, bal: 0.6, lunge: 0.6, w: 0.6, range: 4, trail: '#c9b6ff' },
+      // range = the 1–4 shown on the class card (the class's starting weapon)
+      fighter: { name: '巨刃', speed: 0.95, dmg: 1.1, bal: 1.2, lunge: 1.0, range: 3, trail: '#ff8f6b' },
+      rogue: { name: '雙刃', speed: 1.12, dmg: 0.92, bal: 0.9, lunge: 1.05, range: 1, trail: '#8dfcb0' },
+      paladin: { name: '聖光', speed: 1.0, dmg: 1.0, bal: 1.05, lunge: 1.0, range: 2, trail: '#ffd27a' },
+      shaman: { name: '靈風', speed: 1.0, dmg: 0.9, bal: 0.85, lunge: 0.9, range: 4, trail: '#c9b6ff' },
     },
     style() { const d = this.st(); return d ? this.STYLE[d.cls] : null; },
     rangeHtml(c) {
       const r = this.STYLE[c].range, words = ['', '近身', '中距離', '長兵器', '遠距離'];
-      return `<span class="cs-range"><em>攻擊距離</em><span class="rg">${[1, 2, 3, 4].map((k) => `<i class="${k <= r ? 'on' : ''}"></i>`).join('')}</span><b>${words[r]}</b></span>`;
+      return `<span class="cs-range"><em>初始武器距離</em><span class="rg">${[1, 2, 3, 4].map((k) => `<i class="${k <= r ? 'on' : ''}"></i>`).join('')}</span><b>${words[r]}</b></span>`;
     },
     atkSpeed() { const s = this.style(); return s ? s.speed : 1; },
     trailCol() { const s = this.style(); return s ? s.trail : null; },
-    noTrail() { return this.is('shaman'); },
+    noTrail() { const P = G.game && G.game.player; return G.Forms && P ? G.Forms.family(P) === 'fan' : false; },
     // the light-attack box and numbers for this class
     light(L, ci) {
       const s = this.style(); if (!s) return { box: L.box, dmg: L.dmg, bal: L.bal };
-      const box = { x: L.box.x, y: L.box.y, w: L.box.w * s.w, h: L.box.h };
+      const box = L.box;
       let bal = L.bal * s.bal;
-      if (this.is('paladin') && ci === 1) { box.w *= 0.8; bal *= 2.4; }    // the shield bash
+      if (ci === 1 && this.bashing()) bal *= 2.4;    // the shield bash
       return { box, dmg: L.dmg * s.dmg, bal };
     },
-    lungeMul(ci) { const s = this.style(); if (!s) return 1; return this.is('rogue') && ci === 2 ? 2.4 : s.lunge; },
+    lungeMul(ci) { const s = this.style(); if (!s) return 1; return this.is('rogue') && ci === 2 ? 1.8 : s.lunge; },
+    // the paladin bashes with the shield only while one is on the arm (one-handed weapons)
+    bashing() { const P = G.game && G.game.player; return this.is('paladin') && this.offhand(P && P.gear && P.gear.look) === 'shield'; },
     onLightStart(P, ci) {
       if (this.is('rogue') && ci === 3) {
         // the finisher: step through the shadow and appear behind the nearest foe in front
@@ -203,8 +207,6 @@
     onSwing(P, ci) {
       const f = P.facing, x = P.x, y = P.y, g = G.game;
       if (this.is('fighter')) {
-        G.FX.slashMark(x + f * 70, y - 80, f > 0 ? -0.5 + ci * 0.3 : Math.PI + 0.5 - ci * 0.3, 210, '#ff8f6b', 0.36, 22);
-        G.FX.slashMark(x + f * 70, y - 80, f > 0 ? -0.5 + ci * 0.3 : Math.PI + 0.5 - ci * 0.3, 170, '#fff1e0', 0.22, 8);
         G.FX.ember(x + f * 70, y - 80, 10, '#ff8f6b', { w: 80, h: 60, up: 60 });
         if (ci === 3) {   // ground-splitting slam
           g.shake(0.6); G.SFX.play('impact');
@@ -216,8 +218,8 @@
         G.FX.slashMark(x + f * 55, y - 85, f > 0 ? 0.6 : Math.PI - 0.6, 120, '#b8ffd0', 0.22, 7);
         G.FX.slashMark(x + f * 55, y - 85, f > 0 ? -0.6 : Math.PI + 0.6, 120, '#8dfcb0', 0.22, 7);
       } else if (this.is('paladin')) {
-        G.FX.slashMark(x + f * 60, y - 80, f > 0 ? -0.2 : Math.PI + 0.2, 150, '#fff1c2', 0.3, 11);
-        if (ci === 1) { G.FX.flash(x + f * 40, y - 80, 110, 0.25, '#ffd27a'); G.FX.ring(x + f * 50, y - 80, 6, 80, 0.25, '#ffd27a', 4); G.SFX.play('parry', false); }
+        G.FX.star(x + f * 60, y - 90, '#fff1c2', 40, 0.25);
+        if (ci === 1 && this.bashing()) { G.FX.flash(x + f * 40, y - 80, 110, 0.25, '#ffd27a'); G.FX.ring(x + f * 50, y - 80, 6, 80, 0.25, '#ffd27a', 4); G.SFX.play('parry', false); }
         if (ci === 3) {   // a pillar of light falls on whatever stands in front
           let tx = x + f * 160;
           for (const e of g.enemies) if (!e.dead && Math.abs(e.y - y) < 140 && (e.x - x) * f > 0 && (e.x - x) * f < 360) { tx = e.x; break; }
@@ -226,15 +228,13 @@
           this.area(P, { x: tx - 60, y: y - 200, w: 120, h: 200 }, 14, 20);
         }
       } else if (this.is('shaman')) {
-        // the fan throws spirit wind; the finisher throws three
-        // hold down / up while swinging to send the wind slanting down / up (reach a lower ledge, a flier above)
-        const aim = G.Input.down('down') ? 1 : G.Input.down('up') ? -1 : 0;
-        const gust = (vy, dmg, r) => g.projectiles.push({ x: x + f * 46, y: y - 66, vx: f * 720 * (aim ? 0.86 : 1), vy: vy * 0.7 + aim * 400, r, rh: aim ? r : 66, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: dmg, pbal: 6, life: 0.88, t: 0, col: '#c9b6ff' });
-        if (ci === 3) { gust(-150, 9, 26); gust(0, 11, 32); gust(150, 9, 26); } else gust(0, [6, 7, 8][ci] || 7, 26);
-        G.FX.ring(x, y - 2, 10, 70, 0.4, '#c9b6ff', 3, { flat: 0.25 }); G.FX.ring(x, y - 2, 6, 46, 0.4, '#f2e6cc', 2, { flat: 0.25 });   // the ritual circle
-        G.SFX.play('musicbox', 1.6 + ci * 0.15);   // the shaman's bell
-        for (let i = 0; i < 3; i++) G.FX.ember(x + f * 40, y - 80, 1, ['#f2e6cc', '#c9b6ff', '#d43b3f'][i], { w: 20, h: 20, up: 30 });
-        G.SFX.play('whoosh', 1.3 + ci * 0.05);
+        // with the fan, the wind is the weapon itself (js/forms.js); with anything else the finisher still lets one gust go
+        const fan = G.Forms.family(P) === 'fan';
+        if (!fan && ci === 3) {
+          g.projectiles.push({ x: x + f * 46, y: y - 66, vx: f * 680, vy: 0, r: 30, rh: 66, owner: null, friendly: true, kind: 'wind', pierce: true, hit: new Set(), pdmg: 9, pbal: 6, life: 0.7, t: 0, col: '#c9b6ff' });
+          G.FX.ring(x, y - 2, 10, 70, 0.4, '#c9b6ff', 3, { flat: 0.25 }); G.SFX.play('musicbox', 1.9);
+        }
+        if (!fan) for (let i = 0; i < 2; i++) G.FX.ember(x + f * 50, y - 80, 1, ['#f2e6cc', '#c9b6ff'][i], { w: 30, h: 30, up: 40 });
       }
     },
     // a class flourish that strikes everything in a box (separate from the blade's own hit, so the same foe can take both)
