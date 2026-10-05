@@ -197,6 +197,7 @@
         $('#skName').textContent = v >= 50 ? '終止式' : '斷弦'; $('#skCost').textContent = v >= 50 ? '◆◆' : '◆';
       });
       set('shards', Math.floor(g.save.shards), (v) => { const s = $('#shardNum'); s.textContent = v; const p = s.parentElement; p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); });
+      set('gearUp', G.Gear ? G.Gear.hasNewBetter(g.save) : false, (v) => { $('#gearUp').hidden = !v; });
       set('tonic', g.save.tonic, (v) => { $('#tonicNum').textContent = v; $('.tonic').classList.toggle('empty', v <= 0); });
       set('drop', !!g.save.drop, (v) => $('#dropInd').classList.toggle('show', v));
       // owned Echoes as small coloured sigils (level pips under each)
@@ -289,7 +290,8 @@
         { label: '繼續', en: 'RESUME', action: resume },
         ...(this._tutSkipItem ? [{ label: '跳過戰鬥訓練', en: 'SKIP TRAINING', action: () => { resume(); G.Tut.skip(); } }] : []),
         { label: '全螢幕', en: 'FULLSCREEN', action: () => G.Fullscreen.toggle() },
-        { label: '裝備', en: 'EQUIPMENT', action: () => this.openGear() },
+        { label: '裝備', en: G.Gear && G.Gear.anyBetter(g.save) ? '▲ 有可替換的裝備' : 'EQUIPMENT', action: () => this.openGear() },
+        { label: '殘響・遺物', en: 'BUILD', action: () => this.openBuild() },
         { label: '檔案庫', en: 'ARCHIVE', action: () => this.openCodex() },
         { label: '存檔碼', en: 'SAVE CODE', action: () => this.openSaveCode(true) },
         { label: '設定', en: 'SETTINGS', action: () => this.openSettings() },
@@ -541,7 +543,7 @@
     openPylon(py, onLeave) {
       const g = G.game, sv = g.save, el = $('#pylon');
       $('#pyName').textContent = py.name;
-      const tabs = [['up', '調校'], ['gear', '裝備・鍛造'], ['relic', '遺物'], ['codex', '檔案庫']];
+      const tabs = [['up', '調校'], ['gear', G.Gear && G.Gear.anyBetter(sv) ? '裝備・鍛造 ▲' : '裝備・鍛造'], ['relic', '遺物'], ['codex', '檔案庫']];
       let ti = 0;
       const info = $('#pyInfo');
       const taliaLines = ['「止弦的第三根弦有點走音，我幫你調一下。」', '「聽說方舟的刀都是手工打的？真浪漫。」', '「別死喔。我是說真的。修共鳴碑很花時間的。」', '「鐘樓今天又有兩個小孩出生了。你在下面要加油。」'];
@@ -660,7 +662,9 @@
       ok.onclick = (e) => { e.stopPropagation(); pick(); };
       // keyboard / pad start on the first card; touch and mouse start with nothing chosen
       if (G.Input.device === 'kb' || G.Input.device === 'pad') focus(0);
-      this.push({ id: 'boon', el, handle: (dt) => {
+      // the fight holds still while you read the cards
+      const g = G.game, wasPlay = g.state === 'play'; if (wasPlay) g.state = 'paused';
+      this.push({ id: 'boon', el, onClose: () => { if (wasPlay && g.state === 'paused') g.state = 'play'; G.Input.clearBuffers(); }, handle: (dt) => {
         lock -= dt; if (picked) return;
         const In = I();
         if (In.tap('menuLeft') || In.tap('left')) focus(i < 0 ? 0 : (i + cards.length - 1) % cards.length);

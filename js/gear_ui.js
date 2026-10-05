@@ -73,6 +73,11 @@
       const g = G.game, sv = g.save; GR.ensure(sv);
       const el = root(), forge = !!opts.forge;
       let si = 0, li = 0, armed = null;
+      const wasPlay = g.state === 'play'; if (wasPlay) g.state = 'paused';
+      const seen = new Set();
+      const clearSeen = () => { for (const it of sv.inv) if (seen.has(it.uid)) delete it.n; seen.clear(); };
+      // open on the first slot that has something better waiting
+      { const k = SLOTS.findIndex(([key]) => GR.betterCount(sv, key.startsWith('tal') ? 'talisman' : key) > 0); if (k >= 0) si = k; }
       el.querySelector('.gr-mode').textContent = forge ? '共鳴碑 · 可強化與分解' : '';
       const slotKey = () => SLOTS[si][0];
       const slotType = () => (slotKey().startsWith('tal') ? 'talisman' : slotKey());
@@ -90,19 +95,20 @@
 
       const renderSlots = () => {
         el.querySelector('.gr-slots').innerHTML = SLOTS.map(([k, label], i) => {
-          const w = worn(k), R = w ? GR.RARITY[w.r] : null;
-          return `<button type="button" class="gs ${i === si ? 'on' : ''}" data-i="${i}" style="${R ? `--rc:${R.col}` : ''}"><span class="gs-l">${label}</span>
+          const w = worn(k), R = w ? GR.RARITY[w.r] : null, up = GR.betterCount(sv, k.startsWith('tal') ? 'talisman' : k);
+          return `<button type="button" class="gs ${i === si ? 'on' : ''}" data-i="${i}" style="${R ? `--rc:${R.col}` : ''}"><span class="gs-l">${label}${up ? `<i class="gs-up">▲${up}</i>` : ''}</span>
             <span class="gs-n">${w ? `<i class="gi">${GR.icon(w)}</i>${esc(GR.name(w))}` : '<em>— 空 —</em>'}</span></button>`;
         }).join('');
-        el.querySelectorAll('.gs').forEach((b) => { b.onclick = () => { si = +b.dataset.i; li = 0; armed = null; G.SFX.play('ui'); render(); }; });
+        el.querySelectorAll('.gs').forEach((b) => { b.onclick = () => { clearSeen(); si = +b.dataset.i; li = 0; armed = null; G.SFX.play('ui'); render(); }; });
       };
       const renderList = () => {
         const list = items(), host = el.querySelector('.gr-list');
+        list.forEach((it) => { if (it.n) seen.add(it.uid); });
         li = Math.max(0, Math.min(li, list.length - 1));
         host.innerHTML = list.length ? list.map((it, i) => {
           const R = GR.RARITY[it.r], ww = worn(slotKey()) === it;
           return `<button type="button" class="gl ${i === li ? 'on' : ''}" data-i="${i}" style="--rc:${R.col}"><i class="gi">${GR.icon(it)}</i>
-            <span class="gl-n">${esc(GR.name(it))}<small>${esc(statShort(it))}</small></span>${ww ? badge('worn') : badge(GR.verdict(sv, it))}</button>`;
+            <span class="gl-n">${it.n ? '<i class="gl-new">NEW</i>' : ''}${esc(GR.name(it))}<small>${esc(statShort(it))}</small></span>${ww ? badge('worn') : badge(GR.verdict(sv, it))}</button>`;
         }).join('') : `<p class="gl-empty">還沒有${GR.slotName[slotType()]}。<br>打倒敵人有機率掉落，菁英與頭目必定掉落。</p>`;
         host.querySelectorAll('.gl').forEach((b) => { b.onclick = () => { if (li !== +b.dataset.i) { li = +b.dataset.i; armed = null; G.SFX.play('ui'); renderList(); renderDetail(); } }; });
         const on = host.querySelector('.gl.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest' });
@@ -159,18 +165,67 @@
       };
       el.querySelector('.gr-best').onclick = best;
       const close = () => { if (this.stack.some((l) => l.id === 'gear')) { while (this.top() && this.top().id !== 'gear') this.pop(); G.SFX.play('uiBack'); this.pop(); opts.onClose && opts.onClose(); } };
+      const onClose = () => { clearSeen(); g.persist && g.persist(); if (wasPlay && g.state === 'paused') g.state = 'play'; G.Input.clearBuffers(); };
       el.querySelector('.gr-close').onclick = close;
       render();
-      this.push({ id: 'gear', el, handle: () => {
+      this.push({ id: 'gear', el, onClose, handle: () => {
         const In = I();
         if (In.tap('back')) close();
-        else if (In.tap('tabL')) { si = (si + SLOTS.length - 1) % SLOTS.length; li = 0; armed = null; G.SFX.play('ui'); render(); }
-        else if (In.tap('tabR')) { si = (si + 1) % SLOTS.length; li = 0; armed = null; G.SFX.play('ui'); render(); }
+        else if (In.tap('tabL')) { clearSeen(); si = (si + SLOTS.length - 1) % SLOTS.length; li = 0; armed = null; G.SFX.play('ui'); render(); }
+        else if (In.tap('tabR')) { clearSeen(); si = (si + 1) % SLOTS.length; li = 0; armed = null; G.SFX.play('ui'); render(); }
         else if (In.tap('menuUp')) { li = Math.max(0, li - 1); armed = null; G.SFX.play('ui'); renderList(); renderDetail(); }
         else if (In.tap('menuDown')) { li = Math.min(items().length - 1, li + 1); armed = null; G.SFX.play('ui'); renderList(); renderDetail(); }
         else if (In.tap('confirm')) { const it = items()[li]; if (it) act(worn(slotKey()) === it ? (forge && it.slot === 'weapon' ? 'up' : 'off') : 'on'); }
         else if (In.tap('heal')) act('sal');
       } });
     },
+
+    /* -------------------------------------------------------- build overview: echoes · relics · gear · stats */
+    openBuild() {
+      const g = G.game, sv = g.save, P = g.player, D = G.DATA; GR.ensure(sv);
+      let el = $('#buildScreen');
+      if (!el) {
+        el = document.createElement('section'); el.id = 'buildScreen'; el.className = 'screen modal';
+        el.innerHTML = '<div class="build"><header class="gr-head"><div class="gr-title"><b>殘響・遺物</b><em>BUILD</em></div><button type="button" class="x-close bd-close" aria-label="關閉">✕</button></header><div class="bd-body"></div></div>';
+        document.getElementById('ui').appendChild(el);
+      }
+      const wasPlay = g.state === 'play'; if (wasPlay) g.state = 'paused';
+      const E = G.ECHOES || {}, boons = sv.boons || {};
+      const echoes = Object.keys(boons).filter((id) => E[id]).map((id) => {
+        const d = E[id], lv = boons[id];
+        return `<li style="--c:${d.col}"><i class="bd-ico">${d.icon}</i><div><b>${d.name}<em>Lv ${lv} / ${d.max}</em></b><p>${d.desc(lv)}</p></div></li>`;
+      }).join('') || '<li class="bd-none">還沒有共鳴回響。打贏戰鬥後可以從三張卡中選一張，會一路帶到下一章。</li>';
+      const owned = Object.keys(D.relics || {}).filter((k) => sv.flags['relic_' + k]);
+      const relic = (k, on) => `<li class="${on ? '' : 'off'}"><i class="bd-ico rel">◆</i><div><b>${D.relics[k].name}<em>${on ? '裝備中' : '未裝備'}</em></b><p>${D.relics[k].desc}</p></div></li>`;
+      const relics = (sv.equipped || []).map((k) => D.relics[k] ? relic(k, true) : '').join('') + owned.filter((k) => !(sv.equipped || []).includes(k)).map((k) => relic(k, false)).join('')
+        || '<li class="bd-none">還沒有遺物。打倒菁英、完成支線就能取得。</li>';
+      const gearRow = (label, it) => `<li style="--rc:${it ? GR.RARITY[it.r].col : 'var(--faint)'}"><span>${label}</span><b>${it ? `<i class="gi">${GR.icon(it)}</i>${esc(GR.name(it))}` : '— 空 —'}</b></li>`;
+      const gear = gearRow('武器', GR.get(sv, sv.gear.weapon)) + gearRow('頭部', GR.get(sv, sv.gear.head)) + gearRow('身體', GR.get(sv, sv.gear.body))
+        + sv.gear.tal.map((u, i) => gearRow('護符 ' + ['Ⅰ', 'Ⅱ', 'Ⅲ'][i], GR.get(sv, u))).join('');
+      const up = GR.anyBetter(sv);
+      el.querySelector('.bd-body').innerHTML = `
+        <section><h4>共鳴回響 <em>ECHOES</em></h4><ul class="bd-list">${echoes}</ul></section>
+        <section><h4>遺物 <em>RELICS · ${(sv.equipped || []).length}/2</em></h4><ul class="bd-list">${relics}</ul><p class="bd-hint">遺物要在共鳴碑 →「遺物」更換。</p></section>
+        <section><h4>裝備 <em>EQUIPMENT</em></h4><ul class="bd-gear">${gear}</ul>
+          <button type="button" class="gb-act main bd-go">${up ? '▲ 有更強的裝備，前往裝備' : '前往裝備'}</button>
+          <ul class="bd-stats"><li><span>攻擊倍率</span><b>×${P.dmgMul.toFixed(2)}</b></li><li><span>受到傷害</span><b>${Math.round((P.dmgTaken || 1) * 100)}%</b></li>
+          <li><span>最大生命</span><b>${P.maxHp}</b></li><li><span>耐力</span><b>${Math.round(P.maxSta)}</b></li><li><span>完美格擋判定</span><b>${Math.round(P.parryWin * 1000)}ms</b></li></ul></section>`;
+      const close = () => { if (this.top() && this.top().id === 'build') { G.SFX.play('uiBack'); this.pop(); } };
+      el.querySelector('.bd-close').onclick = close;
+      el.querySelector('.bd-go').onclick = () => { this.pop(); this.openGear(); };
+      this.push({ id: 'build', el, onClose: () => { if (wasPlay && g.state === 'paused') g.state = 'play'; G.Input.clearBuffers(); }, handle: () => { if (I().tap('back') || I().tap('confirm')) close(); } });
+    },
   });
+  const hudOpen = (fn) => (e) => {
+    e.stopPropagation();
+    const g = G.game;
+    if (!g || g.state !== 'play' || G.UI.stack.length || !g.control) return;
+    fn();
+  };
+  const bindHud = () => {
+    const up = document.getElementById('gearUp'), ec = document.getElementById('echoes');
+    if (up) { up.addEventListener('click', hudOpen(() => G.UI.openGear())); up.addEventListener('pointerdown', (e) => e.stopPropagation()); }
+    if (ec) { ec.addEventListener('click', hudOpen(() => G.UI.openBuild())); ec.addEventListener('pointerdown', (e) => e.stopPropagation()); }
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindHud); else bindHud();
 })(window.G);

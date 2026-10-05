@@ -267,6 +267,9 @@
       }
       const w = G_.get(sv, sv.gear.weapon), C = w ? CLASSES[def(w).cls] : CLASSES.katana;
       t.look = { len: C.len, w: C.w, col: w && w.aff && AFF[w.aff] ? AFF[w.aff].col : null, r: w ? w.r : 0 };
+      // paper doll: what Rinne wears on her head and body (js/rig.js redraws her outfit from these)
+      const hd = G_.get(sv, sv.gear.head), bd = G_.get(sv, sv.gear.body);
+      t.outfit = { head: hd ? hd.base : null, body: bd ? bd.base : null };
       return t;
     },
     equip(sv, it, talSlot) {
@@ -332,6 +335,10 @@
       const d = score(it) - score(cur);
       return d > 0 ? 'up' : d < 0 ? 'down' : 'same';
     },
+    // unworn items that would beat what is worn (per slot type) — drives the ▲ badges and the HUD chip
+    betterCount(sv, type) { G_.ensure(sv); return sv.inv.filter((i) => i.slot === type && G_.verdict(sv, i) === 'up').length; },
+    anyBetter(sv) { if (!sv) return false; G_.ensure(sv); return sv.inv.some((i) => G_.verdict(sv, i) === 'up'); },
+    hasNewBetter(sv) { if (!sv || !sv.inv) return false; return sv.inv.some((i) => i.n && G_.verdict(sv, i) === 'up'); },
     icon(it) { return it.slot === 'weapon' ? CLASSES[def(it).cls].glyph : it.slot === 'head' ? '盔' : it.slot === 'body' ? '甲' : '符'; },
     desc(it) {
       const d = def(it);
@@ -393,6 +400,7 @@
         if (spare && (spare.r < it.r || score(spare) < score(it))) G_.salvage(sv, spare);
         else { const v = G_.salvageValue(it); sv.shards += v.shards; sv.stones += v.stones; G.UI.toast(`背包已滿：${name(it)} 自動分解`, 'warn'); return; }
       }
+      it.n = 1;   // unseen until the equipment screen shows it
       sv.inv.push(it);
       const rc = RARITY[it.r].col;
       G.SFX.play(it.r >= 2 ? 'discover' : 'pickup', it.r >= 3 ? 1 : 1.3);

@@ -140,8 +140,7 @@
     },
     startChapter(id) {
       const def = G.Chapters.load(id);
-      // Echoes are this chapter's build (Hades-style run); Talia's upgrades, relics and shards carry over
-      this.save.boons = {};
+      // Echoes, Talia's upgrades, relics, gear and shards all carry over into the next chapter
       this.state = 'intro'; this.control = false; G.Music.play(null); G.Ambience.set('quiet');
       G.UI.showHud(false);
       const begin = () => {

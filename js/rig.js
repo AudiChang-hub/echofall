@@ -466,9 +466,117 @@
     for (const k of [-1.2, 0, 1.2]) { ctx.beginPath(); ctx.arc(fx + sd.x * k, fy + sd.y * k, 2.3, -0.4, 0.9); ctx.stroke(); }
   }
 
+  /* --------- paper doll: worn armor re-dresses Rinne (js/gear.js passes opts.outfit = { head, body }) --------- */
+  // body armor swaps the outfit palette (+ shoulder pieces); head armor is drawn over the hair in head space
+  const OUTFITS = {
+    chain: { coat: '#646b78', coatB: '#3f4550', lining: '#2b2e38', vest: '#8d929d', gold: '#c7ccd6', plate: '#a9b0bc' },
+    leather: { coat: '#6e4b2f', coatB: '#4a321f', lining: '#c88d3c', vest: '#3f3a30', gold: '#d2a55a', strap: true },
+    gown: { coat: '#ece5f2', coatB: '#c2b6d0', lining: '#7c2a5c', vest: '#5c2a70', gold: '#e8cb72', scarf: '#7c2a5c', scarfD: '#4e1a3a' },
+    coat: { coat: '#1d3c4c', coatB: '#132a38', lining: '#d8c28c', vest: '#e8e0cc', gold: '#f2c443', epaulette: true },
+    robe: { coat: '#ede7d8', coatB: '#c9c0a8', lining: '#3cb8c6', vest: '#c8a45a', gold: '#43e2f2', plate: '#e9e2cf', scarf: '#3cb8c6', scarfD: '#21717c' },
+    nightgown: { coat: '#2c2848', coatB: '#1c1830', lining: '#c9b6ff', vest: '#3c3662', gold: '#c3acff', scarf: '#8f7ad8', scarfD: '#4f3f8a' },
+  };
+  function applyOutfit(o) {
+    const pal = o && o.body && OUTFITS[o.body];
+    if (!pal) return () => {};
+    const old = {};
+    for (const k in pal) if (k in C) { old[k] = C[k]; C[k] = pal[k]; }
+    return () => { Object.assign(C, old); };
+  }
+  function drawShoulders(ctx, J, o) {
+    const pal = o && o.body && OUTFITS[o.body]; if (!pal) return;
+    const sh = J.sh, el = J.elF, a = Math.atan2(el.y - sh.y, el.x - sh.x);
+    if (pal.plate) {   // heavy armor: layered pauldron
+      ctx.save(); ctx.translate(sh.x, sh.y); ctx.rotate(a - PI / 2);
+      for (let i = 0; i < 2; i++) {
+        ctx.beginPath(); ctx.ellipse(0, 1.5 + i * 2.6, 6.4 - i * 0.8, 4.2 - i * 0.6, 0, PI, TAU); ctx.closePath();
+        ctx.fillStyle = i ? pal.plate : '#ffffff'; ctx.globalAlpha = 1; ctx.fill();
+        ctx.fillStyle = pal.plate; ctx.globalAlpha = i ? 1 : 0.85; ctx.fill(); ctx.globalAlpha = 1; ink(ctx, 0.6);
+      }
+      ctx.strokeStyle = pal.gold; ctx.lineWidth = 0.6; ctx.beginPath(); ctx.ellipse(0, 1.5, 5.2, 3.2, 0, PI * 1.1, PI * 1.9); ctx.stroke();
+      ctx.restore();
+    } else if (pal.epaulette) {   // captain's coat: gold epaulette with fringe
+      ctx.save(); ctx.translate(sh.x, sh.y); ctx.rotate(a - PI / 2);
+      ctx.beginPath(); ctx.ellipse(0, -0.5, 5.2, 2.4, 0, 0, TAU); ctx.fillStyle = pal.gold; ctx.fill(); ink(ctx, 0.5);
+      ctx.strokeStyle = pal.gold; ctx.lineWidth = 0.7;
+      for (let i = -4; i <= 4; i += 1.6) { ctx.beginPath(); ctx.moveTo(i, 1.2); ctx.lineTo(i * 1.08, 4.4); ctx.stroke(); }
+      ctx.restore();
+    } else if (pal.strap) {   // miner's leather: a cross strap over the chest
+      ctx.strokeStyle = '#3a2618'; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(J.sh.x, J.sh.y + 1); ctx.lineTo(J.hip.x + 3, J.hip.y - 6); ctx.stroke();
+      const m = lerpP(J.sh, J.hip, 0.45);
+      ctx.fillStyle = pal.gold; ctx.beginPath(); ctx.arc(m.x, m.y, 1.1, 0, TAU); ctx.fill();
+    }
+  }
+  // head space: facing +x, crown top about y -12, back of the head about x -11.5, nose about x 10, chin about y 8.5
+  function drawHeadgear(ctx, hc, ha, kind) {
+    if (!kind) return;
+    ctx.save(); ctx.translate(hc.x, hc.y); ctx.rotate(ha); ctx.scale(1.08, 1.08);
+    const P = (pts) => {
+      ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let i = 1; i < pts.length; i++) { const q = pts[i]; if (q.length === 6) ctx.bezierCurveTo(q[0], q[1], q[2], q[3], q[4], q[5]); else ctx.lineTo(q[0], q[1]); }
+      ctx.closePath();
+    };
+    // cel-shaded fill: light band on top, base, dark band underneath (same look as the rest of her outfit)
+    const fillG = (c) => {
+      const r = ramp(c), g = ctx.createLinearGradient(0, -17, 0, 6);
+      g.addColorStop(0, r.lit); g.addColorStop(0.32, r.lit); g.addColorStop(0.33, r.base); g.addColorStop(0.7, r.base); g.addColorStop(0.71, r.dark); g.addColorStop(1, r.dark);
+      ctx.fillStyle = g; ctx.fill();
+    };
+    if (kind === 'hood') {
+      P([[-7.6, 9.5], [-13.6, 6, -14.6, -8, -6, -14.6], [1, -16.4, 9.4, -13.6, 11.2, -7.4], [10.4, -5.6], [6.4, -9.4, 0, -10.6, -4.6, -8.4], [-8.8, -4.6, -8.4, 2, -5.6, 8.6]]);
+      fillG(C.coat); ink(ctx, 0.75);
+      ctx.strokeStyle = C.lining; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(10.4, -5.6); ctx.bezierCurveTo(6.4, -9.4, 0, -10.6, -4.6, -8.4); ctx.bezierCurveTo(-8.8, -4.6, -8.4, 2, -5.6, 8.6); ctx.stroke();
+      ctx.strokeStyle = C.gold; ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(-6, -14.6); ctx.bezierCurveTo(-11, -11, -13, -2, -11, 6); ctx.stroke();
+    } else if (kind === 'veil') {
+      P([[9.6, -6.6], [8.4, -12.4, 0, -14.6, -7, -13.4], [-14, -11.4, -17.2, -2, -16, 12], [-10.2, 13.4], [-11, 4, -9.4, -4, -4.4, -8.2], [0, -10.4, 5, -9.6, 9.6, -6.6]]);
+      fillG('#2a2534'); ink(ctx, 0.7);
+      P([[9.8, -6.8], [5, -10.2, -2, -11.4, -8.2, -9], [-8.6, -7.4], [-2, -9.6, 5, -8.6, 9.6, -5.4]]); ctx.fillStyle = '#f2eee8'; ctx.fill(); ink(ctx, 0.4);
+    } else if (kind === 'helmbell' || kind === 'lamp') {
+      const col = kind === 'lamp' ? '#d7a43e' : '#b8873a';
+      P([[-12.6, -1.4], [-13.4, -10, -5, -15.8, 1.6, -15.2], [7.6, -14.6, 10.6, -10, 10.6, -5.6], [12.8, -4.6], [12.4, -3.6], [4, -4.6, -6, -3.4, -12.6, -1.4]]);
+      fillG(col); ink(ctx, 0.75);
+      ctx.strokeStyle = 'rgba(11,6,18,0.55)'; ctx.lineWidth = 0.6; ctx.beginPath(); ctx.moveTo(-12, -4.2); ctx.bezierCurveTo(-4, -6, 4, -6.4, 11, -5.4); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,248,220,0.55)'; ctx.beginPath(); ctx.ellipse(-2, -12.2, 5.4, 1.6, -0.15, 0, TAU); ctx.fill();
+      if (kind === 'helmbell') { ctx.beginPath(); ctx.arc(-1.6, -16.6, 1.8, 0, TAU); ctx.fillStyle = col; ctx.fill(); ink(ctx, 0.5); }
+      else {
+        ctx.beginPath(); ctx.ellipse(7.6, -10.6, 2.2, 2.6, 0.5, 0, TAU); ctx.fillStyle = '#3a3226'; ctx.fill(); ink(ctx, 0.5);
+        ctx.beginPath(); ctx.ellipse(8.4, -10.8, 1.3, 1.7, 0.5, 0, TAU); ctx.fillStyle = '#fff6c8'; ctx.fill();
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        const lg = ctx.createRadialGradient(9, -11, 0, 9, -11, 16); lg.addColorStop(0, 'rgba(255,240,180,0.55)'); lg.addColorStop(1, 'rgba(255,240,180,0)');
+        ctx.fillStyle = lg; ctx.beginPath(); ctx.moveTo(9, -11); ctx.lineTo(26, -20); ctx.lineTo(28, -2); ctx.closePath(); ctx.fill(); ctx.restore();
+      }
+    } else if (kind === 'mask') {
+      P([[1.6, -5.2], [8.6, -5.2], [9.9, -1.8], [10.6, 1.2], [8.6, 2.0], [7.4, 0.6], [5.4, 1.6], [2.8, 1.0], [1.4, -1.4]]);
+      ctx.fillStyle = '#f4f1ec'; ctx.fill(); ink(ctx, 0.6);
+      ctx.strokeStyle = C.gold; ctx.lineWidth = 0.55; ctx.beginPath(); ctx.moveTo(1.8, -4.6); ctx.lineTo(8.4, -4.6); ctx.stroke();
+      ctx.fillStyle = '#0b0612'; ctx.beginPath(); ctx.ellipse(6.6, -1.4, 1.5, 0.9, -0.1, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#3fd8ea'; ctx.beginPath(); ctx.arc(6.9, -1.3, 0.45, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#b8505e'; ctx.beginPath(); ctx.moveTo(3, 0.4); ctx.lineTo(2.2, 2.4); ctx.lineTo(3.4, 1.2); ctx.closePath(); ctx.fill();
+    } else if (kind === 'tricorn') {
+      P([[-15, -9.6], [-6, -13.6, 6, -13.4, 14.6, -10.6], [12.4, -8.2], [4, -10.4, -6, -10.2, -13.6, -7.2]]);
+      fillG('#1c2233'); ink(ctx, 0.7);
+      P([[-9.4, -11.4], [-9, -17.6, 6, -18.4, 7.6, -11.6]]); fillG('#232b40'); ink(ctx, 0.7);
+      ctx.strokeStyle = C.gold; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.moveTo(-14.6, -9.4); ctx.bezierCurveTo(-6, -13.2, 6, -13.0, 14.2, -10.4); ctx.stroke();
+      ctx.fillStyle = '#d43b3f'; ctx.beginPath(); ctx.moveTo(-6, -16); ctx.bezierCurveTo(-14, -22, -20, -16, -18, -10); ctx.bezierCurveTo(-14, -14, -10, -15, -6, -14); ctx.closePath(); ctx.fill(); ink(ctx, 0.45);
+    } else if (kind === 'halo') {
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      ctx.strokeStyle = 'rgba(255,226,140,0.35)'; ctx.lineWidth = 3.4; ctx.beginPath(); ctx.ellipse(-1, -18.5, 9.5, 2.8, -0.1, 0, TAU); ctx.stroke(); ctx.restore();
+      ctx.strokeStyle = '#ffd36a'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.ellipse(-1, -18.5, 9.5, 2.8, -0.1, 0, TAU); ctx.stroke();
+      ctx.strokeStyle = '#e2b04f'; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(-10.8, -6.4); ctx.bezierCurveTo(-6, -10.6, 3, -11.2, 9.2, -7.6); ctx.stroke();   // circlet
+      ctx.fillStyle = '#43e2f2'; ctx.beginPath(); ctx.arc(6.2, -9.0, 0.9, 0, TAU); ctx.fill();
+    } else if (kind === 'dreamcap') {
+      P([[-12.2, 0.6], [-13.8, -9, -6, -15.4, 1, -14.6], [7, -14, 10.4, -9.6, 9.8, -6.2], [6, -8.6, -2, -9.6, -7.6, -6.4], [-10, -4.2, -10.6, -1.2, -12.2, 0.6]]);
+      fillG('#8f7ad8'); ink(ctx, 0.7);
+      P([[-11.6, -4.6], [-18, -6, -19.6, 2, -16.6, 6.4], [-15.4, 1.6, -13.8, -1, -11.2, -1.6]]); fillG('#7462c4'); ink(ctx, 0.6);
+      ctx.fillStyle = '#e8ddff'; for (const [px, py] of [[-6, -12], [1, -12.6], [5.6, -10.6], [-10, -6.4]]) { ctx.beginPath(); ctx.arc(px, py, 0.6, 0, TAU); ctx.fill(); }
+    }
+    ctx.restore();
+  }
   Rig.drawRinne = (ctx, x, y, facing, pose, h, opts = {}) => {
     const J = Rig.compute(pose);
     ctx.save();
+    const undress = applyOutfit(opts.outfit);
     ctx.translate(x, y); ctx.scale(facing, 1);
     const toL = (q) => ({ x: (q.x - x) * facing, y: q.y - y });
     const flash = opts.flash || 0;
@@ -544,6 +652,7 @@
     limb(ctx, Q(1.0, -4.6), Q(1.1, 4.2), 3.1, 2.9, C.scarf, { noHatch: true });
     ctx.strokeStyle = 'rgba(11,6,18,0.5)'; ctx.lineWidth = 0.5; poly(ctx, [Q(0.97, -2), Q(1.12, 1.6)], false); ctx.stroke();
     drawHead(ctx, J.head, J.ha, flash);
+    drawHeadgear(ctx, J.head, J.ha, opts.outfit && opts.outfit.head);
 
     // --- sword ---
     drawBlade(ctx, J, pose, opts);
@@ -556,6 +665,7 @@
     limb(ctx, lerpP(J.elF, J.hdF, 0.36), lerpP(J.elF, J.hdF, 0.9), 3.4, 2.8, C.leather, { spec: 0.45 });
     ctx.strokeStyle = C.gold; ctx.lineWidth = 0.5; poly(ctx, [lerpP(J.elF, J.hdF, 0.52), lerpP(J.elF, J.hdF, 0.74)], false); ctx.stroke();
     fist(ctx, J.hdF, pose.sw, C.glove);
+    drawShoulders(ctx, J, opts.outfit);
 
     // hit flash overlay
     if (flash > 0) {
@@ -563,6 +673,7 @@
       ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(J.hip.x, J.hip.y - 20, 22, 50, 0, 0, TAU); ctx.fill();
     }
     ctx.restore();
+    undress();
     return J;
   };
 

@@ -643,7 +643,7 @@
       const blink = this.hurtInv > 0 && Math.floor(this.t * 30) % 2 === 0 ? 0.65 : 1;
       ctx.globalAlpha = blink;
       Rig.drawRinne(ctx, this.x, this.y, this.facing, this.pose, { hair: this.hair, rib1: this.rib1, rib2: this.rib2, coatB: this.coatB, coatF: this.coatF, scarf: this.scarf },
-        { flash: this.flash, bladeGlow: this.counterT > 0 ? 0.6 : 0, blade: this.gear && this.gear.look });
+        { flash: this.flash, bladeGlow: this.counterT > 0 ? 0.6 : 0, blade: this.gear && this.gear.look, outfit: this.gear && this.gear.outfit });
       ctx.globalAlpha = 1;
       this.trail.draw(ctx, now, 0.12, this.state === 'execute' ? '#ffffff' : (this.gear && this.gear.look && this.gear.look.col) || '#6ff3ff', '#ffffff');
     }

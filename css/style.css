@@ -750,3 +750,49 @@ html.touch .bp-foot { display: none; }
 .loot-card .gb { position: absolute; top: 8px; right: 10px; }
 @keyframes lootIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
 @media (max-height: 480px) { #lootCards { top: 18%; } .loot-card { width: min(250px, 36vw); padding: 7px 9px; } .loot-card h4 { font-size: 13px; } }
+
+/* new-gear chip under the shard counter (tap / click opens the equipment screen) */
+.gear-up { position: absolute; right: calc(clamp(16px, 3vw, 44px) + env(safe-area-inset-right, 0px)); top: calc(clamp(14px, 3.4vh, 40px) + 62px + env(safe-area-inset-top, 0px)); pointer-events: auto; cursor: pointer; padding: 6px 12px; border: 1px solid rgba(141,252,176,.6); border-radius: 14px; background: rgba(8,7,12,.6); color: #8dfcb0; font: 600 12px/1 var(--sans); letter-spacing: .14em; touch-action: manipulation; animation: breathe 2.2s ease-in-out infinite; }
+.gear-up[hidden] { display: none; }
+#hud.cine .gear-up { opacity: 0; pointer-events: none; }
+.echoes { pointer-events: auto; cursor: pointer; }
+.gs-up { margin-left: 8px; padding: 2px 6px; border-radius: 8px; background: #8dfcb0; color: #0b0612; font: 700 10px/1 var(--sans); font-style: normal; letter-spacing: .05em; }
+.gl-new { display: inline-block; margin-right: 6px; padding: 1px 5px; border-radius: 3px; background: #ffb347; color: #0b0612; font: 700 9.5px/1.4 var(--mono); font-style: normal; letter-spacing: .08em; vertical-align: 1px; }
+/* build overview */
+.build { width: min(1100px, 100%); max-height: 92vh; display: flex; flex-direction: column; }
+.bd-body { margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+.bd-body h4 { font: 600 16px/1 var(--serif); letter-spacing: .3em; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.bd-body h4 em { font: italic 500 11px/1 var(--latin); letter-spacing: .3em; color: var(--faint); margin-left: 8px; }
+.bd-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.bd-list li { --c: #ffd28a; display: flex; gap: 10px; align-items: flex-start; }
+.bd-list li.off { opacity: .5; }
+.bd-ico { flex: none; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; border: 1.5px solid #0b0612; box-shadow: 0 0 0 1.5px var(--c); background: rgba(8,7,12,.6); color: var(--c); font: 700 13px/1 var(--sans); font-style: normal; }
+.bd-ico.rel { color: #ffb347; box-shadow: 0 0 0 1.5px #ffb347; }
+.bd-list b { display: flex; align-items: baseline; gap: 8px; font: 600 14px/1.3 var(--sans); letter-spacing: .08em; color: var(--c); }
+.bd-list b em { font: 500 11px/1 var(--mono); font-style: normal; color: var(--dim); letter-spacing: .06em; }
+.bd-list p { margin-top: 3px; font: 400 12.5px/1.6 var(--sans); color: var(--dim); letter-spacing: .03em; }
+.bd-list p b { display: inline; color: var(--bone); font-size: 12.5px; }
+.bd-none { color: var(--dim); font: 400 12.5px/1.7 var(--sans); }
+.bd-hint { margin-top: 10px; font-size: 11.5px; color: var(--faint); letter-spacing: .06em; }
+.bd-gear { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.bd-gear li { display: flex; align-items: center; gap: 10px; font: 400 13px/1.3 var(--sans); }
+.bd-gear li span { width: 52px; flex: none; color: var(--faint); font-size: 11.5px; letter-spacing: .15em; }
+.bd-gear li b { display: flex; align-items: center; gap: 7px; color: var(--rc); font-weight: 500; }
+.bd-go { margin-top: 12px; }
+.bd-stats { list-style: none; margin: 14px 0 0; padding: 10px 0 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; }
+.bd-stats li { display: flex; justify-content: space-between; font: 400 12.5px/1.6 var(--sans); color: var(--dim); }
+.bd-stats b { font: 600 14px/1.6 var(--mono); color: var(--bone); font-variant-numeric: tabular-nums; }
+@media (max-height: 480px) {
+  .build { max-height: calc(100vh - 20px); }
+  #buildScreen { padding: 8px calc(10px + env(safe-area-inset-right, 0px)) 8px calc(10px + env(safe-area-inset-left, 0px)); }
+  .bd-body { gap: 14px; margin-top: 8px; }
+  .bd-list { gap: 7px; } .bd-list p { font-size: 11.5px; line-height: 1.5; }
+  .bd-gear li { font-size: 12px; } .bd-stats li { font-size: 11.5px; }
+}
+/* phones: loot cards sit below the 回復 / ⛶ / ☰ buttons in the top-right corner */
+html.touch #lootCards { top: calc(136px + env(safe-area-inset-top, 0px)); }
+html.touch .loot-card:nth-last-child(n+2) { display: none; }
+html.touch .gear-up { right: calc(14px + env(safe-area-inset-right, 0px)); top: calc(98px + env(safe-area-inset-top, 0px)); }
+
+html.touch .lc-cmp li:nth-child(n+3), html.touch .lc-vs { display: none; }
+html.touch .loot-card { padding: 6px 9px; }
