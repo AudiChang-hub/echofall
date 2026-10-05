@@ -20,7 +20,7 @@
     curse: () => (g) => { g.player.evCurse = true; g.player.recalc(); return '詛咒：最大生命 −15%（直到下次休息）'; },
     ambush: (n = 3) => (g) => {
       const P = g.player, T = G.ENEMY_TYPES, ch = chOf();
-      const pool = Object.keys(T).filter((k) => (ch === 1 ? ['murmur', 'sentinel'].includes(k) : k.startsWith('c' + ch + '_')) && !T[k].boss && !T[k].elite && !T[k].summon && !T[k].fly && k !== 'phantom');
+      const pool = Object.keys(T).filter((k) => (ch === 1 ? ['murmur', 'sentinel'].includes(k) : k.startsWith('c' + ch + '_')) && !T[k].boss && !T[k].elite && !T[k].summon && !T[k].fly && k !== 'phantom' && !k.includes('_elite'));
       for (let i = 0; i < n; i++) {
         const x = P.x + (i % 2 ? 1 : -1) * (220 + i * 60), t = pool[Math.floor(Math.random() * pool.length)];
         const e = new G.Enemy(t, x, G.Phys.groundBelow(x, P.y - 150), { enc: 'evt', spawn: {} }); e.facing = x < P.x ? 1 : -1; g.enemies.push(e);

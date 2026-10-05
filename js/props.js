@@ -40,6 +40,7 @@
       for (const n of L.npcs) avoid.push([n.x - 120, n.x + 120]);
       for (const id in L.encounters) { const E = L.encounters[id]; if ((E.boss || E.elite) && E.arena) avoid.push([E.arena[0] - 40, E.arena[1] + 40]); }
       avoid.push([L.start.x - 200, L.start.x + 200]);
+      { const f = G.Routes && !G.Routes.active && G.Routes.fork(ch); if (f) avoid.push([f.x - 520, f.x + 120]); }   // keep the fork's doors clear
       const blocked = (x) => avoid.some(([a, b]) => x > a && x < b) || x < L.bounds[0] + 120 || x > L.bounds[1] - 120;
       const segs = L.solids.map((s) => ({ x0: s.x, x1: s.x + s.w, y: s.y })).concat((L.oneways || []).map((o) => ({ x0: o.x, x1: o.x + o.w, y: o.y })));
       for (const s of segs) {

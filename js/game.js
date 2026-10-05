@@ -468,7 +468,7 @@
         G.UI.bossBar(null); this.bossRef = null;
         this.slowmo(1.2, 0.3);
         const T = e.T;
-        if (G.Abyss.active) return;
+        if (G.Abyss.active || G.Routes.active) return;   // a side road's elite is not the story's: no epilogue, no story relic
         this.save.flags['elite_' + e.type] = true;
         setTimeout(() => {
           if (G.Chapters.hook('eliteDefeated', this, e) === true) return;

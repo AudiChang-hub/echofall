@@ -120,7 +120,7 @@
     waves(ch, kind, BE, a0, a1, fy) {
       const r = this.run, T = G.ENEMY_TYPES;
       if (kind === 'boss') return BE.waves.map((w) => w.map((d) => Object.assign({}, d)));
-      const pool = Object.keys(T).filter((k) => (ch === 1 ? ['murmur', 'sentinel', 'shrieker'].includes(k) : k.startsWith('c' + ch + '_')) && !T[k].boss && !T[k].elite && !T[k].summon && k !== 'phantom');
+      const pool = Object.keys(T).filter((k) => (ch === 1 ? ['murmur', 'sentinel', 'shrieker'].includes(k) : k.startsWith('c' + ch + '_')) && !T[k].boss && !T[k].elite && !T[k].summon && k !== 'phantom' && !k.includes('_elite'));
       const pick = () => pool[Math.floor(Math.random() * pool.length)];
       const at = (i, n) => Math.round(U.lerp(a0 + 520, a1 - 140, n > 1 ? i / (n - 1) : 0.5));
       const mk = (t, x) => (T[t] && T[t].fly ? { t, x, y: -260 } : { t, x });
@@ -229,7 +229,7 @@
         ctx.restore();
         if (Math.random() < 0.15 + 0.3 * g) G.FX.ember(x + (Math.random() - 0.5) * 60, y - 10, 1, R.col, { w: 10, h: 10, up: 80 });
         // the reward sigil above
-        const iy = top - 92 + Math.sin(t * 2 + x) * 6, s = 1 + 0.12 * g;
+        const iy = top - 92 - (d.lift || 0) + Math.sin(t * 2 + x) * 6, s = 1 + 0.12 * g;
         ctx.save(); ctx.globalAlpha = k; ctx.translate(x, iy); ctx.scale(s, s);
         ctx.globalCompositeOperation = 'lighter';
         const hg = ctx.createRadialGradient(0, 0, 2, 0, 0, 34); hg.addColorStop(0, U.rgba(R.col, 0.4 + 0.3 * g)); hg.addColorStop(1, U.rgba(R.col, 0));

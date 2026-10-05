@@ -72,7 +72,7 @@
     notes: [
       { id: 'c8_n1', x: 430, y: FLOOR[0], flag: 'c8_read_apology' },
       { id: 'c8_n2', x: 2615, y: FLOOR[1], flag: 'c8_read_diary' },
-      { id: 'c8_n3', x: 3125, y: BELFRY.y, flag: 'c8_read_talia' },
+      { id: 'c8_n3', x: 3300, y: BELFRY.y, flag: 'c8_read_talia' },   // (moved east: the fork to the palace's two wings sits at 2930–3180)
       { id: 'c8_n4', x: 5430, y: FLOOR[3], flag: 'c8_read_odelog' },
       { id: 'c8_n5', x: 5585, y: DECK.y, flag: 'c8_read_rollcall' },
     ],

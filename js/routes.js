@@ -43,9 +43,12 @@
     ROAD, LORE, active: null, forks: {},
     /* ------------------------------------------------ where the way collapses */
     // a flat stretch past a middle pylon, clear of story triggers, fights and the boss approach
+    // the final stage is too crowded for the search below: its fork is placed by hand, just past the first lantern
+    MANUAL: { 8: { x: 3180, y: 400, doors: [2930, 3060] } },
     fork(ch) {
       if (this.forks[ch] !== undefined) return this.forks[ch];
       const lv = G.Chapters.levelOf(ch); if (!lv) return null;
+      if (this.MANUAL[ch]) { const m = this.MANUAL[ch], s = lv.solids.find((q) => m.x >= q.x && m.x <= q.x + q.w && q.y === m.y); return (this.forks[ch] = { x: m.x, y: m.y, kind: s ? s.kind : 'ground', doorXs: m.doors }); }
       // main-path ground only: thick bodies, not roofs, gantries or crates
       const ground = (x) => { let b = null; for (const s of lv.solids) if (s.h >= 200 && s.kind !== 'wall' && s.kind !== 'invisible' && x >= s.x && x <= s.x + s.w && (!b || s.y < b.y)) b = s; return b; };
       const encs = Object.values(lv.encounters || {});
@@ -104,7 +107,7 @@
       if (want && !has) G.Phys.dyn.push({ x: f.x - 10, y: f.y - 1800, w: 40, h: 1800, keep: true, fork: true });
       else if (!want && has) G.Phys.dyn = G.Phys.dyn.filter((w) => !w.fork);
     },
-    doors(f) { return f.doors || (f.doors = [{ road: 'a', x: f.x - 400 }, { road: 'b', x: f.x - 200 }]); },
+    doors(f) { return f.doors || (f.doors = f.doorXs ? [{ road: 'a', x: f.doorXs[0] }, { road: 'b', x: f.doorXs[1], lift: 78 }] : [{ road: 'a', x: f.x - 400 }, { road: 'b', x: f.x - 200 }]); },
     interactables(game) {
       const f = this.here; if (!f || this.active || G.Abyss.active || game.arena) return [];
       if (game.enemies.some((e) => !e.dead && Math.abs(e.x - game.player.x) < 600)) return [];   // not with foes at your back
@@ -134,7 +137,7 @@
       const base = G.Chapters.get(ch) || G.Chapters.byId[1], lv = G.Chapters.levelOf(ch);
       const r = rng(4813 + ch * 977 + (road === 'b' ? 31 : 0));
       const T = G.ENEMY_TYPES, K = f.kind, fy = f.y, id = (s) => `rt${ch}${road}_${s}`;
-      const pool = Object.keys(T).filter((k) => (ch === 1 ? ['murmur', 'sentinel', 'shrieker'].includes(k) : k.startsWith('c' + ch + '_')) && !T[k].boss && !T[k].elite && !T[k].summon && k !== 'phantom');
+      const pool = Object.keys(T).filter((k) => (ch === 1 ? ['murmur', 'sentinel', 'shrieker'].includes(k) : k.startsWith('c' + ch + '_')) && !T[k].boss && !T[k].elite && !T[k].summon && k !== 'phantom' && !k.includes('_elite'));
       const deck = []; const draw = () => { if (!deck.length) deck.push(...pool.slice().sort(() => r() - 0.5)); return deck.pop(); };
       const mk = (t, x, y0) => (T[t] && T[t].fly ? { t, x, y: -240 } : { t, x, ...(y0 != null ? { y: y0 } : {}) });
       const wave = (n, a, b, y0) => Array.from({ length: n }, (_, i) => mk(draw(), Math.round(U.lerp(a, b, n > 1 ? i / (n - 1) : 0.5)), y0));
@@ -278,7 +281,7 @@
       G.Chapters.load(a.ch);
     },
     // a death on a road drops the shards at the doors, where the main chapter can find them again
-    dropAt() { const a = this.active; return a ? { x: a.f.x - 300, y: a.f.y } : null; },
+    dropAt() { const a = this.active; return a ? { x: (a.f.doorXs ? a.f.doorXs[0] - 60 : a.f.x - 300), y: a.f.y } : null; },
   };
 
   // an iron-bound chest, lid breathing light
