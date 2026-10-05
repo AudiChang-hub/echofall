@@ -620,6 +620,10 @@
       const d = e.distP();
       const tx = d < 360 ? -e.facing * 140 : d > 520 ? e.facing * 120 : 0;
       e.vx = U.approach(e.vx, tx, 300 * dt);
+      // it floats over whatever floor is below it, low enough for a jumping blade (it used to keep its spawn height: out of reach)
+      if (e.hov == null) e.hov = 110 + Math.random() * 30;
+      const gy = G.Phys.groundBelow(e.x, e.y - 4);
+      if (gy < 1e8) e.y0 = U.approach(e.y0, Math.min(gy, e.P.y + 40) - e.hov, 160 * dt);
       e.vy = (e.y0 + Math.sin(e.t * 1.6) * 18 - e.y) * 3;
       // mostly a single note; from mid range it sometimes sings a three-note phrase (a parry-rhythm test)
       if (d < 720 && e.cd <= 0) e.startAtk(d > 260 && d < 640 && Math.random() < 0.35 ? TYPES.shrieker.volley : TYPES.shrieker.cast);

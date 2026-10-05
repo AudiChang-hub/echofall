@@ -107,11 +107,16 @@
       const want = !f.open && P.x < f.x;
       if (want && !has) G.Phys.dyn.push({ x: f.x - 10, y: f.y - 1800, w: 40, h: 1800, keep: true, fork: true });
       else if (!want && has) G.Phys.dyn = G.Phys.dyn.filter((w) => !w.fork);
+      // walking into the rubble: say where the way is
+      if (want && P.x > f.x - 70 && Math.abs(P.y - f.y) < 200 && G.Input.down('right') && game.time - (this.hintT || -99) > 6) {
+        this.hintT = game.time;
+        game.toast('去路崩塌了——往回走，左邊的兩扇門可以繞過去', 'warn');
+      }
     },
     doors(f) { return f.doors || (f.doors = f.doorXs ? [{ road: 'a', x: f.doorXs[0] }, { road: 'b', x: f.doorXs[1], lift: 78 }] : [{ road: 'a', x: f.x - 400 }, { road: 'b', x: f.x - 200 }]); },
     interactables(game) {
+      // the doors are always there to take (only not mid-arena): a foe left hovering nearby must never hide the way on
       const f = this.here; if (!f || this.active || G.Abyss.active || game.arena) return [];
-      if (game.enemies.some((e) => !e.dead && Math.abs(e.x - game.player.x) < 600)) return [];   // not with foes at your back
       const F = game.save.flags, ch = G.LEVEL.chapter || 1;
       return this.doors(f).map((d) => ({ kind: 'road', x: d.x, y: f.y, ref: d, label: `進入「${LORE[ch][d.road][0]}」（${ROAD[d.road].name}${F[`road_${ch}${d.road}`] ? '・已走過' : ''}）` }));
     },
@@ -198,8 +203,8 @@
         // a hall of standing stones to vault between
         pillars(n) {
           const w = 1250;
-          floor(x, 260); floor(x + 260, 90, fy - 150); floor(x + 350, 290); floor(x + 640, 110, fy - 210); floor(x + 750, 250); floor(x + 1000, 90, fy - 150); floor(x + 1090, 160);
-          oneways.push({ x: x + 530, y: fy - 105, w: 90 }, { x: x + 770, y: fy - 105, w: 90 });
+          floor(x, 260); floor(x + 260, 90, fy - 120); floor(x + 350, 290); floor(x + 640, 110, fy - 170); floor(x + 750, 250); floor(x + 1000, 90, fy - 120); floor(x + 1090, 160);
+          oneways.push({ x: x + 530, y: fy - 90, w: 90 }, { x: x + 770, y: fy - 90, w: 90 });
           encounters[eid()] = { trigger: x + 200, arena: [x + 40, x + w - 40], respawn: true, wallBottom: fy + 40, waves: [wave(n, x + 420, x + w - 120)] };
           x += w;
         },
@@ -391,6 +396,7 @@
     ctx.restore();
     ctx.save(); ctx.font = '600 13px "Noto Serif TC", serif'; ctx.textAlign = 'center';
     ctx.lineWidth = 4; ctx.strokeStyle = '#0b0612'; ctx.strokeText('去路已崩塌', x + 5, y - 262); ctx.fillStyle = 'rgba(239,233,223,.8)'; ctx.fillText('去路已崩塌', x + 5, y - 262);
+    ctx.font = '500 12px "Noto Sans TC", sans-serif'; ctx.strokeText('← 從左邊的門繞路', x + 5, y - 242); ctx.fillStyle = 'rgba(255,214,160,.85)'; ctx.fillText('← 從左邊的門繞路', x + 5, y - 242);
     ctx.restore();
   }
 })(window.G);

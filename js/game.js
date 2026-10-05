@@ -365,6 +365,7 @@
           const hi = E.arena ? E.arena[1] - 40 : E.trigger + 900;
           if (P.x >= E.trigger && P.x <= hi && (E.yMin == null || P.y >= E.yMin) && (E.yMax == null || P.y <= E.yMax)) this.startEncounter(id);
         } else if (st === 'active') {
+          if (E.arena) this.arenaRescue(id, E, dt);
           const alive = this.enemies.some((e) => e.enc === id && !e.dead);
           if (!alive) {
             this.encWaveT = (this.encWaveT || 0) + dt;
@@ -375,6 +376,44 @@
             else this.clearEncounter(id);
           }
         }
+      }
+    },
+    /* an arena only opens when its last foe falls: never let one be stranded where it cannot be reached
+       (outside the walls, inside a wall, hovering out of reach, fallen off the map) — and if a fight stalls
+       with a few foes left and nothing landing on them for a long while, bring them to Bari */
+    arenaRescue(id, E, dt) {
+      const R = this.rescue || (this.rescue = {});
+      const r = R[id] || (R[id] = { t: 0, hp: -1, still: 0 });
+      r.t += dt; if (r.t < 1) return; r.t = 0;
+      const P = this.player, foes = this.enemies.filter((e) => e.enc === id && !e.dead && e.state !== 'spawn');
+      const hp = foes.reduce((s, e) => s + e.hp, 0);
+      if (hp !== r.hp) { r.hp = hp; r.still = 0; } else r.still++;
+      const solids = G.LEVEL.solids;
+      for (const e of foes) {
+        const gy = G.Phys.groundBelow(e.x, e.y - 8);
+        const out = e.x < E.arena[0] - 20 || e.x > E.arena[1] + 20;
+        const buried = solids.some((s) => s.kind !== 'wall' && e.x > s.x + 4 && e.x < s.x + s.w - 4 && e.y - 12 > s.y && e.y - 12 < s.y + s.h);
+        const lost = gy > 1e8 || e.y > P.y + 900;
+        e.highN = e.fly && gy < 1e8 && gy - e.y > 300 ? (e.highN || 0) + 1 : 0;
+        const high = e.highN >= 6;
+        const stalled = r.still >= 20 && foes.length <= 3 && !e.boss;
+        if (!(out || buried || lost || high || stalled)) continue;
+        // set it down beside Bari on the same floor (never across a pillar or a drop)
+        const pg = G.Phys.groundBelow(P.x, P.y - 8), side = e.x > P.x ? 1 : -1;
+        let x = null;
+        for (const dx of [160, 240, 110, -160, -240, -110].map((v) => v * side)) {
+          const cx = U.clamp(P.x + dx, E.arena[0] + 60, E.arena[1] - 60);
+          let ok = Math.abs(G.Phys.groundBelow(cx, P.y - 8) - pg) < 12;
+          for (let k = 1; ok && k < 8; k++) { const sx = P.x + (cx - P.x) * k / 8; if (Math.abs(G.Phys.groundBelow(sx, P.y - 8) - pg) > 12) ok = false; }
+          if (ok) { x = cx; break; }
+        }
+        if (x == null) x = U.clamp(P.x + side * 160, E.arena[0] + 60, E.arena[1] - 60);
+        const y = G.Phys.groundBelow(x, P.y - 300);
+        G.FX.shards(e.cx, e.cy, 12, e.T.col || '#ff3d7f', 300);
+        e.x = x; e.y = y < 1e8 ? (e.fly ? y - 120 : y) : P.y; e.vx = 0; e.vy = 0;
+        if (e.fly) { e.y0 = e.homeY = e.y; }
+        G.FX.ring(e.x, e.y - 60, 8, 90, 0.4, e.T.col || '#ff3d7f', 4);
+        if (stalled) r.still = 0;
       }
     },
     startEncounter(id) {
@@ -398,7 +437,13 @@
         if (!T) { console.warn('unknown enemy type', d.t); continue; }
         // hovering types give their height above the floor under them
         const hover = T.hover || d.t === 'shrieker';
-        const y = d.y != null ? (T.fly ? d.y + (hover ? G.Phys.groundBelow(d.x, P.y - 150) : 0) : d.y) : G.Phys.groundBelow(d.x, P.y - 150);
+        // the floor under the spawn point: look from just above Bari first, then from high up (Bari may be down in a pit
+        // while this foe stands on the rim) — a foe given no floor would fall forever and the arena would never open
+        let gy = G.Phys.groundBelow(d.x, P.y - 150);
+        if (gy > 1e8) gy = G.Phys.groundBelow(d.x, P.y - 1600);
+        if (gy > 1e8) gy = P.y;
+        // floaters hang within reach of a jumping blade (at most 160 above their floor)
+        let y = d.y != null ? (T.fly ? (hover ? gy + (T.boss ? d.y : Math.max(d.y, -160)) : d.y) : d.y) : gy;
         const e = new G.Enemy(d.t, d.x, y, { enc: id, spawn: d });
         e.facing = P.x < d.x ? -1 : 1;
         if (hover) { e.y0 = y; e.homeY = y; }
