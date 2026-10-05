@@ -158,7 +158,7 @@
         const x = Math.min(tr ? tr.x : E.arena[0], E.arena[0]) - 70;
         let y = G.Phys.groundBelow(x, (tr && tr.y != null ? tr.y : 0) - 260);
         if (y > 1e8) y = 0;
-        const wall = { x: x - 14, y: y - 1800, w: 28, h: 1800, gate: id };
+        const wall = { x: x - 14, y: y - 1800, w: 28, h: 1800, gate: id, keep: true };
         G.Phys.dyn.push(wall);
         this.gates.push({ id, x, y, wall, open: false, t: 0 });
       }

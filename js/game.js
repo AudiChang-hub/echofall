@@ -67,7 +67,7 @@
     /* ------------------------------ flow ------------------------------ */
     hasSave() { const s = G.Store.get('save', null); return !!(s && s.v === 1 && (s.checkpoint || (s.chapter || 1) > 1)); },
     newGame(diffKey) {
-      G.Abyss.active = false; G.Abyss.run = null;
+      G.Abyss.active = false; G.Abyss.run = null; G.Routes.active = null;
       G.Chapters.load(1);
       this.save = this.defaultSave(diffKey); G.Mirror.st(this.save); this.save.mirrorInit = true;
       this.diff = G.DATA.difficulty[diffKey]; this.stats = this.save.stats;
@@ -106,12 +106,14 @@
       }
       this.save = Object.assign(this.defaultSave(s.diff), s); G.Mirror.migrate(this.save);
       if (this.save.abyssRun || G.Abyss.active) G.Abyss.recover(this.save);
+      G.Routes.active = null;
       this.diff = G.DATA.difficulty[this.save.diff] || G.DATA.difficulty.normal; this.stats = this.save.stats;
       G.Chapters.load(this.save.chapter || 1);
       this.player = new G.Player(this);
       this.respawnAtCheckpoint(true);
     },
     respawnAtCheckpoint(fromLoad) {
+      G.Routes.detach();
       const p = L.pylons.find((q) => q.id === this.save.checkpoint);
       this.resetWorld();
       this.player.reset(p ? p.x - 40 : L.start.x, p ? p.y : L.start.y);
@@ -137,6 +139,7 @@
       this.lastZone = null;
       G.Props.spawn(this);   // crates, urns and crystals come back with the Hushborn
       G.Props.spawnGates(this);   // boss rooms close again behind a fog gate
+      G.Routes.walls(this);       // the collapsed way at the chapter's fork (js/routes.js)
     },
     zoneMusic() { return G.Chapters.musicAt(this.player.x, this.player.y); },
 
@@ -248,7 +251,7 @@
         G.updateHazards(dt);
         G.Boons.update(dt);
       }
-      this.updPickups(dt); G.Props.update(dt);
+      this.updPickups(dt); G.Props.update(dt); G.Routes.update(this);
       G.Tut.update(dt);
       if (this.state === 'play') G.Chapters.hook('update', this, dt);
       G.FX.update(dt);
@@ -377,7 +380,7 @@
       if (E.arena) {
         this.arena = { id, x0: E.arena[0], x1: E.arena[1] };
         const top = E.wallBottom != null ? -1600 : (E.wallTop ?? -1600), bot = E.wallBottom ?? 40;
-        G.Phys.dyn = [{ x: E.arena[0] - 30, y: top, w: 30, h: bot - top, wall: true }, { x: E.arena[1], y: top, w: 30, h: bot - top, wall: true }];
+        G.Phys.dyn = G.Phys.dyn.filter((w) => w.keep).concat([{ x: E.arena[0] - 30, y: top, w: 30, h: bot - top, wall: true }, { x: E.arena[1], y: top, w: 30, h: bot - top, wall: true }]);
         G.SFX.play('door');
         if (!E.boss && !E.elite) { this.bark('arena'); G.SFX.play('stingBattle'); }
       }
@@ -408,8 +411,8 @@
       { const en = G.Mirror.lv('endure'), P = this.player; if (en && P && P.state !== 'dead') P.hp = Math.min(P.maxHp, P.hp + P.maxHp * 0.08 * en); }
       if (this.arena && this.arena.id === id) {
         this.arena = null;
-        for (const w of G.Phys.dyn) G.FX.shards(w.x + 15, w.y + w.h - 40, 20, '#ff3d7f', 400);
-        G.Phys.dyn = []; G.SFX.play('door');
+        for (const w of G.Phys.dyn) if (!w.keep) G.FX.shards(w.x + 15, w.y + w.h - 40, 20, '#ff3d7f', 400);
+        G.Phys.dyn = G.Phys.dyn.filter((w) => w.keep); G.SFX.play('door');
         if (!E.boss && !E.elite) { this.bark('clear'); G.SFX.play('stingVictory'); }
       }
       G.Chapters.hook('encounterClear', this, id);
@@ -545,10 +548,12 @@
       const list = [], F = this.save.flags;
       for (const p of L.pylons) list.push({ kind: 'pylon', x: p.x, y: p.y, ref: p, label: '調諧共鳴碑' });
       for (const n of L.notes) list.push({ kind: 'note', x: n.x, y: n.y, ref: n, label: '閱讀', read: F['note_' + n.id] });
-      for (const it of L.items) if (!F[it.flag]) list.push({ kind: 'item', x: it.x, y: it.y, ref: it, label: '拾取' });
+      for (const it of L.items) if (!F[it.flag]) list.push({ kind: 'item', x: it.x, y: it.y, ref: it, label: it.chest ? '打開' : '拾取' });
       for (const n of L.npcs) list.push({ kind: 'npc', x: n.x, y: n.y, ref: n, label: '交談' });
       for (const g of G.Props.gates) if (!g.open) list.push({ kind: 'gate', x: g.x - 50, y: g.y, ref: g, label: '進入王房' });
       for (const d of G.Abyss.doorNear(this)) list.push(d);
+      for (const d of G.Routes.interactables(this)) list.push(d);
+      for (const d of G.Routes.exitNear()) list.push(d);
       return list;
     },
     updInteract() {
@@ -572,6 +577,8 @@
       if (G.Chapters.hook('interact', this, it) === true) return;
       if (it.kind === 'gate') { G.Props.openGate(this, it.ref); return; }
       if (it.kind === 'door') { G.Abyss.go(this, it.ref); return; }
+      if (it.kind === 'road') { G.Routes.enter(this, it.ref.road); return; }
+      if (it.kind === 'roadExit') { G.Routes.leave(this); return; }
       if (it.kind === 'pylon') this.restAt(it.ref);
       else if (it.kind === 'note') {
         F['note_' + it.ref.id] = true; if (it.ref.id === 'n3') F.note_mira = true; if (it.ref.flag) F[it.ref.flag] = true;
@@ -583,7 +590,7 @@
         const ref = it.ref; F[ref.flag] = true;
         G.FX.ring(ref.x, ref.y - 40, 10, 140, 0.6, '#ffe7b0', 4); G.FX.ember(ref.x, ref.y - 40, 24, '#ffe7b0');
         if (ref.kind === 'relic') this.giveRelic(ref.id);
-        else { G.SFX.play(ref.sfx || 'musicbox'); this.toast(`獲得：${ref.name}`, 'item'); if (ref.onTake) ref.onTake(this); }
+        else { G.SFX.play(ref.sfx || 'musicbox'); this.toast(ref.chest ? `打開了${ref.name}` : `獲得：${ref.name}`, 'item'); if (ref.onTake) ref.onTake(this); }
       } else if (it.kind === 'npc') {
         P.facing = it.x > P.x ? 1 : -1;
         if (it.ref.talk) { it.ref.talk(this); return; }
@@ -662,7 +669,8 @@
     onPlayerDeath() {
       this.control = false; this.stats.deaths++;
       if (G.Abyss.active) { this.slowmo(1.5, 0.3); G.Music.play(null); setTimeout(() => G.Abyss.end(this, false), 2200); return; }
-      if (this.save.shards > 0) this.save.drop = { x: this.player.x, y: this.player.y, amt: this.save.shards };
+      const rd = G.Routes.dropAt();
+      if (this.save.shards > 0) this.save.drop = { x: rd ? rd.x : this.player.x, y: rd ? rd.y : this.player.y, amt: this.save.shards };
       else this.save.drop = null;
       this.save.shards = 0;
       this.slowmo(1.5, 0.3);
@@ -764,7 +772,7 @@
       const t = this.realTime, F = this.save.flags;
       // arena walls
       const wc = this.arena && this.arena.id === 'tut' ? '111,243,255' : '255,61,127', wl = this.arena && this.arena.id === 'tut' ? 'rgba(190,250,255,0.5)' : 'rgba(255,170,200,0.5)';
-      G.Props.drawGates(ctx, t);
+      G.Props.drawGates(ctx, t); G.Routes.draw(ctx, this);
       for (const w of G.Phys.dyn) {
         if (w.gate) continue;
         const x = w.x + w.w / 2, top = Math.max(w.y, this.cam.y - 500), bot = Math.min(w.y + w.h, this.cam.y + 500);
@@ -822,7 +830,7 @@
         ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y, 3.5, 0, TAU); ctx.fill();
         ctx.restore();
         if (Math.random() < 0.2) G.FX.ember(x, y, 1, it.kind === 'relic' ? '#ffd28a' : '#fff0dc', { w: 20, h: 20, up: 40 });
-        this.drawBeacon(ctx, it.x, it.y, it.kind === 'relic' ? '#ffb347' : '#fff0dc', it.kind === 'relic' ? '◆' : '✦', (it.kind === 'relic' ? '遺物　' : '物品　') + (it.name || '可拾取'), false, t);
+        this.drawBeacon(ctx, it.x, it.y, it.kind === 'relic' ? '#ffb347' : '#fff0dc', it.kind === 'relic' ? '◆' : '✦', (it.kind === 'relic' ? '遺物　' : it.chest ? '寶箱　' : '物品　') + (it.chest ? '' : it.name || '可拾取'), false, t);
       }
       // NPCs (chapter-defined drawers, Barrow by default)
       for (const n of L.npcs) {

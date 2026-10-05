@@ -188,10 +188,13 @@
     },
     drawDoors(ctx, game) {
       const r = this.run; if (!this.active || !r || !r.doors) return;
-      const t = game.time, P = game.player;
+      for (const d of r.doors) this.drawArch(ctx, d, r.fy, REWARDS[d.reward], game.time, game.player);
+    },
+    // a stone arch with light rising through it and the reward's sigil above (also used by the forks, js/routes.js)
+    drawArch(ctx, d, y, R, t, P) {
       const arch = (x, y, hw, top) => { ctx.beginPath(); ctx.moveTo(x - hw, y); ctx.lineTo(x - hw, top); ctx.arc(x, top, hw, Math.PI, 0); ctx.lineTo(x + hw, y); ctx.closePath(); };
-      for (const d of r.doors) {
-        const R = REWARDS[d.reward], x = d.x, y = r.fy, top = y - 150;
+      {
+        const x = d.x, top = y - 150;
         d.glow = U.lerp(d.glow || 0, Math.abs(P.x - x) < 90 ? 1 : 0, 0.12);
         d.born = Math.min(1, (d.born || 0) + 1 / 40);
         const k = d.born, g = d.glow, pulse = 0.5 + 0.5 * Math.sin(t * 3 + x * 0.01);
@@ -232,6 +235,7 @@
         ctx.font = '700 24px "Noto Sans TC", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.lineWidth = 5; ctx.strokeStyle = '#0b0612'; ctx.strokeText(R.icon, 0, 1); ctx.fillStyle = R.col; ctx.fillText(R.icon, 0, 1);
         ctx.font = '600 14px "Noto Serif TC", serif'; ctx.lineWidth = 5; ctx.strokeText(R.name, 0, 44); ctx.fillStyle = '#efe9df'; ctx.fillText(R.name, 0, 44);
+        if (R.sub) { ctx.font = '500 11px "Noto Sans TC", sans-serif'; ctx.lineWidth = 4; ctx.strokeText(R.sub, 0, 62); ctx.fillStyle = U.rgba(R.col, 0.95); ctx.fillText(R.sub, 0, 62); }
         ctx.restore();
       }
     },

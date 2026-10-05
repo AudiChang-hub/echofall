@@ -122,6 +122,7 @@
       const g = G.game;
       g.state = 'title'; g.control = false; g.phase2 = false;
       if (G.Abyss.active && g.save) { G.Abyss.recover(g.save); g.persist(); }   // quitting mid-run: back to the surface
+      G.Routes.active = null;
       G.Chapters.load(1);
       g.save = g.defaultSave('normal'); g.diff = D.difficulty.normal; g.stats = g.save.stats;
       g.player = new G.Player(g); g.player.x = 470; g.player.y = 0; g.player.facing = 1; g.player.setState('move');
