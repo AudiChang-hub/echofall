@@ -12,8 +12,44 @@
   const CH1_PAL = JSON.parse(JSON.stringify(G.PAL));
   const BASE_UP = D.upgrades.map((u) => ({ id: u.id, max: u.max, cost: u.cost.slice() }));
 
+  // chapters 2-8 are not in index.html: they download on demand (and in the background after the title appears),
+  // so a first visit only fetches the engine + chapter 1. META lets menus name a chapter before it is loaded.
+  const LAST = 8;
+  const META = {
+    1: { id: 1, num: 'I', numZh: '一', title: '墜落的音符', en: 'THE FALLEN NOTE' },
+    2: { id: 2, num: 'II', numZh: '二', title: '頌歌之梯', en: 'THE CANTATA LADDER' },
+    3: { id: 3, num: 'III', numZh: '三', title: '斷層之井', en: 'THE FAULTWELL' },
+    4: { id: 4, num: 'IV', numZh: '四', title: '沉沒的歌劇院', en: 'THE DROWNED OPERA' },
+    5: { id: 5, num: 'V', numZh: '五', title: '無重之塔', en: 'THE UNMOORED SPIRE' },
+    6: { id: 6, num: 'VI', numZh: '六', title: '沉默方舟', en: 'THE SILENT ARK' },
+    7: { id: 7, num: 'VII', numZh: '七', title: '休止之所', en: 'THE REST' },
+    8: { id: 8, num: 'VIII', numZh: '八', title: '最後的樂章', en: 'THE LAST MOVEMENT' },
+  };
+  const loadScript = (src) => new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src + (G.VERSION && G.VERSION !== 'dev' ? '?v=' + G.VERSION : '');
+    s.async = false; s.onload = res; s.onerror = () => { s.remove(); rej(new Error('failed to load ' + src)); };
+    document.body.appendChild(s);
+  });
+
   const Ch = G.Chapters = {
-    list: [], byId: {}, cur: null,
+    list: [], byId: {}, cur: null, LAST,
+    info(id) { return this.byId[id] || META[id] || null; },
+    // id of the chapter after `def` (known even before that chapter's files are loaded)
+    nextId(def) { const n = def.next !== undefined ? def.next : def.id + 1; return n != null && META[n] ? n : null; },
+    // every chapter up to `id` is registered (later chapters reuse earlier foes and Talia's raised caps)
+    loaded(id) { for (let n = 2; n <= Math.min(id, LAST); n++) if (!this.byId[n]) return false; return true; },
+    ensure(id) {
+      id = Math.min(id || 1, LAST);
+      if (this.loaded(id)) return Promise.resolve();
+      let p = this._chain || Promise.resolve();
+      for (let n = 2; n <= id; n++) {
+        p = p.then(() => (this.byId[n] ? null : ['_foes', '_boss', ''].reduce((q, suf) => q.then(() => loadScript(`js/chapters/ch${n}${suf}.js`)), Promise.resolve())));
+      }
+      this._chain = p.catch(() => {});   // a failed download can be retried later
+      return p;
+    },
+    prefetch() { if (!this._pre) { this._pre = true; this.ensure(LAST).catch(() => { this._pre = false; }); } },
     register(def) {
       if (this.byId[def.id]) console.warn('chapter registered twice', def.id);
       this.byId[def.id] = def; this.list.push(def); this.list.sort((a, b) => a.id - b.id);

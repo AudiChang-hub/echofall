@@ -796,3 +796,12 @@ html.touch .gear-up { right: calc(14px + env(safe-area-inset-right, 0px)); top: 
 
 html.touch .lc-cmp li:nth-child(n+3), html.touch .lc-vs { display: none; }
 html.touch .loot-card { padding: 6px 9px; }
+
+/* chapter download overlay (chapters 2-8 load on demand) */
+#chLoad { position: absolute; inset: 0; z-index: 11; display: none; place-content: center; justify-items: center; gap: 14px; background: rgba(7,6,10,.82); pointer-events: auto; }
+#chLoad.show { display: grid; }
+#chLoad p { font: 400 17px/1 var(--serif); letter-spacing: .4em; color: var(--bone); }
+#chLoad i { display: block; width: min(220px, 50vw); height: 2px; background: var(--line); overflow: hidden; }
+#chLoad b { display: block; width: 35%; height: 100%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); animation: chLoadBar 1.1s ease-in-out infinite; }
+@keyframes chLoadBar { from { transform: translateX(-100%); } to { transform: translateX(290%); } }
+.pane-title .x-close, .pause-wrap .pane-title .x-close { margin-left: auto; }

@@ -94,6 +94,14 @@
     continueGame() {
       const s = G.Store.get('save', null);
       if (!s) return;
+      const want = s.chapter || 1;
+      if (!G.Chapters.loaded(want)) {
+        const m = G.Chapters.info(want);
+        G.UI.loading(true, `載入第${m ? m.numZh : want}章…`);
+        G.Chapters.ensure(want).then(() => { G.UI.loading(false); this.continueGame(); })
+          .catch(() => { G.UI.loading(false); G.UI.toast('載入失敗，請確認網路後再試一次', 'warn'); G.UI.toTitle(); });
+        return;
+      }
       this.save = Object.assign(this.defaultSave(s.diff), s);
       this.diff = G.DATA.difficulty[this.save.diff] || G.DATA.difficulty.normal; this.stats = this.save.stats;
       G.Chapters.load(this.save.chapter || 1);
@@ -129,16 +137,24 @@
     /* ------------------------------ chapters ------------------------------ */
     // boss down → (chapter epilogue) → chapter card → next chapter; the last chapter hands over to its ending
     completeChapter() {
-      const ch = G.Chapters.cur, nx = G.Chapters.next(ch);
+      const ch = G.Chapters.cur, nid = G.Chapters.nextId(ch);
       this.control = false; this.save.flags['ch_done_' + ch.id] = true;
-      if (!nx) { this.ending(); return; }
-      this.save.chapter = nx.id; this.save.checkpoint = null; this.save.drop = null;
-      this.save.maxChapter = Math.max(this.save.maxChapter || 1, nx.id);
+      if (!nid) { this.ending(); return; }
+      this.save.chapter = nid; this.save.checkpoint = null; this.save.drop = null;
+      this.save.maxChapter = Math.max(this.save.maxChapter || 1, nid);
       this.persist();
       G.Music.play('rest');
-      G.UI.chapterEnd(ch, this.stats, () => this.startChapter(nx.id));
+      G.Chapters.ensure(nid).catch(() => {});   // usually already there from the background download
+      G.UI.chapterEnd(ch, this.stats, () => this.startChapter(nid));
     },
     startChapter(id) {
+      if (!G.Chapters.loaded(id)) {
+        const m = G.Chapters.info(id);
+        G.UI.loading(true, `載入第${m ? m.numZh : id}章…`);
+        G.Chapters.ensure(id).then(() => { G.UI.loading(false); this.startChapter(id); })
+          .catch(() => { G.UI.loading(false); G.UI.toast('載入失敗，正在重試…', 'warn'); setTimeout(() => this.startChapter(id), 2500); });
+        return;
+      }
       const def = G.Chapters.load(id);
       // Echoes, Talia's upgrades, relics, gear and shards all carry over into the next chapter
       this.state = 'intro'; this.control = false; G.Music.play(null); G.Ambience.set('quiet');

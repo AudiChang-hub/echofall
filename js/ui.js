@@ -127,14 +127,16 @@
       g.resetWorld(); g.cam.x = 600; g.cam.y = -150; g.fadeA = first ? 1 : g.fadeA; g.fadeTarget = 0;
       this.showHud(false); this.bossBar(null);
       G.Music.play('title'); G.Ambience.set('quiet');
+      // the rest of the journey downloads quietly while the player is on the title / in chapter 1
+      setTimeout(() => G.Chapters.prefetch(), 2500);
       const title = $('#title');
       title.classList.remove('show'); void title.offsetWidth; title.classList.add('show');
       const items = [];
       // the kicker names the chapter the saved journey is in (Chapter I for a fresh start)
-      const kch = (g.hasSave() && G.Chapters.get(((G.Store.get('save', null) || {}).chapter) || 1)) || null, kick = title.querySelectorAll('.logo-kicker span');
+      const kch = (g.hasSave() && G.Chapters.info(((G.Store.get('save', null) || {}).chapter) || 1)) || null, kick = title.querySelectorAll('.logo-kicker span');
       if (kick.length === 3) { kick[0].textContent = 'CHAPTER ' + ((kch && kch.num) || 'I'); kick[2].textContent = (kch && kch.title) || '墜落的音符'; }
       if (g.hasSave()) {
-        const sv = G.Store.get('save', null), ch = G.Chapters.get((sv && sv.chapter) || 1);
+        const sv = G.Store.get('save', null), ch = G.Chapters.info((sv && sv.chapter) || 1);
         items.push({ label: '繼續旅程', en: ch ? `CONTINUE · 第${ch.numZh || ch.num}章 ${ch.title}` : 'CONTINUE', action: () => { this.closeTitle(); G.game.continueGame(); } });
       }
       items.push({ label: '新的旅程', en: 'NEW JOURNEY', action: () => this.openDiff() });
@@ -286,6 +288,7 @@
       const st = g.stats;
       $('#pauseStats').innerHTML = `<div>遊玩時間<b>${U.fmtTime(st.time)}</b></div><div>完美格擋<b>${st.parries}</b></div><div>殘響閃避<b>${st.dodges}</b></div><div>倒下<b>${st.deaths}</b></div>`;
       const resume = () => { this.pop(); };
+      $('#pauseClose').onclick = () => { if (this.top() && this.top().id === 'pause') { G.SFX.play('uiBack'); resume(); } };
       const items = [
         { label: '繼續', en: 'RESUME', action: resume },
         ...(this._tutSkipItem ? [{ label: '跳過戰鬥訓練', en: 'SKIP TRAINING', action: () => { resume(); G.Tut.skip(); } }] : []),
@@ -346,6 +349,7 @@
         }, true);
       }
       host._menu = m;
+      $('#settingsClose').onclick = () => { if (this.top() && this.top().id === 'settings') { G.SFX.play('uiBack'); this.pop(); } };
       this.push({ id: 'settings', el: $('#settings'), menu: m, back: () => this.pop() });
     },
     openControls() {
@@ -356,6 +360,7 @@
         ['下跳穿越平台', 'down', 'S + Space', '▼ + Ⓐ', '搖桿往下 + 跳'], ['暫停', 'pause', 'Esc', '☰', '右上 ☰']];
       const col = G.Input.device === 'pad' ? 3 : G.Input.device === 'touch' ? 4 : 2;
       $('#ctlGrid').innerHTML = rows.map((r) => `<div><span>${r[0]}</span><span>${r[col]}</span></div>`).join('');
+      $('#controlsClose').onclick = () => { if (this.top() && this.top().id === 'controls') { G.SFX.play('uiBack'); this.pop(); } };
       this.push({ id: 'controls', el: $('#controls'), menu: new Menu($('#controlsMenu'), [{ label: '返回', en: 'BACK', action: () => this.pop() }], { delay: 0 }), back: () => this.pop() });
     },
 

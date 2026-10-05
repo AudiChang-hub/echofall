@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
-  <meta name="ef-version" content="26f3866e11">
+  <meta name="ef-version" content="be17a4b0fc">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
   <title>ECHOFALL 殘響之刃</title>
   <meta name="description" content="ECHOFALL 殘響之刃：一款以聲音與寂靜為主題的 2.5D 魂系動作遊戲。">
@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=26f3866e11">
+  <link rel="stylesheet" href="css/style.css?v=be17a4b0fc">
 </head>
 <body>
   <div id="app">
@@ -107,7 +107,7 @@
       <!-- PAUSE -->
       <section id="pause" class="screen modal">
         <div class="pause-wrap">
-          <h2 class="pane-title">暫停<em>PAUSED</em></h2>
+          <h2 class="pane-title">暫停<em>PAUSED</em><button type="button" class="x-close" id="pauseClose" aria-label="繼續遊戲">✕</button></h2>
           <div class="menu" id="pauseMenu"></div>
           <div class="pause-stats" id="pauseStats"></div>
         </div>
@@ -116,7 +116,7 @@
       <!-- SETTINGS -->
       <section id="settings" class="screen modal">
         <div class="pane">
-          <h2 class="pane-title">設定<em>SETTINGS</em></h2>
+          <h2 class="pane-title">設定<em>SETTINGS</em><button type="button" class="x-close" id="settingsClose" aria-label="返回">✕</button></h2>
           <div class="menu settings-list" id="settingsMenu"></div>
           <p class="pane-foot"><kbd>◀ ▶</kbd> 調整　<kbd data-g="back"></kbd> 返回</p>
         </div>
@@ -125,7 +125,7 @@
       <!-- CONTROLS -->
       <section id="controls" class="screen modal">
         <div class="pane">
-          <h2 class="pane-title">操作<em>CONTROLS</em></h2>
+          <h2 class="pane-title">操作<em>CONTROLS</em><button type="button" class="x-close" id="controlsClose" aria-label="返回">✕</button></h2>
           <div class="ctl-grid" id="ctlGrid"></div>
           <div class="menu" id="controlsMenu"></div>
         </div>
@@ -264,46 +264,25 @@
 
   <!-- loading progress while the game scripts download (slow mobile networks) -->
   <script>(function () { var n = 0; document.addEventListener('load', function (e) { var t = e.target; if (!t || t.tagName !== 'SCRIPT') return; n++; var tot = Math.max(n + 1, document.scripts.length - 1, 30), k = Math.min(99, Math.round(n / tot * 100)), a = document.getElementById('bootLoad'), b = document.getElementById('bootBar'); if (a) a.textContent = '載入中 ' + k + '%'; if (b) b.style.width = k + '%'; }, true); })();</script>
-  <script src="js/core.js?v=26f3866e11"></script>
-  <script src="js/update.js?v=26f3866e11"></script>
-  <script src="js/audio.js?v=26f3866e11"></script>
-  <script src="js/data.js?v=26f3866e11"></script>
-  <script src="js/world.js?v=26f3866e11"></script>
-  <script src="js/fx.js?v=26f3866e11"></script>
-  <script src="js/rig.js?v=26f3866e11"></script>
-  <script src="js/enemies.js?v=26f3866e11"></script>
-  <script src="js/player.js?v=26f3866e11"></script>
-  <script src="js/boons.js?v=26f3866e11"></script>
-  <script src="js/gear.js?v=26f3866e11"></script>
-  <script src="js/tutorial.js?v=26f3866e11"></script>
-  <script src="js/ui.js?v=26f3866e11"></script>
-  <script src="js/gear_ui.js?v=26f3866e11"></script>
-  <script src="js/touch.js?v=26f3866e11"></script>
-  <script src="js/fullscreen.js?v=26f3866e11"></script>
-  <script src="js/chapters.js?v=26f3866e11"></script>
+  <script src="js/core.js?v=be17a4b0fc"></script>
+  <script src="js/update.js?v=be17a4b0fc"></script>
+  <script src="js/audio.js?v=be17a4b0fc"></script>
+  <script src="js/data.js?v=be17a4b0fc"></script>
+  <script src="js/world.js?v=be17a4b0fc"></script>
+  <script src="js/fx.js?v=be17a4b0fc"></script>
+  <script src="js/rig.js?v=be17a4b0fc"></script>
+  <script src="js/enemies.js?v=be17a4b0fc"></script>
+  <script src="js/player.js?v=be17a4b0fc"></script>
+  <script src="js/boons.js?v=be17a4b0fc"></script>
+  <script src="js/gear.js?v=be17a4b0fc"></script>
+  <script src="js/tutorial.js?v=be17a4b0fc"></script>
+  <script src="js/ui.js?v=be17a4b0fc"></script>
+  <script src="js/gear_ui.js?v=be17a4b0fc"></script>
+  <script src="js/touch.js?v=be17a4b0fc"></script>
+  <script src="js/fullscreen.js?v=be17a4b0fc"></script>
+  <script src="js/chapters.js?v=be17a4b0fc"></script>
   <!-- chapters: per chapter its foes, its boss, then the chapter itself (registers level/art/music/story) -->
-  <script src="js/chapters/ch1_foes.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch2_foes.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch2_boss.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch2.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch3_foes.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch3_boss.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch3.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch4_foes.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch4_boss.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch4.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch5_foes.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch5_boss.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch5.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch6_foes.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch6_boss.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch6.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch7_foes.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch7_boss.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch7.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch8_foes.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch8_boss.js?v=26f3866e11"></script>
-  <script src="js/chapters/ch8.js?v=26f3866e11"></script>
-  <script src="js/game.js?v=26f3866e11"></script>
+  <script src="js/chapters/ch1_foes.js?v=be17a4b0fc"></script>
+  <script src="js/game.js?v=be17a4b0fc"></script>
 </body>
 </html>

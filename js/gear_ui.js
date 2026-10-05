@@ -49,6 +49,14 @@
   }
 
   Object.assign(G.UI, {
+    /* -------------------------------------------------------- chapter download overlay */
+    loading(on, text) {
+      let el = $('#chLoad');
+      if (!el) { el = document.createElement('div'); el.id = 'chLoad'; el.innerHTML = '<p></p><i><b></b></i>'; document.getElementById('ui').appendChild(el); }
+      el.querySelector('p').textContent = text || '載入中…';
+      el.classList.toggle('show', !!on);
+    },
+
     /* -------------------------------------------------------- loot card (pickup + auto-compare) */
     lootCard(it) {
       const host = $('#lootCards') || (() => { const h = document.createElement('div'); h.id = 'lootCards'; document.getElementById('ui').appendChild(h); return h; })();
