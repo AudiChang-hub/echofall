@@ -4,6 +4,7 @@
   const U = G.U, L = G.LEVEL, PI = Math.PI, TAU = PI * 2;
   const VIEW_H = 640;
 
+  const FREEZE = new Set(['pylon', 'gear', 'build', 'travel', 'trade', 'codex', 'savecode', 'settings', 'controls', 'note', 'relic', 'boon', 'choice', 'pause']);
   const DEFAULT_SETTINGS = { master: 0.8, music: 0.6, sfx: 0.85, shake: 1, flashes: true, hints: true, textSpeed: 1, touchAssist: true, fps: 'auto' };
 
   const Game = G.game = {
@@ -131,6 +132,7 @@
       }
       G.UI.bossBar(null);
       this.lastZone = null;
+      G.Props.spawn(this);   // crates, urns and crystals come back with the Hushborn
     },
     zoneMusic() { return G.Chapters.musicAt(this.player.x, this.player.y); },
 
@@ -173,6 +175,8 @@
       };
       const card = [{ t: `第${def.numZh || def.num}章\n${def.title}`, s: `CHAPTER ${def.num} — ${def.en}` }];
       G.UI.intro(card.concat(def.intro || []), begin);
+      // the chapter card is up: lift the black curtain from the chapter-end screen
+      requestAnimationFrame(() => requestAnimationFrame(() => G.UI.curtain(false)));
     },
 
     /* ------------------------------ loop ------------------------------ */
@@ -202,6 +206,9 @@
       }
     },
     tick(rdt) {
+      // menus freeze the world: resting at a pylon respawns the Hushborn, and they must not walk up and attack
+      // while you are tuning, equipping, travelling, trading, reading or choosing an Echo
+      if (this.state === 'play' && G.UI.stack.some((l) => FREEZE.has(l.id))) { this.dtVis = 0; return; }
       // pause
       if (this.state === 'play' && G.Input.tap('pause') && !G.UI.modalOpen()) { G.UI.openPause(); return; }
       // time dilation
@@ -237,7 +244,7 @@
         G.updateHazards(dt);
         G.Boons.update(dt);
       }
-      this.updPickups(dt);
+      this.updPickups(dt); G.Props.update(dt);
       G.Tut.update(dt);
       if (this.state === 'play') G.Chapters.hook('update', this, dt);
       G.FX.update(dt);
@@ -603,6 +610,18 @@
       else setTimeout(open, 500);
     },
     persist() { this.save.flags = this.save.flags || {}; G.Store.set('save', this.save); },
+    // dynamic difficulty (chapter III on): compare Rinne's damage output and toughness with what the chapter expects,
+    // and scale the Hushborn's health and damage to match - stronger builds meet tougher foes, struggling ones get a little slack
+    dynScale() {
+      const P = this.player, ch = (G.Chapters.cur && G.Chapters.cur.id) || 1;
+      if (!P || ch < 3) return { hp: 1, dmg: 1 };
+      const EXP_OFF = [1, 1, 1.25, 1.5, 1.75, 2.0, 2.3, 2.6, 2.9], EXP_EHP = [100, 100, 120, 140, 160, 180, 200, 220, 240];
+      const echoes = Object.values(this.save.boons || {}).reduce((a, b) => a + b, 0);
+      const spd = P.gear ? P.gear.speed * (1 + (P.gear.spd || 0)) : 1;
+      const off = P.dmgMul * spd * (1 + echoes * 0.04) * (1 + ((P.gear && P.gear.crit) || 0));
+      const ehp = P.maxHp / (P.dmgTaken || 1);
+      return { hp: U.clamp(off / EXP_OFF[ch], 0.9, 2.6), dmg: U.clamp(Math.sqrt(ehp / EXP_EHP[ch]), 0.9, 1.8) };
+    },
     // furthest chapter this journey has reached (older saves: derive it from completed-chapter flags)
     reachedChapter() {
       const s = this.save, F = s.flags || {}; let m = Math.max(s.maxChapter || 1, s.chapter || 1);
@@ -675,7 +694,9 @@
       // world
       G.BG.drawGround(ctx, cam, W, H, S);
       ctx.setTransform(S, 0, 0, S, W / 2 - cam.x * S, H / 2 - cam.y * S);
+      G.Props.drawLedges(ctx, cam, t);
       this.drawWorldProps(ctx);
+      G.Props.draw(ctx, cam, t);
       G.Chapters.hook('drawBack', ctx, this);
       G.drawHazards(ctx);
       for (const e of this.enemies) if (e.boss) e.draw(ctx);
@@ -699,10 +720,13 @@
       G.BG.drawDust(ctx, cam, W, H, S, t);
       const P = this.player;
       G.BG.drawPost(ctx, W, H, S, t, { tint: L.tintAt(cam.x), lowHp: this.state === 'play' && P.hp < P.maxHp * 0.3 ? 1 : 0 });
-      if (this.phase2 && this.arena && L.encounters[this.arena.id] && L.encounters[this.arena.id].boss) { ctx.fillStyle = 'rgba(120,0,30,0.12)'; ctx.globalCompositeOperation = 'multiply'; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over'; }
+      if (this.phase2 && this.arena && L.encounters[this.arena.id] && L.encounters[this.arena.id].boss) { if (G.Quality.full) { ctx.fillStyle = 'rgba(120,0,30,0.12)'; ctx.globalCompositeOperation = 'multiply'; } else ctx.fillStyle = 'rgba(70,0,20,0.1)'; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'source-over'; }
       if (this.dmgFlash > 0) { ctx.fillStyle = `rgba(255,40,80,${this.dmgFlash * 0.18})`; ctx.fillRect(0, 0, W, H); }
       if (this.timeScale < 0.7) {
-        ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = `rgba(0,0,0,${(0.7 - this.timeScale) * 0.9})`; ctx.fillRect(0, 0, W, H);
+        // slow motion drains the colour (cheap version: a cool dim veil — saturation blending stalls laptop GPUs)
+        if (G.Quality.full) { ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = `rgba(0,0,0,${(0.7 - this.timeScale) * 0.9})`; }
+        else ctx.fillStyle = `rgba(40,46,64,${(0.7 - this.timeScale) * 0.35})`;
+        ctx.fillRect(0, 0, W, H);
         ctx.globalCompositeOperation = 'source-over';
       }
       // letterbox

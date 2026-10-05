@@ -2107,7 +2107,8 @@
     const T = G.ENEMY_TYPES && G.ENEMY_TYPES[type]; if (!T || T._c7ink) return;
     const draw = T.draw; T._c7ink = true;
     T.draw = function (ctx, e, ghost) {
-      if (ghost || L.chapter !== 7) return draw.call(this, ctx, e, ghost);
+      // luminosity blending repaints every stroke through a frame copy on laptop GPUs: only on 高
+      if (ghost || L.chapter !== 7 || !G.Quality.full) return draw.call(this, ctx, e, ghost);
       ctx.save(); ctx.globalCompositeOperation = 'luminosity';
       try { return draw.call(this, ctx, e, ghost); } finally { ctx.restore(); }
     };

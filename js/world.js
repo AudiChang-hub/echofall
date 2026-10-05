@@ -963,7 +963,7 @@
         b.filter = 'none';
       } else {
         b.drawImage(src, 0, 0, w, h);
-        b.globalCompositeOperation = 'multiply'; b.drawImage(this.bc, 0, 0); b.drawImage(this.bc, 0, 0);
+        b.globalCompositeOperation = 'source-over';
       }
       ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = strength * 0.7;
@@ -978,11 +978,12 @@
       fg.addColorStop(0, U.rgba(P('fog', t), 0)); fg.addColorStop(1, U.rgba(P('fog', t), 0.14));
       ctx.fillStyle = fg; ctx.fillRect(0, 0, W, H);
       // grade: warm highlights / teal shadows
-      ctx.globalCompositeOperation = 'soft-light';
+      ctx.globalCompositeOperation = G.Quality.full ? 'soft-light' : 'source-over';
       const cg = ctx.createLinearGradient(0, 0, W, H);
       cg.addColorStop(0, t > 0.7 ? 'rgba(120,40,90,0.35)' : 'rgba(40,90,110,0.35)'); cg.addColorStop(1, t > 0.7 ? 'rgba(255,120,90,0.3)' : 'rgba(255,170,90,0.3)');
+      if (!G.Quality.full) ctx.globalAlpha = 0.32;
       ctx.fillStyle = cg; ctx.fillRect(0, 0, W, H);
-      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
       // painted look: punchier saturation and contrast (one filtered self-copy; skipped on low quality)
       if (G.Quality.full && 'filter' in ctx) {
         ctx.save(); ctx.filter = 'saturate(1.28) contrast(1.1)'; ctx.globalCompositeOperation = 'copy';
@@ -998,7 +999,7 @@
         ctx.fillStyle = lg; ctx.fillRect(0, 0, W, H);
       }
       // grain
-      if (this.grain) {
+      if (this.grain && G.Quality.full) {
         ctx.globalAlpha = 0.05; ctx.globalCompositeOperation = 'overlay';
         const ox = Math.floor(Math.random() * 256), oy = Math.floor(Math.random() * 256);
         const pat = ctx.createPattern(this.grain, 'repeat');

@@ -548,7 +548,7 @@
     openPylon(py, onLeave) {
       const g = G.game, sv = g.save, el = $('#pylon');
       $('#pyName').textContent = py.name;
-      const tabs = [['up', '調校'], ['gear', G.Gear && G.Gear.anyBetter(sv) ? '裝備・鍛造 ▲' : '裝備・鍛造'], ['travel', '旅行'], ['relic', '遺物'], ['codex', '檔案庫']];
+      const tabs = [['up', '調校'], ['gear', G.Gear && G.Gear.anyBetter(sv) ? '裝備・鍛造 ▲' : '裝備・鍛造'], ['travel', '旅行'], ['trade', '交易'], ['relic', '遺物'], ['codex', '檔案庫']];
       let ti = 0;
       const info = $('#pyInfo');
       const taliaLines = ['「止弦的第三根弦有點走音，我幫你調一下。」', '「聽說方舟的刀都是手工打的？真浪漫。」', '「別死喔。我是說真的。修共鳴碑很花時間的。」', '「鐘樓今天又有兩個小孩出生了。你在下面要加油。」'];
@@ -601,7 +601,7 @@
       };
       const renderTab = () => {
         $('#pyTabs').innerHTML = tabs.map((t, k) => `<button class="tab ${k === ti ? 'on' : ''}" data-k="${k}">${t[1]}</button>`).join('');
-        $('#pyTabs').querySelectorAll('.tab').forEach((b) => b.onclick = () => { ti = +b.dataset.k; if (tabs[ti][0] === 'codex') { ti = 0; this.openCodex(); } else if (tabs[ti][0] === 'gear') { ti = 0; this.openGear({ forge: true, onClose: () => { shards(); renderTab(); } }); } else if (tabs[ti][0] === 'travel') { ti = 0; this.openTravel(); } renderTab(); });
+        $('#pyTabs').querySelectorAll('.tab').forEach((b) => b.onclick = () => { ti = +b.dataset.k; if (tabs[ti][0] === 'codex') { ti = 0; this.openCodex(); } else if (tabs[ti][0] === 'gear') { ti = 0; this.openGear({ forge: true, onClose: () => { shards(); renderTab(); } }); } else if (tabs[ti][0] === 'travel') { ti = 0; this.openTravel(); } else if (tabs[ti][0] === 'trade') { ti = 0; this.openTrade({}); } renderTab(); });
         const items = tabs[ti][0] === 'relic' ? buildRelic() : buildUp();
         menu = new Menu($('#pyMenu'), items, { delay: 0, clickSelects: true, start: menu && menu.items.length === items.length ? menu.i : 0, onFocus: showInfo });
         showInfo(menu.items[menu.i]);
@@ -612,7 +612,7 @@
       $('#pylonClose').onclick = () => { if (!this.stack.some((l) => l.id === 'pylon')) return; while (this.top() && this.top().id !== 'pylon') this.pop(); G.SFX.play('uiBack'); leave(); };
       this.push({ id: 'pylon', el, handle: () => {
         const In = I();
-        if (In.tap('tabL')) { ti = ti === 0 ? 3 : 0; renderTab(); G.SFX.play('ui'); }
+        if (In.tap('tabL')) { ti = ti === 0 ? 4 : 0; renderTab(); G.SFX.play('ui'); }
         else if (In.tap('tabR')) { if (ti === 0) { this.openGear({ forge: true, onClose: () => { shards(); renderTab(); } }); } else { ti = 0; renderTab(); } G.SFX.play('ui'); }
         else if (In.tap('back')) { G.SFX.play('uiBack'); leave(); }
         else menu.handle();
@@ -748,7 +748,8 @@
         el.onclick = () => { clicked = true; };
         this.push({ id: 'chapterEnd', el, handle: (dt) => {
           t += dt;
-          if (t > 2 && (clicked || I().tap('confirm') || I().tap('back'))) { el.onclick = null; this.pop(); cb && cb(); }
+          // fade to black first; the next chapter is built behind the curtain, so its set-up never shows as a freeze
+          if (t > 2 && (clicked || I().tap('confirm') || I().tap('back'))) { el.onclick = null; this.pop(); this.curtain(true); G.SFX.play('uiOk'); setTimeout(() => { cb && cb(); }, 420); }
           clicked = false;
         } });
       }, 1200);

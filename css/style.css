@@ -835,3 +835,18 @@ html.touch .loot-card { padding: 6px 9px; }
 }
 
 .gd-desc b.q-hi { color: #8dfcb0; } .gd-desc b.q-lo { color: #ff8f9f; } .gd-desc b { font-family: var(--mono); }
+
+/* Talia's supply */
+.trade { width: min(760px, 100%); max-height: 92vh; display: flex; flex-direction: column; }
+.tr-talia { margin-top: 12px; font: 400 13px/1.7 var(--sans); color: #9cf7b0; letter-spacing: .06em; }
+.tr-list { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; touch-action: pan-y; }
+.tr-row { display: flex; align-items: center; gap: 16px; padding: 12px 14px; border: 1px solid var(--line); background: rgba(8,7,12,.5); }
+.tr-row > div { flex: 1; min-width: 0; }
+.tr-row b { font: 600 16px/1.2 var(--serif); letter-spacing: .16em; }
+.tr-row p { margin-top: 4px; font: 400 12.5px/1.6 var(--sans); color: var(--dim); }
+.tr-row .gb-act small { display: inline-flex; align-items: center; gap: 4px; }
+@media (max-height: 480px) { #tradeScreen { padding: 8px calc(10px + env(safe-area-inset-right, 0px)) 8px calc(10px + env(safe-area-inset-left, 0px)); } .tr-row { padding: 8px 10px; } .tr-talia { display: none; } }
+
+/* scene-change curtain */
+#curtain { position: absolute; inset: 0; z-index: 13; background: #050407; opacity: 0; pointer-events: none; transition: opacity .38s ease; }
+#curtain.show { opacity: 1; pointer-events: auto; }

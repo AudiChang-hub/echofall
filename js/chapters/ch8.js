@@ -1240,7 +1240,7 @@
     ctx.globalCompositeOperation = 'source-over';
     // the endings
     if (e.flood > 0.01) {
-      ctx.globalCompositeOperation = 'soft-light'; ctx.fillStyle = `rgba(255,190,130,${0.4 * e.flood})`; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = G.Quality.full ? 'soft-light' : 'source-over'; ctx.fillStyle = `rgba(255,190,130,${(G.Quality.full ? 0.4 : 0.14) * e.flood})`; ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'lighter';
       const v = G.game && G.game._view, bx = v ? W / 2 + (BOX.x - v.cam.x) * v.S : W / 2, by = v ? H / 2 + (-260 - v.cam.y) * v.S : H * 0.5;
       const gg = ctx.createRadialGradient(bx, by, 0, bx, by, W * 0.8);
@@ -1256,8 +1256,9 @@
       ctx.fillStyle = pg; ctx.fillRect(0, 0, W, H);
     }
     if (e.still > 0.01) {
-      ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = `rgba(0,0,0,${0.75 * e.still})`; ctx.fillRect(0, 0, W, H);
-      ctx.globalCompositeOperation = 'soft-light'; ctx.fillStyle = `rgba(120,140,190,${0.3 * e.still})`; ctx.fillRect(0, 0, W, H);
+      if (G.Quality.full) { ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = `rgba(0,0,0,${0.75 * e.still})`; } else ctx.fillStyle = `rgba(40,44,60,${0.3 * e.still})`;
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = G.Quality.full ? 'soft-light' : 'source-over'; ctx.fillStyle = `rgba(120,140,190,${(G.Quality.full ? 0.3 : 0.12) * e.still})`; ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'source-over';
     }
     return true;

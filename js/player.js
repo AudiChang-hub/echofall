@@ -2,7 +2,7 @@
 /* ECHOFALL — Rinne: input-driven combat state machine */
 (function (G) {
   const U = G.U, Rig = G.Rig, A = Rig.ANIM, PI = Math.PI;
-  const RUN = 390, GRAV = 2500, JUMP = -900, DJUMP = -800, MAXFALL = 1300;
+  const RUN = 390, GRAV = 2500, JUMP = -940, DJUMP = -880, MAXFALL = 1300;
   const LIGHT = [
     { dmg: 10, bal: 7, lunge: 140, cancel: 0.26, box: { x: 0, y: -140, w: 118, h: 140 }, pitch: 1.0 },
     { dmg: 11, bal: 7, lunge: 150, cancel: 0.22, box: { x: 0, y: -160, w: 112, h: 160 }, pitch: 1.1 },
@@ -55,6 +55,7 @@
         this.dmgTaken = (1 - Math.min(0.5, gt.dr || 0)) * 100 / (100 + (gt.defense || 0));
       } else this.dmgTaken = 1;
       if (this.hp != null && this.maxHp > prevMax) this.hp += this.maxHp - prevMax;
+      if (this.game.dynScale) this.game.dyn = this.game.dynScale();
     }
     get hurtbox() {
       const low = this.state === 'dodge' || this.state === 'skill1' ? 40 : 0;
@@ -81,6 +82,7 @@
       this.landT = Math.max(0, this.landT - dt);
       this.dropT = Math.max(0, this.dropT - dt);
       this.coyote = this.onGround ? 0.1 : Math.max(0, this.coyote - dt);
+      this.jumpT = (this.jumpT || 0) + dt;
       this.dropThrough = this.dropT > 0;
       // stamina
       this.staDelay -= dt;
@@ -126,11 +128,27 @@
       if (this.state !== 'skill1' && this.state !== 'execute') {
         let grav = GRAV * (G.LEVEL.gravity || 1);
         if (this.state === 'air' && this.st < 0.32) grav *= 0.25;
-        if (this.state === 'move' && this.vy < -200 && !(ctl && I.down('jump'))) grav *= 1.9;
+        // short hop when the button is released early — but only after a guaranteed rise, so a quick tap
+        // (especially on a phone) still clears a ledge instead of giving an unpredictable tiny jump
+        if (this.state === 'move' && this.vy < -200 && !(ctl && I.down('jump')) && (this.jumpT || 0) > 0.13) grav *= 1.5;
+        // a little hang time at the top of the arc makes the landing spot easier to steer
+        if (!this.onGround && Math.abs(this.vy) < 140 && this.state === 'move') grav *= 0.62;
         this.vy = Math.min(this.vy + grav * dt, MAXFALL);
       }
       const wasGround = this.onGround, vyBefore = this.vy;
       G.Phys.move(this, dt);
+      // ledge mantle: reaching a ledge with the feet just below its top (near the apex or falling, pushing toward it)
+      // climbs onto it instead of sliding back down - jumps up to a platform no longer need pixel-perfect timing
+      if (!this.onGround && this.state === 'move' && this.vy > -260 && ctl) {
+        const mx = G.Input.moveX();
+        if (mx) {
+          const d = Math.sign(mx), fx = this.x + d * 20, top = G.Phys.groundBelow(fx, this.y - 46);
+          if (top < 1e8 && this.y - top > 2 && this.y - top < 44 && G.Phys.groundBelow(this.x, this.y - 46) > this.y - 1) {
+            this.y = top; this.x += d * 10; this.vy = 0; this.onGround = true;
+            G.FX.dust(this.x, this.y, 5, { w: 16, speed: 90 }); G.SFX.play('cloth', 1.3);
+          }
+        }
+      }
       // arena / bounds
       const ar = g.arena, b = G.LEVEL.bounds;
       this.x = U.clamp(this.x, (ar ? ar.x0 : b[0]) + 16, (ar ? ar.x1 : b[1]) - 16);
@@ -180,7 +198,8 @@
 
     updMove(dt, mx, ctl) {
       const I = G.Input;
-      const acc = this.onGround ? 3400 : 2200;
+      // in the air: letting go of the stick stops the drift quickly and reversing is snappy, so jumps land where aimed
+      const acc = this.onGround ? 3400 : (!mx || Math.sign(mx) !== Math.sign(this.vx) ? 3600 : 2400);
       this.vx = U.approach(this.vx, mx * RUN * G.Boons.runMul() * (1 + ((this.gear && this.gear.run) || 0)), acc * dt);
       if (mx) this.facing = mx > 0 ? 1 : -1;
       if (!ctl) return;
@@ -189,10 +208,10 @@
         if (I.down('down') && this.onGround && this.y < -10 && G.LEVEL.oneways.some((p) => this.x > p.x && this.x < p.x + p.w && Math.abs(this.y - p.y) < 2)) {
           I.consume('jump'); this.dropT = 0.25; this.y += 2;
         } else if (this.onGround || this.coyote > 0) {
-          I.consume('jump'); this.vy = JUMP; this.jumps = 1; this.coyote = 0; this.onGround = false;
+          I.consume('jump'); this.vy = JUMP; this.jumps = 1; this.coyote = 0; this.onGround = false; this.jumpT = 0;
           G.SFX.play('jump'); G.SFX.play('cloth', 0.8); G.FX.dust(this.x, this.y, 6, { w: 20, speed: 120 });
         } else if (this.jumps < 2) {
-          I.consume('jump'); this.vy = DJUMP; this.jumps = 2; this.flipT = A.flip.dur;
+          I.consume('jump'); this.vy = DJUMP; this.jumps = 2; this.flipT = A.flip.dur; this.jumpT = 0;
           G.SFX.play('jump'); G.FX.ring(this.x, this.y - 10, 4, 40, 0.3, '#7ff4ff', 3, { flat: 0.3 });
         }
       }
@@ -477,6 +496,7 @@
         if (this.rally > 0) { const r = Math.min(this.rally, h.dmg * 0.7 * this.rallyMul); this.rally -= r; this.hp = Math.min(this.maxHp, this.hp + r); G.FX.ember(this.x, this.y - 60, 4, '#d6dde8', { w: 20, h: 40 }); }
         g.stats.hits++;
       }
+      G.Props.hit(g, b, h.dmg, this);   // crates, urns and crystals break under the blade too
     }
     receiveHit(src, info) {
       const g = this.game;
@@ -495,7 +515,7 @@
         if (since <= this.parryWin + (this.assist ? 0.06 : 0) + (g.tutBonus || 0)) { this.perfectParry(src, info); return 'parried'; }
         this.block(src, info); return 'blocked';
       }
-      this.takeDamage(info.dmg * g.diff.dmg * (this.dmgTaken || 1), src, info);
+      this.takeDamage(info.dmg * g.diff.dmg * (this.dmgTaken || 1) * ((g.dyn && g.dyn.dmg) || 1), src, info);
       return 'hit';
     }
     perfectParry(src, info) {
@@ -517,7 +537,7 @@
     }
     block(src, info) {
       const g = this.game;
-      const d = info.dmg * g.diff.dmg * 0.65 * (this.dmgTaken || 1) * (1 - ((this.gear && this.gear.guard) || 0));
+      const d = info.dmg * g.diff.dmg * 0.65 * (this.dmgTaken || 1) * ((g.dyn && g.dyn.dmg) || 1) * (1 - ((this.gear && this.gear.guard) || 0));
       this.hp -= d; this.rally += d; this.rallyT = 0;
       this.spendSta(13 + info.dmg * 0.5);
       const hx = this.x + this.facing * 24, hy = this.y - 80;
@@ -647,8 +667,10 @@
       // ground contact shadow
       const gy = G.Phys.groundBelow(this.x, this.y - 2);
       if (gy < 1e8) {
-        const k = U.clamp(1 - (gy - this.y) / 300, 0, 1);
+        // landing marker: stays visible through the whole jump so the touchdown spot is always readable
+        const k = U.clamp(1 - (gy - this.y) / 700, 0.4, 1);
         ctx.fillStyle = `rgba(10,8,12,${0.35 * k})`; ctx.beginPath(); ctx.ellipse(this.x, gy, 26 * k, 4 * k, 0, 0, PI * 2); ctx.fill();
+        if (gy - this.y > 40) { ctx.strokeStyle = `rgba(111,243,255,${0.55 * k})`; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(this.x, gy, 20, 3.5, 0, 0, PI * 2); ctx.stroke(); }
       }
       const blink = this.hurtInv > 0 && Math.floor(this.t * 30) % 2 === 0 ? 0.65 : 1;
       ctx.globalAlpha = blink;

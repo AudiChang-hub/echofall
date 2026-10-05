@@ -682,6 +682,7 @@
     const bl = opts.blade || null, lm = bl ? bl.len : 1, wm = bl ? bl.w : 1, edge = (bl && bl.col) || C.cyan;
     const b = J.hdF, pm = J.pommel, t = lm === 1 ? J.tip : { x: b.x + (J.tip.x - b.x) * lm, y: b.y + (J.tip.y - b.y) * lm };
     const dx = t.x - b.x, dy = t.y - b.y, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+    if (bl && bl.shape) { drawHafted(ctx, bl.shape, b, t, pm, dx / L, dy / L, nx, ny, L, edge, pose, opts); return; }
     // grip
     limb(ctx, pm, b, 1.6, 1.8, '#23252c');
     // guard (thin crossbar)
@@ -709,6 +710,62 @@
     // resonance strings (fine lines)
     ctx.strokeStyle = U.rgba('#e6fdff', 0.35); ctx.lineWidth = 0.4;
     for (let i = -1; i <= 1; i += 2) { ctx.beginPath(); ctx.moveTo(s.x + nx * i * 0.6, s.y + ny * i * 0.6); ctx.lineTo(t.x - dx / L * 14 + nx * i * 0.5, t.y - dy / L * 14 + ny * i * 0.5); ctx.stroke(); }
+    ctx.restore();
+  }
+
+  // hafted weapons: a wooden shaft through the hand (a little behind it too) and a head at the far end
+  function drawHafted(ctx, shape, b, t, pm, ux, uy, nx, ny, L, edge, pose, opts) {
+    const P = (a, s, o) => ({ x: a.x + ux * s + nx * o, y: a.y + uy * s + ny * o });
+    const Q = (a, s, o) => P(a, s * 1.45, o * 1.45);   // heavier heads read at gameplay size
+    const butt = P(b, -L * 0.28, 0);
+    const headAt = shape === 'spear' ? 0.86 : 0.92, hb = P(b, L * headAt, 0);
+    limb(ctx, butt, hb, 1.5, 1.5, '#5a3a24');                                   // shaft
+    ctx.strokeStyle = 'rgba(255,220,170,0.35)'; ctx.lineWidth = 0.6; ctx.beginPath(); ctx.moveTo(butt.x + nx * 0.6, butt.y + ny * 0.6); ctx.lineTo(hb.x + nx * 0.6, hb.y + ny * 0.6); ctx.stroke();
+    limb(ctx, P(b, -1.5, 0), P(b, 3, 0), 2.1, 2.1, '#23252c');                  // grip wrap
+    const metal = (pts) => {
+      ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for (const q of pts.slice(1)) ctx.lineTo(q.x, q.y); ctx.closePath();
+      const g = ctx.createLinearGradient(hb.x + nx * 6, hb.y + ny * 6, hb.x - nx * 6, hb.y - ny * 6);
+      g.addColorStop(0, '#ffffff'); g.addColorStop(0.5, '#b9c3cf'); g.addColorStop(1, '#5d6673');
+      ctx.fillStyle = g; ctx.fill(); ink(ctx, 0.5);
+    };
+    let edgeA, edgeB;
+    if (shape === 'spear') {
+      const tip = P(b, L * 1.04, 0);
+      metal([P(hb, 0, 1.2), P(hb, 3, 2.6), tip, P(hb, 3, -2.6), P(hb, 0, -1.2)]);
+      limb(ctx, P(hb, -1.2, 2.2), P(hb, -1.2, -2.2), 0.9, 0.9, '#e2b04f');          // collar
+      ctx.fillStyle = '#d43b3f'; ctx.beginPath(); ctx.moveTo(hb.x, hb.y); ctx.lineTo(P(hb, -6, 3.5).x, P(hb, -6, 3.5).y); ctx.lineTo(P(hb, -4, -1).x, P(hb, -4, -1).y); ctx.closePath(); ctx.fill();   // tassel
+      edgeA = P(hb, 3, 2.6); edgeB = tip;
+    } else if (shape === 'hammer') {
+      const c = P(b, L, 0);
+      metal([Q(c, -4, -7), Q(c, 4, -7), Q(c, 4, 9), Q(c, -4, 9)]);
+      limb(ctx, Q(c, -4.6, -7.5), Q(c, -4.6, 9.5), 0.8, 0.8, '#e2b04f');
+      edgeA = Q(c, 4, -7); edgeB = Q(c, 4, 9);
+    } else if (shape === 'axe') {
+      const c = P(b, L * 0.96, 0);
+      ctx.beginPath(); const a0 = Q(c, -5, 1), a1 = Q(c, 5, 1);
+      ctx.moveTo(a0.x, a0.y); const q1 = Q(c, -9, 10), q2 = Q(c, 9, 10), e0 = Q(c, -7, 12), e1 = Q(c, 7, 12);
+      ctx.lineTo(e0.x, e0.y); ctx.quadraticCurveTo(Q(c, 0, 15.5).x, Q(c, 0, 15.5).y, e1.x, e1.y); ctx.lineTo(a1.x, a1.y); ctx.closePath();
+      const g = ctx.createLinearGradient(c.x, c.y, Q(c, 0, 14).x, Q(c, 0, 14).y); g.addColorStop(0, '#5d6673'); g.addColorStop(0.6, '#b9c3cf'); g.addColorStop(1, '#ffffff');
+      ctx.fillStyle = g; ctx.fill(); ink(ctx, 0.5); void q1; void q2;
+      metal([Q(c, -2, -1), Q(c, 2, -1), Q(c, 3, -5), Q(c, -3, -5)]);                  // back spike
+      edgeA = e0; edgeB = e1;
+    } else {   // scythe: a long blade hooking back from the top of the shaft
+      const c = P(b, L, 0);
+      ctx.beginPath(); const s0 = Q(c, 0, 1.6), s1 = Q(c, 0, -1.6);
+      ctx.moveTo(s0.x, s0.y);
+      const m1 = Q(c, -6, 15), m2 = Q(c, -16, 20), k = Q(c, -24, 17);
+      ctx.quadraticCurveTo(m1.x, m1.y, k.x, k.y);
+      const m3 = Q(c, -13, 12);
+      ctx.quadraticCurveTo(m3.x, m3.y, s1.x, s1.y); ctx.closePath(); void m2;
+      const g = ctx.createLinearGradient(c.x, c.y, k.x, k.y); g.addColorStop(0, '#5d6673'); g.addColorStop(0.5, '#b9c3cf'); g.addColorStop(1, '#ffffff');
+      ctx.fillStyle = g; ctx.fill(); ink(ctx, 0.5);
+      edgeA = s0; edgeB = k;
+    }
+    // resonant edge glow (affinity colour), same as the swords
+    const glow = 0.45 + (pose.glow || 0) * 0.55 + (opts.bladeGlow || 0);
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    ctx.strokeStyle = U.rgba(edge, Math.min(1, glow)); ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(edgeA.x, edgeA.y); ctx.lineTo(edgeB.x, edgeB.y); ctx.stroke();
     ctx.restore();
   }
 

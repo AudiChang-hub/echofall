@@ -1997,7 +1997,7 @@
     }
     // epilogues
     if (EPI.gold > 0.01) {
-      ctx.globalCompositeOperation = 'soft-light'; ctx.fillStyle = `rgba(255,196,130,${0.35 * EPI.gold})`; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = G.Quality.full ? 'soft-light' : 'source-over'; ctx.fillStyle = `rgba(255,196,130,${(G.Quality.full ? 0.35 : 0.12) * EPI.gold})`; ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'lighter';
       const gg = ctx.createRadialGradient(W / 2, H * 0.55, 0, W / 2, H * 0.55, W * 0.75);
       gg.addColorStop(0, `rgba(255,214,150,${0.2 * EPI.gold})`); gg.addColorStop(1, 'rgba(255,214,150,0)');

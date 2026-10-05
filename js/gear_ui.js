@@ -49,6 +49,33 @@
   }
 
   Object.assign(G.UI, {
+    /* -------------------------------------------------------- Talia's supply (spend shards once the tuning is maxed) */
+    openTrade() {
+      const g = G.game, sv = g.save;
+      let el = $('#tradeScreen');
+      if (!el) {
+        el = document.createElement('section'); el.id = 'tradeScreen'; el.className = 'screen modal';
+        el.innerHTML = '<div class="trade"><header class="gr-head"><div class="gr-title"><b>交易</b><em>TALIA\'S SUPPLY</em></div><div class="gr-wallet"><span><i class="shard-ico"></i><b class="tr-shards"></b><em>殘響碎片</em></span><span><i class="stone-ico"></i><b class="tr-stones"></b><em>鍛造石</em></span></div><button type="button" class="x-close tr-close" aria-label="關閉">✕</button></header><p class="tr-talia">「碎片多到用不完？交給我。我從鐘樓幫你寄東西下去。」— 塔莉亞</p><div class="tr-list"></div></div>';
+        document.getElementById('ui').appendChild(el);
+      }
+      const ch = (G.Chapters.cur && G.Chapters.cur.id) || 1;
+      const render = () => {
+        el.querySelector('.tr-shards').textContent = Math.floor(sv.shards); el.querySelector('.tr-stones').textContent = sv.stones || 0;
+        el.querySelector('.tr-list').innerHTML = GR.shop(ch).map((s) => `<div class="tr-row"><div><b>${s.name}</b><p>${s.d}</p></div><button type="button" class="gb-act main" data-id="${s.id}" ${sv.shards >= s.cost ? '' : 'disabled'}>購買<small><i class="shard-ico"></i> ${s.cost}</small></button></div>`).join('');
+        el.querySelectorAll('.tr-row button').forEach((b) => { b.onclick = () => {
+          const got = GR.buy(g, b.dataset.id);
+          if (!got) return;
+          G.SFX.play('pylon');
+          if (got.stone) this.toast('鍛造石　+1', 'item'); else this.lootCard(got);
+          g.persist && g.persist(); render();
+        }; });
+      };
+      const close = () => { if (this.top() && this.top().id === 'trade') { G.SFX.play('uiBack'); this.pop(); } };
+      el.querySelector('.tr-close').onclick = close;
+      render();
+      this.push({ id: 'trade', el, handle: () => { if (I().tap('back')) close(); } });
+    },
+
     /* -------------------------------------------------------- fast travel between reached chapters (pylons) */
     openTravel() {
       const g = G.game, sv = g.save, Ch = G.Chapters, F = sv.flags;
@@ -107,6 +134,13 @@
         else if (In.tap('menuRight')) { pi = pi + 1; G.SFX.play('ui'); renderPy(); }
         else if (In.tap('confirm')) go();
       } });
+    },
+
+    /* -------------------------------------------------------- black curtain for scene changes */
+    curtain(on) {
+      let el = $('#curtain');
+      if (!el) { el = document.createElement('div'); el.id = 'curtain'; document.getElementById('ui').appendChild(el); void el.offsetWidth; }
+      el.classList.toggle('show', !!on);
     },
 
     /* -------------------------------------------------------- chapter download overlay */
@@ -199,7 +233,8 @@
           <div class="gd-btns">
             ${isW ? (it.slot === 'weapon' ? '<button type="button" class="gb-act" disabled>使用中</button>' : '<button type="button" class="gb-act" data-a="off">卸下</button>') : '<button type="button" class="gb-act main" data-a="on">裝備</button>'}
             ${cost ? `<button type="button" class="gb-act" data-a="up" ${canUp ? '' : 'disabled'}>強化 +${it.plus}→+${it.plus + 1}<small>鍛造石 ${cost.stones}・碎片 ${cost.shards}</small></button>` : forge && it.slot === 'weapon' ? '<button type="button" class="gb-act" disabled>已強化到 +10</button>' : ''}
-            ${isW || it.uid === 'start' ? '' : `<button type="button" class="gb-act warn" data-a="sal">${armed === it.uid ? '確定分解？' : '分解'}<small>碎片 +${sal.shards}${sal.stones ? `・鍛造石 +${sal.stones}` : ''}</small></button>`}
+            ${forge && GR.reforgeCost(it) ? `<button type="button" class="gb-act" data-a="ref" ${sv.shards >= GR.reforgeCost(it) ? '' : 'disabled'}>重鑄<small>重擲品質與詞條・碎片 ${GR.reforgeCost(it)}</small></button>` : ''}
+            ${!GR.canSalvage(sv, it) ? '' : `<button type="button" class="gb-act warn" data-a="sal">${armed === it.uid ? '確定分解？' : '分解'}<small>碎片 +${sal.shards}${sal.stones ? `・鍛造石 +${sal.stones}` : ''}</small></button>`}
           </div>`;
         host.querySelectorAll('.gb-act[data-a]').forEach((b) => { b.onclick = () => act(b.dataset.a); });
       };
@@ -218,6 +253,8 @@
           if (GR.unequip(sv, it)) { G.SFX.play('uiBack'); after(); render(); }
         } else if (a === 'up') {
           if (GR.upgrade(sv, it)) { G.SFX.play('pylon'); G.SFX.play('impact'); this.toast(`${GR.name(it)}　強化完成`, 'good'); after(); render(); }
+        } else if (a === 'ref') {
+          if (GR.reforge(sv, it)) { G.SFX.play('pylon'); G.SFX.play('discover', 1.2); this.toast(`${GR.name(it)}　重鑄完成`, 'good'); after(); render(); }
         } else if (a === 'sal') {
           if (armed !== it.uid) { armed = it.uid; G.SFX.play('ui'); renderDetail(); return; }
           const v = GR.salvage(sv, it);
@@ -277,7 +314,9 @@
         <section><h4>裝備 <em>EQUIPMENT</em></h4><ul class="bd-gear">${gear}</ul>
           <button type="button" class="gb-act main bd-go">${up ? '▲ 有更強的裝備，前往裝備' : '前往裝備'}</button>
           <ul class="bd-stats"><li><span>攻擊倍率</span><b>×${P.dmgMul.toFixed(2)}</b></li><li><span>受到傷害</span><b>${Math.round((P.dmgTaken || 1) * 100)}%</b></li>
-          <li><span>最大生命</span><b>${P.maxHp}</b></li><li><span>耐力</span><b>${Math.round(P.maxSta)}</b></li><li><span>完美格擋判定</span><b>${Math.round(P.parryWin * 1000)}ms</b></li></ul></section>`;
+          <li><span>最大生命</span><b>${P.maxHp}</b></li><li><span>耐力</span><b>${Math.round(P.maxSta)}</b></li><li><span>完美格擋判定</span><b>${Math.round(P.parryWin * 1000)}ms</b></li>
+          <li><span>敵人生命</span><b>×${((g.dyn && g.dyn.hp) || 1).toFixed(2)}</b></li><li><span>敵人傷害</span><b>×${((g.dyn && g.dyn.dmg) || 1).toFixed(2)}</b></li></ul>
+          <p class="bd-hint">第三章起，敵人強度會依你的攻擊力與耐打度自動調整。</p></section>`;
       const close = () => { if (this.top() && this.top().id === 'build') { G.SFX.play('uiBack'); this.pop(); } };
       el.querySelector('.bd-close').onclick = close;
       el.querySelector('.bd-go').onclick = () => { this.pop(); this.openGear(); };

@@ -22,7 +22,11 @@
     great: { name: '大劍', en: 'GREATSWORD', glyph: '劍', dmg: 1.38, spd: 0.8, reach: 1.22, bal: 1.6, len: 1.38, w: 1.9, trait: '慢而沉重，削韌極高' },
     rapier: { name: '細劍', en: 'RAPIER', glyph: '刺', dmg: 0.8, spd: 1.22, reach: 1.06, bal: 0.7, len: 1.12, w: 0.55, parry: 0.02, trait: '出手快，完美格擋判定 +20ms' },
     twin: { name: '雙刃', en: 'TWINBLADE', glyph: '雙', dmg: 0.74, spd: 1.3, reach: 0.9, bal: 0.8, len: 0.82, w: 1.1, echo: 0.22, trait: '每次命中 22% 追加一刀' },
-    odachi: { name: '長刀', en: 'ODACHI', glyph: '長', dmg: 1.12, spd: 0.9, reach: 1.34, bal: 1.05, len: 1.5, w: 1, trait: '攻擊距離最長' },
+    odachi: { name: '長刀', en: 'ODACHI', glyph: '長', dmg: 1.12, spd: 0.9, reach: 1.34, bal: 1.05, len: 1.5, w: 1, trait: '刀身最長的刀' },
+    spear: { name: '長槍', en: 'SPEAR', glyph: '槍', dmg: 0.95, spd: 1.0, reach: 1.48, bal: 0.9, len: 1.7, w: 1, shape: 'spear', trait: '攻擊距離最遠，削韌較低' },
+    hammer: { name: '戰鎚', en: 'WARHAMMER', glyph: '鎚', dmg: 1.48, spd: 0.76, reach: 1.06, bal: 2.1, len: 1.15, w: 1, shape: 'hammer', trait: '非常慢，但幾下就能打出失衡' },
+    scythe: { name: '鐮刀', en: 'SCYTHE', glyph: '鐮', dmg: 1.04, spd: 0.94, reach: 1.32, bal: 0.95, len: 1.45, w: 1, shape: 'scythe', bleedB: 7, trait: '大範圍揮掃，附帶出血累積' },
+    axe: { name: '巨斧', en: 'GREATAXE', glyph: '斧', dmg: 1.3, spd: 0.85, reach: 1.12, bal: 1.4, len: 1.22, w: 1, shape: 'axe', crit: 0.08, trait: '沉重劈砍，暴擊率 +8%' },
   };
   // named weapon bases (ch = earliest chapter they drop in; uq = only from that boss)
   const WEAPONS = {
@@ -39,6 +43,19 @@
     skyodachi: { cls: 'odachi', name: '無重長刀', lore: '在高塔上鍛造，揮起來輕得不可思議。', ch: 5 },
     arkgreat: { cls: 'great', name: '方舟護衛大劍', lore: '方舟儀隊的禮劍，開過刃之後就不只是禮劍了。', ch: 6 },
     restkatana: { cls: 'katana', name: '休止之刃', lore: '夢裡撿到的刀，醒來時還握在手上。', ch: 7 },
+    graypike: { cls: 'spear', name: '灰港守衛長槍', lore: '城門守衛的長槍，槍纓早就褪色了。', ch: 1 },
+    icespear: { cls: 'spear', name: '冰柱長槍', lore: '槍尖是一截永不融化的冰。', ch: 2 },
+    tidepike: { cls: 'spear', name: '潮汐魚叉', lore: '船員拿它刺過比船還大的東西。', ch: 5 },
+    halberd: { cls: 'spear', name: '方舟儀仗戟', lore: '儀隊在典禮上舉著它，現在它只剩下戰鬥。', ch: 6 },
+    bellhammer: { cls: 'hammer', name: '鐘錘', lore: '從大鐘裡拆下來的錘舌。每一擊都像在敲鐘。', ch: 2 },
+    minehammer: { cls: 'hammer', name: '礦工大錘', lore: '敲開過無數晶脈，握柄被手磨得發亮。', ch: 3 },
+    mallet: { cls: 'hammer', name: '管風琴槌', lore: '本來是調音用的。', ch: 6 },
+    hushscythe: { cls: 'scythe', name: '寂靜之鐮', lore: '割下的不是麥子，是聲音。', ch: 3 },
+    curtain: { cls: 'scythe', name: '落幕之鐮', lore: '舞台監督用它割斷布幕的繩索。', ch: 4 },
+    dreamscythe: { cls: 'scythe', name: '夢鐮', lore: '揮動時會留下一段沒有聲音的殘影。', ch: 7 },
+    woodaxe: { cls: 'axe', name: '劈柴斧', lore: '灰港居民用來劈柴的斧頭。也劈別的東西。', ch: 1 },
+    quarryaxe: { cls: 'axe', name: '採石巨斧', lore: '斧刃上嵌著晶石碎片。', ch: 3 },
+    anchoraxe: { cls: 'axe', name: '錨斧', lore: '用斷掉的錨打成的斧頭。', ch: 5 },
     // boss signatures (always legendary)
     calla: { cls: 'great', name: '卡菈的聖鐘刃', lore: '修女把整座鐘的沉默都封進了這把劍。', uq: 'c2_boss', aff: 'sacred' },
     hadal: { cls: 'great', name: '鑽井王的鑽心劍', lore: '刃口還在微微旋轉。', uq: 'c3_boss', aff: 'heavy' },
@@ -199,8 +216,7 @@
       const C = CLASSES[d.cls];
       s.power = Math.round(100 * C.dmg * lvScale(it.il) * rm * (1 + 0.07 * it.plus));
       s.speed = C.spd; s.reach = C.reach; s.balMul = C.bal;
-      if (C.parry) add('parry', C.parry);
-      if (C.echo) add('echo', C.echo);
+      for (const k of ['parry', 'echo', 'bleedB', 'crit']) if (C[k]) add(k, C[k]);
       if (it.aff && AFF[it.aff]) for (const k in AFF[it.aff].fx) add(k, AFF[it.aff].fx[k]);
     } else if (it.slot === 'talisman') {
       for (const k in d.fx) add(k, d.fx[k]);
@@ -271,7 +287,7 @@
         }
       }
       const w = G_.get(sv, sv.gear.weapon), C = w ? CLASSES[def(w).cls] : CLASSES.katana;
-      t.look = { len: C.len, w: C.w, col: w && w.aff && AFF[w.aff] ? AFF[w.aff].col : null, r: w ? w.r : 0 };
+      t.look = { len: C.len, w: C.w, shape: C.shape || null, col: w && w.aff && AFF[w.aff] ? AFF[w.aff].col : null, r: w ? w.r : 0 };
       // paper doll: what Rinne wears on her head and body (js/rig.js redraws her outfit from these)
       const hd = G_.get(sv, sv.gear.head), bd = G_.get(sv, sv.gear.body);
       t.outfit = { head: hd ? hd.base : null, body: bd ? bd.base : null };
@@ -294,11 +310,36 @@
       return true;
     },
     salvageValue(it) { return { shards: Math.round(RARITY[it.r].salvage * lvScale(it.il) * (1 + it.plus * 0.3)), stones: it.r >= 2 ? it.r - 1 + Math.floor(it.plus / 3) : 0 }; },
+    // anything can be salvaged except what is worn and the very last weapon (a blade is always in hand)
+    canSalvage(sv, it) { return !G_.isWorn(sv, it) && !(it.slot === 'weapon' && sv.inv.filter((i) => i.slot === 'weapon').length <= 1); },
     salvage(sv, it) {
-      if (G_.isWorn(sv, it) || it.uid === 'start') return null;
+      if (!G_.canSalvage(sv, it)) return null;
       const v = G_.salvageValue(it);
       sv.inv = sv.inv.filter((i) => i !== it); sv.shards += v.shards; sv.stones += v.stones;
       return v;
+    },
+    // reforge: reroll quality and bonus lines (affinity kept) — an endless shard sink
+    reforgeCost(it) { return it.slot === 'talisman' ? null : Math.round([80, 160, 320, 600][it.r] * (1 + 0.12 * (it.il - 1))); },
+    reforge(sv, it) {
+      const c = G_.reforgeCost(it); if (!c || sv.shards < c) return false;
+      sv.shards -= c; const fresh = make(it.slot, it.base, it.r, it.il, { aff: it.aff });
+      it.q = fresh.q; it.fx = fresh.fx; return true;
+    },
+    // Talia's remote supply: smithing stones and sealed echo caskets (a random piece of gear, at least fine)
+    shop(ch) { return [
+      { id: 'stone', name: '鍛造石', d: '強化武器用的材料。', cost: 60 + 10 * ch },
+      { id: 'casket', name: '殘響匣', d: '封存著一件隨機裝備（必定精良以上，第 ' + ch + ' 章等級）。', cost: 260 + 60 * ch },
+      { id: 'casket3', name: '共鳴殘響匣', d: '封存著一件隨機裝備（必定稀有以上）。', cost: 900 + 160 * ch },
+    ]; },
+    buy(game, id) {
+      const sv = game.save, ch = (G.Chapters.cur && G.Chapters.cur.id) || 1, item = G_.shop(ch).find((s) => s.id === id);
+      if (!item || sv.shards < item.cost) return null;
+      sv.shards -= item.cost;
+      if (id === 'stone') { sv.stones = (sv.stones || 0) + 1; return { stone: true }; }
+      let it = roll(ch, id === 'casket3' ? 1 : 0, 0);
+      if (id === 'casket' && it.r < 1) it = make(it.slot, it.base, 1, ch);
+      if (id === 'casket3' && it.r < 2) it = make(it.slot, it.base, 2, ch);
+      it.n = 1; G_.ensure(sv); sv.inv.push(it); return it;
     },
     upCost(it) { return it.plus >= MAX_PLUS ? null : { stones: it.plus + 1, shards: 40 * (it.plus + 1) * (1 + 0.15 * (it.il - 1)) | 0 }; },
     upgrade(sv, it) {
@@ -408,7 +449,7 @@
       const it = p.item;
       if (sv.inv.length >= MAX_INV) {
         // full bag: the weakest unworn common goes to the forge
-        const spare = sv.inv.filter((i) => !G_.isWorn(sv, i) && i.uid !== 'start').sort((a, b) => a.r - b.r || score(a) - score(b))[0];
+        const spare = sv.inv.filter((i) => G_.canSalvage(sv, i)).sort((a, b) => a.r - b.r || score(a) - score(b))[0];
         if (spare && (spare.r < it.r || score(spare) < score(it))) G_.salvage(sv, spare);
         else { const v = G_.salvageValue(it); sv.shards += v.shards; sv.stones += v.stones; G.UI.toast(`背包已滿：${name(it)} 自動分解`, 'warn'); return; }
       }

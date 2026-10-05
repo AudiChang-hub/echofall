@@ -630,7 +630,7 @@
     const S = v.S, cam = v.cam, w = G.game.W / S, hh = G.game.H / S, x0 = cam.x - w / 2, y0 = cam.y - hh / 2, R = Math.max(w, hh);
     ctx.save();
     // the colour drains out of the world behind her (everything that matters is drawn after this, in colour)
-    if (!LQ()) { ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = `rgba(0,0,0,${0.82 * k})`; ctx.fillRect(x0 - 20, y0 - 20, w + 40, hh + 40); }
+    if (G.Quality.full) { ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = `rgba(0,0,0,${0.82 * k})`; ctx.fillRect(x0 - 20, y0 - 20, w + 40, hh + 40); }
     ctx.globalCompositeOperation = 'source-over';
     ctx.fillStyle = `rgba(14,8,32,${0.34 * k})`; ctx.fillRect(x0 - 20, y0 - 20, w + 40, hh + 40);
     const gr = ctx.createRadialGradient(cam.x, cam.y + hh * 0.06, R * 0.16, cam.x, cam.y, R * 0.62);
