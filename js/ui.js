@@ -88,6 +88,7 @@
     /* ---------------- stack ---------------- */
     push(layer) {
       layer.openedFrame = this.frame; this.stack.push(layer); if (layer.el) layer.el.classList.add('show');
+      if (layer.el) layer.el.querySelectorAll('kbd[data-g]').forEach((k) => { k.textContent = G.Input.glyph(k.dataset.g); });
       // a layer opened on top of another (e.g. the archive from a pylon) must also draw on top of it, whatever the DOM order
       if (layer.el && !layer.keepShown) layer.el.style.zIndex = this.stack.length > 1 ? String(Math.min(4, this.stack.length)) : '';
       if (['pause', 'codex', 'pylon', 'savecode', 'note'].includes(layer.id)) G.SFX.play('pageOpen');
@@ -616,8 +617,11 @@
             : `<button type="button" class="py-buy" data-buy>強化到 Lv ${r + 1}<small>－${c} 結晶</small></button>`;
           info.innerHTML = `${guide}<div class="mr-face on"><p class="mr-k"><em class="t ${sd}">${sd === 'a' ? '甲' : '乙'}</em>生效中</p><h4>${f.name}<em> Lv ${r} / ${f.max}</em></h4><p>${f.desc(Math.max(1, r))}</p>${btn}</div>
             <div class="mr-face"><p class="mr-k"><em class="t ${od}">${od === 'a' ? '甲' : '乙'}</em>另一面・未生效</p><h4>${o.name}<em> Lv ${orank} / ${o.max}</em></h4><p>${o.desc(Math.max(1, orank))}</p>
-            <button type="button" class="py-buy py-swap" data-swap="${od}">改用這一面（免費）</button></div>`;
+            <button type="button" class="py-buy py-swap" data-swap="${od}">改用這一面（免費）</button></div>
+            <div class="mr-alt"><p>手上的 <span class="shd">殘響碎片 ${Math.floor(sv.shards)}</span> 不能用在鏡子上，它是用來<b>強化武器</b>、重鑄裝備，或在「交易」買鍛造石。</p>
+            <button type="button" class="gb-act" data-goforge>前往強化武器<small>裝備・鍛造</small></button></div>`;
           info.querySelectorAll('[data-swap]').forEach((b) => { b.onclick = () => swapTo(slot, b.dataset.swap); });
+          { const gf = info.querySelector('[data-goforge]'); if (gf) gf.onclick = () => { if (this.top() && this.top().id === 'pylon') { G.SFX.play('ui'); this.openGear({ forge: true, onClose: () => { shards(); renderTab(); } }); } }; }
           const bb = info.querySelector('[data-buy]'); if (bb) bb.onclick = () => { if (!bb.disabled && this.top() && this.top().id === 'pylon') menu.activate(); };
           return;
         } else if (it.rk) {

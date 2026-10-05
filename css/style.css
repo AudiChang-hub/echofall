@@ -975,3 +975,15 @@ html.touch .loot-card { padding: 6px 9px; }
   .mr-nm { font-size: 13px; letter-spacing: .04em; }
   .mr-guide { padding: 6px 10px; margin-bottom: 8px; } .mr-guide ol { font-size: 11.5px; line-height: 1.45; }
 }
+.mr-alt { margin-top: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 14px; border: 1px dashed rgba(111,243,255,.3); border-radius: 8px; }
+.mr-alt p { margin: 0 !important; flex: 1; min-width: 0; font-size: 12.5px !important; line-height: 1.6 !important; color: var(--dim) !important; }
+.mr-alt .shd { color: var(--cyan); font-weight: 600; }
+.mr-alt b { color: var(--bone); }
+.mr-alt .gb-act { flex: none; min-height: 40px; padding: 4px 14px; }
+@media (max-height: 480px) { .mr-alt { flex-direction: column; align-items: flex-start; gap: 6px; padding: 7px 10px; } }
+/* equipment: keep clear of the window edges on laptop-sized windows too */
+@media (min-height: 481px) { #gearScreen { padding: 20px calc(24px + env(safe-area-inset-right, 0px)) 20px calc(24px + env(safe-area-inset-left, 0px)); } }
+.gd-need { margin-top: 12px; padding: 9px 12px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border: 1px dashed rgba(255,210,138,.4); border-radius: 8px; }
+.gd-need p { flex: 1 1 220px; min-width: 0; margin: 0; font: 400 12.5px/1.6 var(--sans); color: var(--dim); }
+.gd-need b { color: #ffd28a; }
+.gd-need .gb-act { min-height: 38px; }

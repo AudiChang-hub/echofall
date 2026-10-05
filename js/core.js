@@ -129,10 +129,12 @@ window.G = window.G || {};
   const GLYPH_KB = {
     move: 'A / D', left: 'A', right: 'D', jump: 'Space', light: 'J', dodge: 'L', guard: 'K', skill: 'U',
     heal: 'F', interact: 'E', pause: 'Esc', confirm: 'Enter', back: 'Esc', tabL: 'Q', tabR: 'E',
+    menuUp: '↑', menuDown: '↓', menuLeft: '←', menuRight: '→',
   };
   const GLYPH_PAD = {
     move: '左搖桿', left: '◀', right: '▶', jump: 'Ⓐ', light: 'Ⓧ', dodge: 'Ⓑ', guard: 'LB', skill: 'Ⓨ',
     heal: 'RT', interact: '▼', pause: '☰', confirm: 'Ⓐ', back: 'Ⓑ', tabL: 'LB', tabR: 'RB',
+    menuUp: '十字↑', menuDown: '十字↓', menuLeft: '十字←', menuRight: '十字→',
   };
   // touch: the labels printed on the on-screen buttons
   const GLYPH_TOUCH = {

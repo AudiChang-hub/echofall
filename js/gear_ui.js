@@ -50,7 +50,7 @@
 
   Object.assign(G.UI, {
     /* -------------------------------------------------------- Talia's supply (spend shards once the tuning is maxed) */
-    openTrade() {
+    openTrade(o) {
       const g = G.game, sv = g.save;
       let el = $('#tradeScreen');
       if (!el) {
@@ -73,7 +73,7 @@
       const close = () => { if (this.top() && this.top().id === 'trade') { G.SFX.play('uiBack'); this.pop(); } };
       el.querySelector('.tr-close').onclick = close;
       render();
-      this.push({ id: 'trade', el, handle: () => { if (I().tap('back')) close(); } });
+      this.push({ id: 'trade', el, onClose: () => { o && o.onClose && o.onClose(); }, handle: () => { if (I().tap('back')) close(); } });
     },
 
     /* -------------------------------------------------------- fast travel between reached chapters (pylons) */
@@ -235,11 +235,14 @@
             ${cost ? `<button type="button" class="gb-act" data-a="up" ${canUp ? '' : 'disabled'}>強化 +${it.plus}→+${it.plus + 1}<small>鍛造石 ${cost.stones}・碎片 ${cost.shards}</small></button>` : forge && it.slot === 'weapon' ? '<button type="button" class="gb-act" disabled>已強化到 +10</button>' : ''}
             ${forge && GR.reforgeCost(it) ? `<button type="button" class="gb-act" data-a="ref" ${sv.shards >= GR.reforgeCost(it) ? '' : 'disabled'}>重鑄<small>重擲品質與詞條・碎片 ${GR.reforgeCost(it)}</small></button>` : ''}
             ${!GR.canSalvage(sv, it) ? '' : `<button type="button" class="gb-act warn${armed === it.uid ? ' armed' : ''}" data-a="sal">${armed === it.uid ? '再按一次確認分解' : '分解'}<small>碎片 +${sal.shards}${sal.stones ? `・鍛造石 +${sal.stones}` : ''}</small></button>`}
-          </div>`;
+          </div>
+          ${cost && forge && !canUp ? `<div class="gd-need"><p>${sv.stones < cost.stones ? `強化還缺 <b>鍛造石 ${cost.stones - sv.stones}</b>：可以在「交易」用碎片購買，或打碎箱子、分解裝備取得。` : `強化還缺 <b>碎片 ${cost.shards - Math.floor(sv.shards)}</b>：打倒敵人就會掉落。`}</p>
+            ${sv.stones < cost.stones ? '<button type="button" class="gb-act" data-a="shop">去交易買鍛造石</button>' : ''}</div>` : ''}`;
         host.querySelectorAll('.gb-act[data-a]').forEach((b) => { b.onclick = () => act(b.dataset.a); });
       };
       const render = () => { renderSlots(); renderList(); renderDetail(); wallet(); };
       const act = (a) => {
+        if (a === 'shop') { G.SFX.play('ui'); this.openTrade({ onClose: () => render() }); return; }
         const it = items()[li]; if (!it) return;
         const k = slotKey();
         if (a === 'on') {
