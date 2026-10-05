@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="ef-version" content="f3304d7f64">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>ECHOFALL 殘響之刃</title>
+  <meta name="description" content="ECHOFALL 殘響之刃：一款以聲音與寂靜為主題的 2.5D 魂系動作遊戲。">
+  <meta name="theme-color" content="#07060a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ECHOFALL">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=f3304d7f64">
+</head>
+<body>
+  <div id="app">
+    <canvas id="game" aria-label="ECHOFALL game canvas"></canvas>
+
+    <div id="ui">
+      <!-- BOOT -->
+      <section id="boot" class="screen show" aria-live="polite">
+        <div class="boot-inner">
+          <div class="boot-mark" aria-hidden="true"><i></i><i></i><i></i></div>
+          <p class="boot-studio">AN ORIGINAL ACTION RPG</p>
+          <p class="boot-press"><span>按任意鍵開始</span><em>PRESS ANY KEY</em></p>
+          <p class="boot-note">建議使用耳機遊玩 · 支援鍵盤 / 滑鼠 / 手把</p>
+        </div>
+      </section>
+
+      <!-- TITLE -->
+      <section id="title" class="screen">
+        <div class="title-veil"></div>
+        <div class="title-col">
+        <header class="logo">
+          <p class="logo-kicker"><span>CHAPTER I</span><span class="sep"></span><span>墜落的音符</span></p>
+          <h1 class="logo-word" aria-label="ECHOFALL">
+            <span>E</span><span>C</span><span>H</span><span>O</span><span class="gap"></span><span>F</span><span>A</span><span>L</span><span>L</span>
+          </h1>
+          <p class="logo-sub">殘響之刃</p>
+        </header>
+        <nav class="menu" id="titleMenu" aria-label="主選單"></nav>
+        </div>
+        <aside class="diff-panel" id="diffPanel" aria-label="選擇難度">
+          <h3>選擇你的節拍 <em>SELECT DIFFICULTY</em><button class="x-close diff-x" id="diffClose" aria-label="返回">✕</button></h3>
+          <div class="menu" id="diffMenu"></div>
+          <p class="diff-desc" id="diffDesc"></p>
+        </aside>
+        <footer class="title-foot">
+          <span>v1.0 · ORIGINAL WORK</span>
+          <span id="titleGlyphs"></span>
+        </footer>
+      </section>
+
+      <!-- HUD -->
+      <section id="hud" aria-hidden="true">
+        <div class="hud-tl">
+          <div class="id-row"><i class="dia"></i><b>凜音</b><span>VESPER-07</span></div>
+          <div class="bar hp"><div class="trail"></div><div class="rally"></div><div class="fill"></div><span class="num" id="hpNum"></span></div>
+          <div class="bar sta"><div class="fill"></div></div>
+          <div class="res" id="resCells"><i></i><i></i><i></i><i></i></div>
+          <div class="echoes" id="echoes"></div>
+        </div>
+        <div class="hud-tr">
+          <div class="shards"><em>殘響碎片</em><i class="shard-ico"></i><span id="shardNum">0</span></div>
+          <div class="drop-ind" id="dropInd">殘響遺落中</div>
+        </div>
+        <div class="hud-bl">
+          <div class="tonic"><i class="vial"></i><span id="tonicNum">3</span><kbd data-g="heal"></kbd></div>
+          <div class="skill" id="sk1"><kbd data-g="skill"></kbd><b id="skName">共鳴技</b><em id="skCost">◆</em></div>
+        </div>
+        <div class="boss" id="bossBar">
+          <div class="boss-name"><b id="bossName"></b><span id="bossEn"></span></div>
+          <div class="bar bhp"><div class="trail"></div><div class="fill"></div></div>
+          <div class="bar bbal"><div class="fill"></div></div>
+        </div>
+        <div class="prompt" id="prompt"></div>
+        <div class="bark" id="bark"><b></b><span></span></div>
+        <div class="hint" id="hint"><i class="hint-ico"></i><p></p></div>
+        <div class="toasts" id="toasts"></div>
+        <div class="zone" id="zone"><span class="zl"></span><h2></h2><p></p><span class="zl"></span></div>
+      </section>
+
+      <!-- DIALOG -->
+      <section id="dialog" class="modal-lite" aria-live="polite">
+        <div class="dlg">
+          <div class="dlg-who"><i></i><b></b><span></span></div>
+          <p class="dlg-text"></p>
+          <div class="dlg-next">▼</div>
+        </div>
+      </section>
+
+      <!-- INTRO CARDS -->
+      <section id="intro" class="screen">
+        <p class="intro-t"></p><p class="intro-s"></p>
+        <div class="intro-skip">按住 <kbd>Enter</kbd> 跳過</div>
+      </section>
+
+      <!-- PAUSE -->
+      <section id="pause" class="screen modal">
+        <div class="pause-wrap">
+          <h2 class="pane-title">暫停<em>PAUSED</em></h2>
+          <div class="menu" id="pauseMenu"></div>
+          <div class="pause-stats" id="pauseStats"></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="settings" class="screen modal">
+        <div class="pane">
+          <h2 class="pane-title">設定<em>SETTINGS</em></h2>
+          <div class="menu settings-list" id="settingsMenu"></div>
+          <p class="pane-foot"><kbd>◀ ▶</kbd> 調整　<kbd data-g="back"></kbd> 返回</p>
+        </div>
+      </section>
+
+      <!-- CONTROLS -->
+      <section id="controls" class="screen modal">
+        <div class="pane">
+          <h2 class="pane-title">操作<em>CONTROLS</em></h2>
+          <div class="ctl-grid" id="ctlGrid"></div>
+          <div class="menu" id="controlsMenu"></div>
+        </div>
+      </section>
+
+      <!-- SAVE CODE -->
+      <section id="savecode" class="screen modal">
+        <div class="pane sc">
+          <h2 class="pane-title">存檔碼<em>SAVE CODE</em><button class="x-close" id="scClose" aria-label="關閉">✕</button></h2>
+          <p class="sc-lead">存檔會自動保存在這個瀏覽器裡，關機也不會消失。想換到另一台電腦或手機繼續玩，或想備份進度，就用存檔碼。</p>
+          <nav class="tabs" id="scTabs">
+            <button class="tab on" data-k="export">匯出（帶走進度）</button>
+            <button class="tab" data-k="import">匯入（接續進度）</button>
+          </nav>
+          <div class="sc-body">
+            <p class="sc-info" id="scInfo"></p>
+            <label class="sc-label" for="scText" id="scLabel">你的存檔碼</label>
+            <textarea id="scText" spellcheck="false" autocomplete="off" rows="5"></textarea>
+            <div class="sc-actions">
+              <button class="sc-btn primary" id="scPrimary">複製存檔碼</button>
+              <span class="sc-msg" id="scMsg" role="status"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CODEX -->
+      <section id="codex" class="screen modal">
+        <div class="codex">
+          <header class="codex-head">
+            <h2 class="pane-title">檔案庫<em>ARCHIVE</em><button class="x-close" id="codexClose" aria-label="關閉">✕</button></h2>
+            <nav class="tabs" id="codexTabs"></nav>
+          </header>
+          <div class="codex-body">
+            <ul class="codex-list" id="codexList"></ul>
+            <article class="codex-detail" id="codexDetail">
+              <canvas class="portrait" id="portrait" width="520" height="520"></canvas>
+              <div class="cd-text">
+                <p class="cd-tag"></p><h3></h3><p class="cd-en"></p><div class="cd-body"></div>
+              </div>
+            </article>
+          </div>
+          <p class="pane-foot"><kbd data-g="tabL"></kbd><kbd data-g="tabR"></kbd> 切換分類　<kbd>▲ ▼</kbd> 選擇　<kbd data-g="back"></kbd> 返回</p>
+        </div>
+      </section>
+
+      <!-- PYLON -->
+      <section id="pylon" class="screen modal">
+        <div class="pylon">
+          <header>
+            <p class="py-kicker">RESONANCE PYLON · 共鳴碑<button class="x-close" id="pylonClose" aria-label="離開共鳴碑">✕</button></p>
+            <h2 id="pyName"></h2>
+            <div class="py-shards"><i class="shard-ico"></i><span id="pyShards"></span><em>殘響碎片</em></div>
+          </header>
+          <nav class="tabs" id="pyTabs"></nav>
+          <div class="py-body">
+            <div class="menu py-list" id="pyMenu"></div>
+            <aside class="py-info" id="pyInfo"></aside>
+          </div>
+          <p class="pane-foot"><kbd data-g="tabL"></kbd><kbd data-g="tabR"></kbd> 切換　<kbd data-g="confirm"></kbd> 確認　<kbd data-g="back"></kbd> 離開共鳴碑</p>
+        </div>
+      </section>
+
+      <!-- NOTE -->
+      <section id="note" class="screen modal">
+        <article class="note-paper">
+          <p class="note-en"></p>
+          <h3></h3>
+          <div class="note-body"></div>
+          <p class="pane-foot"><kbd data-g="confirm"></kbd> 關閉</p>
+        </article>
+      </section>
+
+      <!-- RELIC / ITEM GET -->
+      <section id="relic" class="screen modal">
+        <div class="relic-card">
+          <p class="relic-k">遺物取得 · RELIC ACQUIRED</p>
+          <div class="relic-gem"></div>
+          <h3></h3>
+          <p class="relic-d"></p>
+          <p class="pane-foot"><kbd data-g="confirm"></kbd> 繼續</p>
+        </div>
+      </section>
+
+      <!-- GENERIC CHOICE -->
+      <section id="choice" class="screen modal">
+        <div class="choice-card">
+          <p class="choice-k"></p>
+          <h3></h3>
+          <p class="choice-d"></p>
+          <div class="menu choice-menu" id="choiceMenu"></div>
+        </div>
+      </section>
+
+      <!-- ECHO (BOON) CHOICE -->
+      <section id="boonPick" class="screen modal">
+        <div class="bp">
+          <p class="bp-k">共鳴回響 · CHOOSE AN ECHO</p>
+          <h2 class="bp-t">殘響在刃上低語</h2>
+          <div class="bp-cards"></div>
+          <button type="button" class="bp-confirm" disabled>先選一張卡片</button>
+          <p class="bp-foot"><kbd data-g="left"></kbd><kbd data-g="right"></kbd> 切換卡片　<kbd data-g="confirm"></kbd> 確認選擇</p>
+        </div>
+      </section>
+
+      <!-- DEATH -->
+      <section id="death" class="screen modal">
+        <div class="death-inner">
+          <h2>共鳴中斷</h2>
+          <p class="death-en">SIGNAL LOST</p>
+          <p class="death-tip" id="deathTip"></p>
+          <p class="death-press"><kbd data-g="confirm"></kbd> 重新調諧</p>
+        </div>
+      </section>
+
+      <!-- ENDING -->
+      <section id="ending" class="screen modal">
+        <div class="end-inner">
+          <p class="end-k">CHAPTER I COMPLETE</p>
+          <h2>第一章　墜落的音符</h2>
+          <div class="end-rank" id="endRank"></div>
+          <div class="end-stats" id="endStats"></div>
+          <p class="end-tbc">TO BE CONTINUED — 「方舟，沉默了。」</p>
+          <p class="pane-foot"><kbd data-g="confirm"></kbd> 製作名單</p>
+        </div>
+      </section>
+
+      <!-- CREDITS -->
+      <section id="credits" class="screen modal">
+        <div class="credits-roll" id="creditsRoll"></div>
+      </section>
+
+      <div id="flash"></div>
+    </div>
+  </div>
+
+  <script src="js/core.js?v=f3304d7f64"></script>
+  <script src="js/update.js?v=f3304d7f64"></script>
+  <script src="js/audio.js?v=f3304d7f64"></script>
+  <script src="js/data.js?v=f3304d7f64"></script>
+  <script src="js/world.js?v=f3304d7f64"></script>
+  <script src="js/fx.js?v=f3304d7f64"></script>
+  <script src="js/rig.js?v=f3304d7f64"></script>
+  <script src="js/enemies.js?v=f3304d7f64"></script>
+  <script src="js/player.js?v=f3304d7f64"></script>
+  <script src="js/boons.js?v=f3304d7f64"></script>
+  <script src="js/gear.js?v=f3304d7f64"></script>
+  <script src="js/tutorial.js?v=f3304d7f64"></script>
+  <script src="js/ui.js?v=f3304d7f64"></script>
+  <script src="js/gear_ui.js?v=f3304d7f64"></script>
+  <script src="js/touch.js?v=f3304d7f64"></script>
+  <script src="js/fullscreen.js?v=f3304d7f64"></script>
+  <script src="js/chapters.js?v=f3304d7f64"></script>
+  <!-- chapters: per chapter its foes, its boss, then the chapter itself (registers level/art/music/story) -->
+  <script src="js/chapters/ch1_foes.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch2_foes.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch2_boss.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch2.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch3_foes.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch3_boss.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch3.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch4_foes.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch4_boss.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch4.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch5_foes.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch5_boss.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch5.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch6_foes.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch6_boss.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch6.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch7_foes.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch7_boss.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch7.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch8_foes.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch8_boss.js?v=f3304d7f64"></script>
+  <script src="js/chapters/ch8.js?v=f3304d7f64"></script>
+  <script src="js/game.js?v=f3304d7f64"></script>
+</body>
+</html>
