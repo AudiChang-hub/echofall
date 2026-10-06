@@ -166,6 +166,8 @@
     },
     openGate(game, g) {
       if (g.open) return;
+      // chapter 1's funeral door wants the soul-bell and the music box (js/ch1x.js)
+      if ((G.LEVEL.chapter || 1) === 1 && G.Ch1X && G.Ch1X.on() && !G.Ch1X.doorOpen()) { G.Ch1X.doorRefusal(game); return; }
       // the gatekeeper's toll (js/events.js): from the second gate on, each door asks for something of yours
       const ch = G.LEVEL.chapter || 1, F = game.save.flags;
       if (ch >= 2 && !F['gate_' + ch + '_deal'] && G.Events && !g.asking) { g.asking = true; G.Events.gate(game, ch, () => { g.asking = false; F['gate_' + ch + '_deal'] = true; this.openGate(game, g); }); return; }

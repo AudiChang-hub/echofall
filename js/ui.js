@@ -297,6 +297,7 @@
       const items = [
         { label: '繼續', en: 'RESUME', action: resume },
         ...(this._tutSkipItem ? [{ label: '跳過戰鬥訓練', en: 'SKIP TRAINING', action: () => { resume(); G.Tut.skip(); } }] : []),
+        ...(G.Map && G.Map.key() ? [{ label: '地圖', en: 'MAP', action: () => G.Map.open(g) }] : []),
         { label: '全螢幕', en: 'FULLSCREEN', action: () => G.Fullscreen.toggle() },
         ...(g.save && g.save.dnd ? [{ label: '角色', en: 'CHARACTER', action: () => G.DnD.openSheet() }] : []),
         { label: '裝備', en: G.Gear && G.Gear.anyBetter(g.save) ? '▲ 有可替換的裝備' : 'EQUIPMENT', action: () => this.openGear() },
@@ -363,7 +364,7 @@
         ['攻擊：自動（靠近敵人就會出手、連段、處決）', 'light', '自動', '自動', '自動'],
         ['閃避（命中前一瞬閃開＝完美閃避，自動反擊）', 'dodge', 'L / Shift', 'Ⓑ', '閃'], ['共鳴技（自動選擇）', 'skill', 'U / Q', 'Ⓨ', '技（能量足夠時出現）'],
         ['回復（喝調和劑）', 'heal', 'F', 'RT', '右上「回復」'], ['互動', 'interact', 'E', '十字鍵 ▼', '點擊畫面上的提示'],
-        ['下跳穿越平台', 'down', 'S + Space', '▼ + Ⓐ', '搖桿往下 + 跳'], ['暫停', 'pause', 'P / Esc', '☰', '右上 ☰']];
+        ['下跳穿越平台', 'down', 'S + Space', '▼ + Ⓐ', '搖桿往下 + 跳'], ['暫停', 'pause', 'P / Esc', '☰', '右上 ☰'], ['地圖', 'map', 'M / Tab', 'Select', '右上「地圖」']];
       const col = G.Input.device === 'pad' ? 3 : G.Input.device === 'touch' ? 4 : 2;
       $('#ctlGrid').innerHTML = rows.map((r) => `<div><span>${r[0]}</span><span>${r[col]}</span></div>`).join('');
       $('#controlsClose').onclick = () => { if (this.top() && this.top().id === 'controls') { G.SFX.play('uiBack'); this.pop(); } };

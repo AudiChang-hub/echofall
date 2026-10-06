@@ -7,7 +7,7 @@
    interaction is contextual: tap the on-screen prompt ("互動 點亮魂燈台"). */
 (function (G) {
   const ACTS = [['Space', '跳', 'a1'], ['KeyL', '閃', 'a2'], ['KeyU', '技', 'a5 sk']];
-  const TOP = [['KeyF', '回復', 'heal'], ['FS', '⛶', 'fs'], ['Escape', '☰', 'pause']];
+  const TOP = [['KeyF', '回復', 'heal'], ['KeyM', '地圖', 'map'], ['FS', '⛶', 'fs'], ['Escape', '☰', 'pause']];
   const send = (type, code) => {
     window.dispatchEvent(new KeyboardEvent(type, { code }));
     G.Input.device = 'touch'; // the keydown handler marks 'kb'; these presses come from a finger

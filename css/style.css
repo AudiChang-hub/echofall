@@ -1151,3 +1151,24 @@ html.touch .hud-pause { display: none; }
 /* the weapon's moveset, under its scaling (each family fights differently: js/forms.js) */
 .gd-form { margin-top: 6px; font: 400 12px/1.55 var(--sans); color: var(--dim); }
 .gd-form b { display: inline-block; margin-right: 8px; padding: 2px 7px; border: 1px solid rgba(127,244,255,.35); border-radius: 3px; font: 600 11px/1.3 var(--sans); letter-spacing: .12em; color: var(--cyan); }
+
+/* map (js/map.js) */
+.map-wrap { width: min(1100px, 94vw); height: min(680px, 88vh); display: flex; flex-direction: column; gap: 10px; }
+.map-wrap .pane-title { display: flex; align-items: center; gap: 14px; }
+.map-pct { font: 600 13px/1 var(--mono); letter-spacing: .12em; color: var(--cyan); padding: 5px 10px; border: 1px solid rgba(127,244,255,.35); border-radius: 12px; }
+#mapCanvas { flex: 1; min-height: 0; width: 100%; border: 1px solid var(--line); border-radius: 6px; background: #0c0a0e; cursor: grab; touch-action: none; }
+#mapCanvas:active { cursor: grabbing; }
+.map-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 400 12px/1.4 var(--sans); color: var(--dim); }
+.map-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.map-legend i { display: inline-block; width: 10px; height: 10px; }
+.lg-pylon { background: #7ff4ff; transform: rotate(45deg) scale(.8); }
+.lg-chest { background: #ffcf7a; }
+.lg-note { background: #efe6d6; }
+.lg-ab { background: #bff8ff; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255,255,255,.6); }
+.lg-spirit { background: #9fe6ff; height: 3px !important; }
+.lg-seal { background: #ffb6a0; height: 4px !important; }
+@media (max-width: 760px), (max-height: 460px) {
+  .map-wrap { width: 100%; height: calc(100vh - 28px); height: calc(100dvh - 28px); gap: 6px; }
+  .map-wrap .pane-foot { display: none; }
+  .map-legend { font-size: 11px; gap: 4px 12px; }
+}

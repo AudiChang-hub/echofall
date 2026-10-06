@@ -48,6 +48,7 @@
     MANUAL: { 8: { x: 3180, y: 400, doors: [2930, 3060] } },
     fork(ch) {
       if (this.forks[ch] !== undefined) return this.forks[ch];
+      if (ch === 1) return (this.forks[ch] = null);   // chapter 1 is a whole explorable city now (js/ch1x.js): no fork
       const lv = G.Chapters.levelOf(ch); if (!lv) return null;
       if (this.MANUAL[ch]) { const m = this.MANUAL[ch], s = lv.solids.find((q) => m.x >= q.x && m.x <= q.x + q.w && q.y === m.y); return (this.forks[ch] = { x: m.x, y: m.y, kind: s ? s.kind : 'ground', doorXs: m.doors }); }
       // main-path ground only: thick bodies, not roofs, gantries or crates

@@ -4,7 +4,7 @@
   const U = G.U, L = G.LEVEL, PI = Math.PI, TAU = PI * 2;
   const VIEW_H = 640;
 
-  const FREEZE = new Set(['pylon', 'gear', 'build', 'travel', 'trade', 'codex', 'savecode', 'settings', 'controls', 'note', 'relic', 'boon', 'choice', 'pause', 'abyss', 'abyssEnd', 'classSel', 'charSheet', 'event', 'dice']);
+  const FREEZE = new Set(['map', 'pylon', 'gear', 'build', 'travel', 'trade', 'codex', 'savecode', 'settings', 'controls', 'note', 'relic', 'boon', 'choice', 'pause', 'abyss', 'abyssEnd', 'classSel', 'charSheet', 'event', 'dice']);
   const DEFAULT_SETTINGS = { master: 0.8, music: 0.6, sfx: 0.85, shake: 1, flashes: true, hints: true, textSpeed: 1, touchAssist: true, fps: 'auto' };
 
   const Game = G.game = {
@@ -221,6 +221,7 @@
       if (this.state === 'play' && G.UI.stack.some((l) => FREEZE.has(l.id))) { this.dtVis = 0; return; }
       // pause
       if (this.state === 'play' && (G.Input.tap('pause') || this.wantPause) && !G.UI.modalOpen()) { this.wantPause = false; G.UI.openPause(); return; }
+      if (this.state === 'play' && G.Input.tap('map') && !G.UI.modalOpen() && G.Map) { G.Map.open(this); return; }
       this.wantPause = false;
       // time dilation
       if (this.slowT > 0) { this.slowT -= rdt; this.timeScale = U.lerp(this.timeScale, this.slowScale, 0.3); }
@@ -255,7 +256,7 @@
         G.updateHazards(dt);
         G.Boons.update(dt);
       }
-      this.updPickups(dt); G.Props.update(dt); G.Routes.update(this);
+      this.updPickups(dt); G.Props.update(dt); G.Routes.update(this); if (G.Map) G.Map.mark(this, dt);
       G.Tut.update(dt);
       if (this.state === 'play') G.Chapters.hook('update', this, dt);
       G.FX.update(dt);
@@ -422,7 +423,7 @@
       this.encState[id] = 'active'; this.encWave = this.encWave || {}; this.encWave[id] = 0; this.encWaveT = 0;
       if (E.arena) {
         this.arena = { id, x0: E.arena[0], x1: E.arena[1] };
-        const top = E.wallBottom != null ? -1600 : (E.wallTop ?? -1600), bot = E.wallBottom ?? 40;
+        const top = E.wallTop ?? -1600, bot = E.wallBottom ?? 40;   // a crypt arena stands between the crypt's floor and ceiling
         G.Phys.dyn = G.Phys.dyn.filter((w) => w.keep).concat([{ x: E.arena[0] - 30, y: top, w: 30, h: bot - top, wall: true }, { x: E.arena[1], y: top, w: 30, h: bot - top, wall: true }]);
         G.SFX.play('door');
         if (!E.boss && !E.elite) { this.bark('arena'); G.SFX.play('stingBattle'); }
@@ -603,6 +604,7 @@
       for (const d of G.Abyss.doorNear(this)) list.push(d);
       for (const d of G.Routes.interactables(this)) list.push(d);
       for (const d of G.Routes.exitNear()) list.push(d);
+      if (G.Ch1X) for (const d of G.Ch1X.interactables(this)) list.push(d);
       return list;
     },
     updInteract() {
@@ -773,6 +775,7 @@
       this.kickX = U.damp(this.kickX || 0, 0, 22, rdt); this.kickY = U.damp(this.kickY || 0, 0, 22, rdt);
       this.punchZ = U.damp(this.punchZ || 0, 0, 14, rdt);
       const S = this.baseS * c.zoom * (1 + this.punchZ);
+      if (!(W > 0 && H > 0 && Number.isFinite(S) && S > 0 && Number.isFinite(c.x) && Number.isFinite(c.y))) return;   // a hidden canvas or an unset camera: nothing to draw this frame
       // shake offset
       const tr = this.trauma * this.trauma, t = this.realTime;
       const sx = (U.noise1(t * 30, 1) - 0.5) * 2 * 22 * tr, sy = (U.noise1(t * 30, 2) - 0.5) * 2 * 18 * tr;
@@ -833,7 +836,7 @@
       const wc = this.arena && this.arena.id === 'tut' ? '111,243,255' : '255,61,127', wl = this.arena && this.arena.id === 'tut' ? 'rgba(190,250,255,0.5)' : 'rgba(255,170,200,0.5)';
       G.Props.drawGates(ctx, t); G.Routes.draw(ctx, this);
       for (const w of G.Phys.dyn) {
-        if (w.gate) continue;
+        if (w.gate || w.noGlow) continue;
         const x = w.x + w.w / 2, top = Math.max(w.y, this.cam.y - 500), bot = Math.min(w.y + w.h, this.cam.y + 500);
         ctx.save(); ctx.globalCompositeOperation = 'lighter';
         const g = ctx.createLinearGradient(x - 30, 0, x + 30, 0);

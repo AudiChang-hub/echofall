@@ -120,14 +120,43 @@
     pal: CH1_PAL,
     music: { explore: 'explore', boss: 'boss', boss2: 'boss2', elite: 'duel', rest: 'rest' },
     musicAt: (x) => (x >= 6200 ? 'cathedral' : 'explore'),
-    ambienceAt: (x, y) => (y < -500 ? 'roof' : x >= 6200 ? 'cathedral' : 'city'),
+    ambienceAt: (x, y) => (y < -500 ? 'roof' : y > 150 || x >= 6200 ? 'cathedral' : 'city'),
     defaultBg: true,
     next: 2,
     // chapter 1 ends on Maestrina: the Ark falls silent — on to the Ladder
     // each district has its own landmark on the horizon: a ship run aground off the old harbour, the funeral avenue's
     // great bell, the gate of the cathedral (js/landmarks.js)
+    // the explorable city (js/ch1x.js): the crypt and the sunken hold get their own stone, seals and spirit paths are drawn
+    // in the play plane, abilities are picked up from their shrines
     hooks: {
-      afterLayer(k, ctx, cam, W, H, S, time) { if (!G.Abyss.active && !G.Routes.active) G.Landmarks.drawPlaced(k, ctx, cam, W, H, S, time, CH1_MARKS, 0); },
+      afterLayer(k, ctx, cam, W, H, S, time) {
+        if (G.Abyss.active || G.Routes.active) return;
+        if (cam.y < 200) G.Landmarks.drawPlaced(k, ctx, cam, W, H, S, time, CH1_MARKS, 0);   // not from under the city
+        if (k === 'near' && G.Ch1X) G.Ch1X.backdrop(ctx, cam, W, H, S, time);
+      },
+      drawBack(ctx, g) { if (G.Ch1X) G.Ch1X.drawWorld(ctx, g); },
+      update(g, dt) { if (G.Ch1X) G.Ch1X.update(g, dt); },
+      interact(g, it) { return G.Ch1X ? G.Ch1X.interact(g, it) : false; },
+    },
+    solidPainters: {
+      // crypt stone: dressed blocks, a worn lip, soot
+      crypt(s) {
+        return { x: s.x - 6, y: s.y - 20, w: s.w + 12, h: s.h + 20, draw(g) {
+          const rr = U.mulberry32(Math.floor(s.x * 7 + s.y));
+          const gr = g.createLinearGradient(0, s.y, 0, s.y + Math.min(s.h, 300));
+          gr.addColorStop(0, '#4a3e48'); gr.addColorStop(0.1, '#2c242d'); gr.addColorStop(1, '#141017');
+          g.fillStyle = gr; g.fillRect(s.x, s.y, s.w, s.h);
+          g.strokeStyle = 'rgba(0,0,0,0.45)'; g.lineWidth = 1.5;
+          for (let yy = s.y + 26, row = 0; yy < s.y + s.h; yy += 34, row++) {
+            g.beginPath(); g.moveTo(s.x, yy); g.lineTo(s.x + s.w, yy); g.stroke();
+            for (let xx = s.x + (row % 2) * 40 + rr() * 30; xx < s.x + s.w; xx += 80 + rr() * 40) { g.beginPath(); g.moveTo(xx, yy - 34); g.lineTo(xx, yy); g.stroke(); }
+          }
+          g.fillStyle = '#8c7a78'; g.fillRect(s.x, s.y, s.w, 2.5);
+          g.fillStyle = '#0d0a0f'; g.fillRect(s.x, s.y - 1, s.w, 1.5);
+          g.fillStyle = 'rgba(255,214,170,0.10)'; g.fillRect(s.x, s.y, 3, s.h);
+          for (let xx = s.x + 10; xx < s.x + s.w; xx += 30 + rr() * 60) if (rr() < 0.4) { g.fillStyle = 'rgba(120,100,90,0.6)'; const w = 3 + rr() * 8; g.fillRect(xx, s.y - w * 0.5, w, w * 0.5); }
+        } };
+      },
     },
   });
 })(window.G);

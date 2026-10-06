@@ -54,7 +54,7 @@
   /* ---------- steps ---------- */
   const STEPS = [
     { id: 'move', title: '移動', text: '{move} 左右移動', check: (s) => s.moved > 260 },
-    { id: 'jump', title: '跳躍', text: '{jump} 跳躍；在空中再按一次可以 <b>二段跳</b>', check: (s) => s.dj },
+    { id: 'jump', title: '跳躍', text: '{jump} 跳躍。（之後找到 <b>魂翼</b>，就能在空中再跳一次）', check: (s) => s.jumped },
     { id: 'attack', title: '自動攻擊', text: '巴里會 <b>自動攻擊</b> 武器搆得到的敵人。走近訓練幻影，讓她打出完整的 <b>四段連擊</b>', phantom: true, check: (s) => s.maxCi >= 3 },
     { id: 'dodge', title: '閃避', text: '幻影的刀一發光就是要出招了。按 {dodge} 閃過去（2 次）', phantom: true, attack: 'red', need: 2, count: (s) => s.redDodges, check: (s) => s.redDodges >= 2 },
     { id: 'perfect', title: '完美閃避', text: '等攻擊<b>快打中你的那一瞬間</b>才按 {dodge}，就是 <b>完美閃避</b>：時間變慢、累積共鳴，接著 <b>自動反擊</b>（2 次）', phantom: true, attack: 'white', need: 2, count: (s) => s.perfects, check: (s) => s.perfects >= 2 },
@@ -138,6 +138,7 @@
       // track what the player does
       s.moved += Math.abs(P.x - s.lastX); s.lastX = P.x;
       if (P.jumps >= 2) s.dj = true;
+      if (P.jumps >= 1 && !P.onGround) s.jumped = true;
       if (P.state === 'light' && this.phantom && P.hitSet.has(this.phantom)) s.maxCi = Math.max(s.maxCi, P.ci);
       if (P.state === 'heavy' && this.phantom && P.hitSet.has(this.phantom)) s.heavy = true;
       if (P.state === 'skill1' || P.state === 'skill2' || P.state === 'cskill') s.skill = true;

@@ -117,19 +117,19 @@ window.G = window.G || {};
     left: ['KeyA', 'ArrowLeft'], right: ['KeyD', 'ArrowRight'], up: ['KeyW', 'ArrowUp'], down: ['KeyS', 'ArrowDown'],
     jump: ['Space', 'KeyW', 'ArrowUp'], light: ['KeyJ'], dodge: ['KeyL', 'ShiftLeft', 'ShiftRight'],
     guard: ['KeyK'], skill: ['KeyU', 'KeyQ'], heal: ['KeyF', 'KeyR'], interact: ['KeyE'],
-    pause: ['Escape', 'KeyP'], confirm: ['Enter', 'Space'], back: ['Escape', 'Backspace'],
+    pause: ['Escape', 'KeyP'], map: ['KeyM', 'Tab'], confirm: ['Enter', 'Space'], back: ['Escape', 'Backspace'],
     menuUp: ['KeyW', 'ArrowUp'], menuDown: ['KeyS', 'ArrowDown'], menuLeft: ['KeyA', 'ArrowLeft'], menuRight: ['KeyD', 'ArrowRight'],
     tabL: ['KeyQ'], tabR: ['KeyE'],
   };
   // standard gamepad mapping
   const PADMAP = {
-    jump: [0], dodge: [1], light: [2], skill: [3, 5], guard: [4, 6], heal: [7, 12], pause: [9],
+    jump: [0], dodge: [1], light: [2], skill: [3, 5], guard: [4, 6], heal: [7, 12], pause: [9], map: [8],
     interact: [13], confirm: [0], back: [1], menuUp: [12], menuDown: [13], menuLeft: [14], menuRight: [15],
     left: [14], right: [15], up: [12], down: [13], tabL: [4], tabR: [5],
   };
   const GLYPH_KB = {
     move: 'A / D', left: 'A', right: 'D', jump: 'Space', light: 'J', dodge: 'L', guard: 'K', skill: 'U',
-    heal: 'F', interact: 'E', pause: 'P', confirm: 'Enter', back: 'Esc', tabL: 'Q', tabR: 'E',
+    heal: 'F', interact: 'E', pause: 'P', map: 'M', confirm: 'Enter', back: 'Esc', tabL: 'Q', tabR: 'E',
     menuUp: '↑', menuDown: '↓', menuLeft: '←', menuRight: '→',
   };
   const GLYPH_PAD = {

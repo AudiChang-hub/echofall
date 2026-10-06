@@ -211,7 +211,7 @@
         } else if (this.onGround || this.coyote > 0) {
           I.consume('jump'); this.vy = JUMP; this.jumps = 1; this.coyote = 0; this.onGround = false; this.jumpT = 0;
           G.SFX.play('jump'); G.SFX.play('cloth', 0.8); G.FX.dust(this.x, this.y, 6, { w: 20, speed: 120 });
-        } else if (this.jumps < 2) {
+        } else if (this.jumps < 2 && (!G.Ch1X || G.Ch1X.canDouble())) {   // 魂翼: chapter 1 earns the double jump
           I.consume('jump'); this.vy = DJUMP; this.jumps = 2; this.flipT = A.flip.dur; this.jumpT = 0;
           G.SFX.play('jump'); G.FX.ring(this.x, this.y - 10, 4, 40, 0.3, '#7ff4ff', 3, { flat: 0.3 });
         }
@@ -266,7 +266,8 @@
       const top = this.y + Math.min(S.box.y, -150) - 40, bot = this.y + 20;
       const mx = G.Input.moveX();
       let best = null, bd = 1e9;
-      for (const e of this.game.enemies) {
+      // cracked walls (js/ch1x.js) take the blade like a foe would
+      for (const e of this.game.enemies.concat(G.Ch1X ? G.Ch1X.targets(this) : [])) {
         if (e.dead || e.state === 'spawn' || e.state === 'executed' || e.invuln || e.state === 'die') continue;
         // never swing on its own into a counter stance (Vega's 靜, Graves' 靜候) or a shield that just turned the blade
         const A0 = e.state === 'atk' && e.atk;
@@ -565,6 +566,7 @@
         g.stats.hits++;
       }
       G.Props.hit(g, b, h.dmg, this);   // crates, urns and crystals break under the blade too
+      if (G.Ch1X) G.Ch1X.hit(b);
     }
     receiveHit(src, info) {
       const g = this.game;
