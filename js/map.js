@@ -118,8 +118,8 @@
       ctx.restore();
       // markers (only where seen)
       const labels = [{ x: X(g.player.x) - 22, y: Y(g.player.y) - 32, w: 44, h: 14 }];   // Bari's own name stays clear
-      const mark = (x, y, kind, label) => {
-        if (!seen(x, y)) return;
+      const mark = (x, y, kind, label, always) => {
+        if (!always && !seen(x, y)) return;
         const sx = X(x), sy = Y(y) - 6;
         ctx.save(); ctx.translate(sx, sy);
         if (kind === 'pylon') { ctx.fillStyle = '#7ff4ff'; ctx.beginPath(); ctx.moveTo(0, -8); ctx.lineTo(6, 0); ctx.lineTo(0, 8); ctx.lineTo(-6, 0); ctx.closePath(); ctx.fill(); ctx.shadowColor = '#7ff4ff'; ctx.shadowBlur = 8; ctx.fill(); }
@@ -150,7 +150,8 @@
       for (const n of L.notes) if (!F['note_' + n.id]) mark(n.x, n.y, 'note');
       for (const n of L.npcs) mark(n.x, n.y, 'npc');
       for (const gt of (G.Props.gates || [])) if (!gt.open) mark(gt.x, gt.y, 'door', '送葬門');
-      if (G.Ch1X && G.Ch1X.on()) for (const k in G.Ch1X.ABILITY) if (!G.Ch1X.has(k)) { const a = G.Ch1X.ABILITY[k]; mark(a.x, a.y, 'ability', a.name); }
+      // the abilities still waiting are always on the map (where to go next), even before Bari has been near
+      if (G.Ch1X && G.Ch1X.on()) for (const k in G.Ch1X.ABILITY) if (!G.Ch1X.has(k)) { const a = G.Ch1X.ABILITY[k]; mark(a.x, a.y, 'ability', a.name, true); }
       // Bari
       const P = g.player, px = X(P.x), py = Y(P.y) - 8, t = performance.now() / 1000;
       ctx.save(); ctx.globalCompositeOperation = 'lighter';

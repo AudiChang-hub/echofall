@@ -185,6 +185,12 @@
       return !!sv.flags['ab_' + ab] || (sv.maxChapter || 1) > 1 || !!sv.flags.boss_1;
     },
     canDouble() { return this.has('wings'); },
+    // a second jump pressed in the air without the wings: tell where they are (now and then, not every press)
+    noWings(game) {
+      if (!this.on() || game.time - (this._wingT ?? -99) < 10) return;
+      this._wingT = game.time;
+      game.toast('還不能二段跳——「魂翼」在送葬大道的屋頂上', 'warn');
+    },
     // the doors of the funeral cathedral want the bell and the lullaby
     doorOpen() { const F = this.sv().flags; return this.has('bell') && (!!F.got_musicbox || (this.sv().maxChapter || 1) > 1 || !!F.boss_1); },
 
@@ -207,6 +213,11 @@
     update(game, dt) {
       if (!this.on()) return;
       this.sync(game);
+      // the first time in the new city: where the map is, and why the second jump is gone
+      if (!game.save.flags.x_intro && game.control) {
+        game.save.flags.x_intro = true;
+        G.UI.journal('溫陀比看起來更深', '按 M（手機右上「地圖」）打開地圖。二段跳要先找到屋頂上的「魂翼」；地底的「引魂鈴」能照見亡者的路');
+      }
       // name cards for the places that are not on the street
       const P = game.player, here = INSIDE.concat(HIGH).find((r) => !r.noCard && P.x > r.x && P.x < r.x + r.w && P.y > r.y && P.y < r.y + r.h);
       const id = here ? here.id : null;

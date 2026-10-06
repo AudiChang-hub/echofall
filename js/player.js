@@ -206,12 +206,15 @@
       if (!ctl) return;
       // jumping
       if (I.pressed('jump', 130)) {
-        if (I.down('down') && this.onGround && this.y < -10 && G.LEVEL.oneways.some((p) => this.x > p.x && this.x < p.x + p.w && Math.abs(this.y - p.y) < 2)) {
+        // ↓ + jump drops through the platform underfoot — at any height (the crypt is below street level)
+        if (I.down('down') && this.onGround && G.LEVEL.oneways.some((p) => this.x > p.x && this.x < p.x + p.w && Math.abs(this.y - p.y) < 2)) {
           I.consume('jump'); this.dropT = 0.25; this.y += 2;
         } else if (this.onGround || this.coyote > 0) {
           I.consume('jump'); this.vy = JUMP; this.jumps = 1; this.coyote = 0; this.onGround = false; this.jumpT = 0;
           G.SFX.play('jump'); G.SFX.play('cloth', 0.8); G.FX.dust(this.x, this.y, 6, { w: 20, speed: 120 });
-        } else if (this.jumps < 2 && (!G.Ch1X || G.Ch1X.canDouble())) {   // 魂翼: chapter 1 earns the double jump
+        } else if (this.jumps < 2 && G.Ch1X && !G.Ch1X.canDouble()) {
+          G.Ch1X.noWings(this.game);   // 魂翼: chapter 1 earns the double jump — say where it is
+        } else if (this.jumps < 2) {
           I.consume('jump'); this.vy = DJUMP; this.jumps = 2; this.flipT = A.flip.dur; this.jumpT = 0;
           G.SFX.play('jump'); G.FX.ring(this.x, this.y - 10, 4, 40, 0.3, '#7ff4ff', 3, { flat: 0.3 });
         }
