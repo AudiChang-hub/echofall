@@ -1670,7 +1670,7 @@
       ],
       c2_pylonTalia: [
         { who: 'talia', text: '把刀放上來。……六條弦。打這把刀的人，一定很想念誰。' },
-        { who: 'talia', text: '第三弦跟第五弦在互相拉扯。妳在王城，擋了很多次吧。' },
+        { who: 'talia', text: '第三弦跟第五弦在互相拉扯。妳在王城，砍了很多東西吧。' },
         { who: 'talia', text: '……活人的手，原來是熱的。' },
         { who: 'talia', text: '從今天起，每一盞燈都找得到我。不過，還是親手磨比較好。' },
       ],
@@ -1818,7 +1818,7 @@
     },
     hints: {
       c2_jump: '<b class="r">震波</b> 會沿著地面推進——按 {jump} 跳過去',
-      c2_glob: '飛來的 <b class="w">白光</b> 彈體：命中前一瞬按 {guard} 完美格擋，就能 <b>彈回去</b>',
+      c2_glob: '飛來的 <b class="w">白光</b> 彈體彈不回去：命中前一瞬按 {dodge}，就是 <b>完美閃避</b>',
       c2_hook: '<b class="r">紅光</b> 鉤索會把妳拉近，用 {dodge} 閃開；地上閃爍的信標附近會放電，遠離它',
       c2_tower: '大鐘塔的鷹架似乎爬得上去……按 {jump} 跳上木台，空中再按一次可二段跳',
       c2_upper: '上方的貨運棧橋似乎有路……有號角聲從那裡傳來',
@@ -1883,7 +1883,7 @@
         },
       ],
       items: [
-        { id: 'c2_horn', name: '號角殘片', en: "OLIN'S HORN", unlock: 'relic_c2_horn', relic: true, body: ['纜夫頭歐林的號角碎片。吹口仍有一點溫度。', '十八年來，它只吹過一種號令：一長，不停——拉，有人要上山了。', '遺物效果：完美格擋時回復 4 生命。'] },
+        { id: 'c2_horn', name: '號角殘片', en: "OLIN'S HORN", unlock: 'relic_c2_horn', relic: true, body: ['纜夫頭歐林的號角碎片。吹口仍有一點溫度。', '十八年來，它只吹過一種號令：一長，不停——拉，有人要上山了。', '遺物效果：完美閃避時回復 4 生命。'] },
         { id: 'c2_clapper', name: '鐘樓之心', en: 'HEART OF THE BELFRY', unlock: 'relic_c2_clapper', relic: true, body: ['妲莉用鐘錘裡的碎片磨成的護符。握著它，能聽見很遠的地方有鐘聲。', '她磨了一整夜。磨完之後，才想起父親也說過，晚一點就過去。', '遺物效果：調和劑 +1。'] },
         { id: 'c2_frostbead', name: '霜念珠', en: 'FROST ROSARY', unlock: 'relic_c2_frostbead', relic: true, body: ['掛在大鐘塔頂的念珠。每一顆珠子都結著霜，卻不冰手。', '鐘樓的人說，是一位上山的公主留下的。她說，鐘不響的時候，總得有什麼替它數。', '遺物效果：最大耐力 +15。'] },
         { id: 'c2_bellclapper', name: '大鐘的鐘錘', en: 'THE GREAT CLAPPER', unlock: 'c2_got_clapper', body: ['一根比人還長的青銅鐘錘，握柄刻著「鐘樓」。十八年來，它一直躺在纜站的貨運車廂裡，微微發光。'] },
@@ -1899,7 +1899,7 @@
       ],
     },
     relics: {
-      c2_horn: { name: '號角殘片', desc: '完美格擋時回復 4 生命' },
+      c2_horn: { name: '號角殘片', desc: '完美閃避時回復 4 生命' },
       c2_clapper: { name: '鐘樓之心', desc: '調和劑 +1' },
       c2_frostbead: { name: '霜念珠', desc: '最大耐力 +15' },
     },

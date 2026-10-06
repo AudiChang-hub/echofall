@@ -13,7 +13,7 @@
     { id: 'vit', a: { up: 'vit' }, b: { id: 'absorb', name: '殘響吸收', en: 'ABSORPTION', max: 3, cost: [12, 24, 40], desc: (l) => `擊倒敵人時回復 <b>${3 * l}%</b> 最大生命` } },
     { id: 'edge', a: { up: 'edge' }, b: { id: 'backstab', name: '背刺', en: 'BACKSTAB', max: 3, cost: [12, 24, 40], desc: (l) => `攻擊背對你的敵人時，傷害 <b>+${35 * l}%</b>` } },
     { id: 'tempo', a: { up: 'tempo' }, b: { id: 'swift', name: '輕身', en: 'LIGHTFOOT', max: 3, cost: [10, 20, 34], desc: (l) => `閃避消耗的耐力 <b>-${25 * l}%</b>` } },
-    { id: 'still', a: { up: 'still' }, b: { id: 'riposte', name: '反擊之刃', en: 'RIPOSTE', max: 3, cost: [12, 24, 40], desc: (l) => `完美格擋後 2 秒內的下一擊，傷害 <b>+${60 * l}%</b>` } },
+    { id: 'still', a: { up: 'still' }, b: { id: 'riposte', name: '反擊之刃', en: 'RIPOSTE', max: 3, cost: [12, 24, 40], desc: (l) => `完美閃避後 2 秒內的下一擊，傷害 <b>+${60 * l}%</b>` } },
     { id: 'echo', a: { up: 'echo' }, b: { id: 'surge', name: '共鳴湧動', en: 'SURGE', max: 2, cost: [14, 30], desc: (l) => `每次休息、復活或進入新章節時，帶著 <b>${25 * l}</b> 點共鳴` } },
     { id: 'tonic', a: { up: 'tonic' }, b: { id: 'concentrate', name: '濃縮', en: 'CONCENTRATE', max: 3, cost: [10, 20, 34], desc: (l) => `調和劑的回復量 <b>+${15 * l}%</b>` } },
     { id: 'defy', a: { id: 'defy', name: '不屈之心', en: 'DEATH DEFIANCE', max: 1, cost: [45], desc: () => '每次休息或復活後，抵擋<b>一次致命傷害</b>並保留 40% 生命' },

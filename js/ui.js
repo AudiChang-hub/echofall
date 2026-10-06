@@ -291,7 +291,7 @@
       const g = G.game;
       g.paused = true;
       const st = g.stats;
-      $('#pauseStats').innerHTML = `<div>遊玩時間<b>${U.fmtTime(st.time)}</b></div><div>完美格擋<b>${st.parries}</b></div><div>殘響閃避<b>${st.dodges}</b></div><div>倒下<b>${st.deaths}</b></div>`;
+      $('#pauseStats').innerHTML = `<div>遊玩時間<b>${U.fmtTime(st.time)}</b></div><div>完美閃避<b>${st.parries}</b></div><div>殘響閃避<b>${st.dodges}</b></div><div>倒下<b>${st.deaths}</b></div>`;
       const resume = () => { this.pop(); };
       $('#pauseClose').onclick = () => { if (this.top() && this.top().id === 'pause') { G.SFX.play('uiBack'); resume(); } };
       const items = [
@@ -360,8 +360,8 @@
     },
     openControls() {
       const rows = [['移動', 'left', 'A / D', '左搖桿', '左側虛擬搖桿'], ['跳躍（空中再按一次二段跳）', 'jump', 'Space', 'Ⓐ', '跳'],
-        ['攻擊：連按連段・按住重擊・自動處決', 'light', 'J / 滑鼠左鍵', 'Ⓧ', '攻（按住重擊）'], ['格擋・完美格擋', 'guard', 'K / 滑鼠右鍵', 'LB', '擋'],
-        ['閃避', 'dodge', 'L / Shift', 'Ⓑ', '閃'], ['共鳴技（自動選擇）', 'skill', 'U / Q', 'Ⓨ', '技（能量足夠時出現）'],
+        ['攻擊：自動（靠近敵人就會出手、連段、處決）', 'light', '自動', '自動', '自動'],
+        ['閃避（命中前一瞬閃開＝完美閃避，自動反擊）', 'dodge', 'L / Shift', 'Ⓑ', '閃'], ['共鳴技（自動選擇）', 'skill', 'U / Q', 'Ⓨ', '技（能量足夠時出現）'],
         ['回復（喝調和劑）', 'heal', 'F', 'RT', '右上「回復」'], ['互動', 'interact', 'E', '十字鍵 ▼', '點擊畫面上的提示'],
         ['下跳穿越平台', 'down', 'S + Space', '▼ + Ⓐ', '搖桿往下 + 跳'], ['暫停', 'pause', 'P / Esc', '☰', '右上 ☰']];
       const col = G.Input.device === 'pad' ? 3 : G.Input.device === 'touch' ? 4 : 2;
@@ -759,7 +759,7 @@
 
     /* ---------------- death / ending / credits ---------------- */
     deathScreen(cb) {
-      const tips = ['白光攻擊可以格擋；紅光攻擊只能閃避。', '格擋損失的生命會變成灰色，立刻反擊就能取回。', '在攻擊命中前一瞬間閃避，會觸發殘響閃避，接著按攻擊可以瞬間反擊。', '敵人的失衡條滿了之後，靠近按攻擊就會自動處決。', '嘯者的聲波彈可以被完美格擋彈回去。', '遺落的殘響碎片會留在你倒下的地方。', '點亮魂燈台會補滿調和劑，但也會讓寂裔復甦。', '屋頂上似乎藏著什麼……'];
+      const tips = ['敵人發光就是要出招了：白光時機寬鬆，紅光傷害更重。', '巴里會自動攻擊——你只要決定站在哪裡、什麼時候閃。', '在攻擊命中前一瞬間閃避，會觸發完美閃避，接著自動瞬間反擊。', '敵人的失衡條滿了之後，走近它就會自動處決。', '換一把武器，攻擊方式就完全不同：長槍刺得遠，鐮刀連背後都掃得到。', '遺落的殘響碎片會留在你倒下的地方。', '點亮魂燈台會補滿調和劑，但也會讓寂裔復甦。', '屋頂上似乎藏著什麼……'];
       $('#deathTip').textContent = '◆ ' + tips[Math.floor(Math.random() * tips.length)];
       this.showHud(false);
       let t = 0;
@@ -784,7 +784,7 @@
       el.querySelector('.end-k').textContent = `CHAPTER ${ch.num} COMPLETE`;
       el.querySelector('h2').textContent = `第${ch.numZh || ch.num}章　${ch.title}`;
       $('#endRank').textContent = this.rankOf(st, ch.id);
-      $('#endStats').innerHTML = `<div>累計時間<b>${U.fmtTime(st.time)}</b></div><div>完美格擋<b>${st.parries}</b></div><div>處決<b>${st.exec}</b></div><div>擊破寂裔<b>${st.kills}</b></div><div>最高連擊<b>${st.maxCombo || 0}</b></div><div>倒下次數<b>${st.deaths}</b></div>`;
+      $('#endStats').innerHTML = `<div>累計時間<b>${U.fmtTime(st.time)}</b></div><div>完美閃避<b>${st.parries}</b></div><div>處決<b>${st.exec}</b></div><div>擊破寂裔<b>${st.kills}</b></div><div>最高連擊<b>${st.maxCombo || 0}</b></div><div>倒下次數<b>${st.deaths}</b></div>`;
       el.querySelector('.end-tbc').textContent = ch.outro || '';
       el.querySelector('.pane-foot').innerHTML = G.Input.device === 'touch' ? '點擊畫面　前往下一章' : `<kbd data-g="confirm">${G.Input.glyph('confirm')}</kbd> 前往下一章`;
       let t = 0;
@@ -810,7 +810,7 @@
       el.querySelector('.pane-foot').innerHTML = G.Input.device === 'touch' ? '點擊畫面　製作名單' : `<kbd data-g="confirm">${G.Input.glyph('confirm')}</kbd> 製作名單`;
       const rank = this.rankOf(st, Math.max(1, (G.game.save && G.game.save.chapter) || 1));
       $('#endRank').textContent = rank;
-      $('#endStats').innerHTML = `<div>通關時間<b>${U.fmtTime(st.time)}</b></div><div>完美格擋<b>${st.parries}</b></div><div>殘響閃避<b>${st.dodges}</b></div><div>處決<b>${st.exec}</b></div><div>擊破寂裔<b>${st.kills}</b></div><div>倒下次數<b>${st.deaths}</b></div><div>命中<b>${st.hits}</b></div><div>難度<b style="font-family:var(--serif);font-size:20px">${G.game.diff.name}</b></div>`;
+      $('#endStats').innerHTML = `<div>通關時間<b>${U.fmtTime(st.time)}</b></div><div>完美閃避<b>${st.parries}</b></div><div>殘響閃避<b>${st.dodges}</b></div><div>處決<b>${st.exec}</b></div><div>擊破寂裔<b>${st.kills}</b></div><div>倒下次數<b>${st.deaths}</b></div><div>命中<b>${st.hits}</b></div><div>難度<b style="font-family:var(--serif);font-size:20px">${G.game.diff.name}</b></div>`;
       let t = 0;
       setTimeout(() => {
         let clicked = false;
@@ -830,9 +830,9 @@
         + sec('GAME DIRECTION · 遊戲總監', 'Claude（Anthropic）')
         + sec('DESIGN · 系統與關卡設計', 'Claude', '以 The Game Awards 年度遊戲與各平台頂尖作品為標竿')
         + sec('ART DIRECTION · 美術', '程序化角色骨架 · 視差廢墟 · 體積光', '美術方向參考：Stellar Blade（劍星）')
-        + sec('COMBAT · 戰鬥設計', '完美格擋 / 可回復生命 / 失衡處決', '致敬：Lies of P、Sekiro、Elden Ring')
+        + sec('COMBAT · 戰鬥設計', '自動攻擊 / 完美閃避 / 失衡處決', '致敬：Lies of P、Sekiro、Elden Ring')
         + sec('WORLD & NARRATIVE · 世界觀與劇本', '溫陀 · 冥界庫爾 · 七道門', '改編自韓國巫歌〈巴里公主〉與蘇美詩歌〈伊南娜下冥界〉')
-        + sec('MUSIC & SOUND · 音樂與音效', '即時生成配樂 · WebAudio 程序化音效', '每一次完美格擋，都在彈奏她的主題')
+        + sec('MUSIC & SOUND · 音樂與音效', '即時生成配樂 · WebAudio 程序化音效', '每一次完美閃避，都在彈奏她的主題')
         + sec('CAST · 角色', '巴里 — 第七位公主', '寧舒 — 魂燈侍靈', '妲莉 — 點燈人', '無長丞 — 冥界的守門巨人', '瑪格 — 送葬司儀', '葛雷夫 — 掘墓人', '老鐸 — 敲鐘人', '六公主 — 走過這條路的姊姊', '厄蕾絲 — 冥后')
         + (this.creditsExtra || []).map((x) => sec(x.h, ...x.p)).join('')
         + sec('SPECIAL THANKS', '以及，願意聆聽的你。')

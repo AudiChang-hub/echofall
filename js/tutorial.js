@@ -55,13 +55,11 @@
   const STEPS = [
     { id: 'move', title: '移動', text: '{move} 左右移動', check: (s) => s.moved > 260 },
     { id: 'jump', title: '跳躍', text: '{jump} 跳躍；在空中再按一次可以 <b>二段跳</b>', check: (s) => s.dj },
-    { id: 'attack', title: '連擊', text: '走近訓練幻影，連按 {light} 打出完整的 <b>四段連擊</b>', phantom: true, check: (s) => s.maxCi >= 3 },
-    { id: 'heavy', title: '重擊', text: '<b>按住</b> {light} 蓄力，放開時打出重擊', phantom: true, check: (s) => s.heavy },
-    { id: 'guard', title: '格擋', text: '幻影的刀發出 <b class="w">白光</b> 時：按住 {guard} 擋下這一擊', phantom: true, attack: 'white', check: (s) => s.blocks + s.parries >= 1 },
-    { id: 'parry', title: '完美格擋', text: '等到 <b class="w">白光</b> 攻擊<b>快打中你的那一瞬間</b>才按 {guard}，就是完美格擋（2 次）', phantom: true, attack: 'white', need: 2, count: (s) => s.parries, check: (s) => s.parries >= 2 },
-    { id: 'dodge', title: '閃避', text: '<b class="r">紅光</b> 攻擊不能格擋！看到紅光就按 {dodge} 閃過去（2 次）', phantom: true, attack: 'red', need: 2, count: (s) => s.redDodges, check: (s) => s.redDodges >= 2 },
-    { id: 'execute', title: '處決', text: '幻影 <b>失衡</b> 了（頭上出現金色菱形）：靠近按 {light} 處決', phantom: true, breakIt: true, check: (s) => s.executed },
-    { id: 'skill', title: '共鳴技', text: '攻擊和完美格擋會累積 <b>共鳴</b>（左上的菱形）。按 {skill} 施放共鳴技', res: 50, check: (s) => s.skill },
+    { id: 'attack', title: '自動攻擊', text: '巴里會 <b>自動攻擊</b> 武器搆得到的敵人。走近訓練幻影，讓她打出完整的 <b>四段連擊</b>', phantom: true, check: (s) => s.maxCi >= 3 },
+    { id: 'dodge', title: '閃避', text: '幻影的刀一發光就是要出招了。按 {dodge} 閃過去（2 次）', phantom: true, attack: 'red', need: 2, count: (s) => s.redDodges, check: (s) => s.redDodges >= 2 },
+    { id: 'perfect', title: '完美閃避', text: '等攻擊<b>快打中你的那一瞬間</b>才按 {dodge}，就是 <b>完美閃避</b>：時間變慢、累積共鳴，接著 <b>自動反擊</b>（2 次）', phantom: true, attack: 'white', need: 2, count: (s) => s.perfects, check: (s) => s.perfects >= 2 },
+    { id: 'execute', title: '處決', text: '幻影 <b>失衡</b> 了（頭上出現金色菱形）：走近它，巴里會 <b>自動處決</b>', phantom: true, breakIt: true, check: (s) => s.executed },
+    { id: 'skill', title: '共鳴技', text: '攻擊命中和完美閃避會累積 <b>共鳴</b>（左上的菱形）。按 {skill} 施放共鳴技', res: 50, check: (s) => s.skill },
     { id: 'heal', title: '回復', text: '按 {heal} 喝調和劑回復生命，到魂燈台可以補充', hurt: true, check: (s) => s.healed },
   ];
 
@@ -76,7 +74,7 @@
       g.control = false;
       G.UI.choice({
         kicker: '戰鬥訓練 · COMBAT TRAINING', title: '要先熟悉戰鬥嗎？',
-        desc: '寧舒會喚出一個訓練用的幻影，帶你一步步練習攻擊、格擋、閃避與處決。第一次遊玩強烈建議參加（約 3 分鐘，隨時可以跳過）。',
+        desc: '寧舒會喚出一個訓練用的幻影，帶你一步步練習自動攻擊、閃避、完美閃避與處決。第一次遊玩強烈建議參加（約 3 分鐘，隨時可以跳過）。',
         items: [
           { label: '開始訓練', en: 'BEGIN TRAINING', action: () => this.start(onDone) },
           { label: '跳過，直接出發', en: 'SKIP', action: () => { g.save.flags.tut_done = true; g.control = true; onDone && onDone(); } },
@@ -86,7 +84,7 @@
     start(onDone) {
       const g = G.game, P = g.player;
       this.onDone = onDone; this.active = true; this.i = 0; this.doneT = 0;
-      this.s = { moved: 0, lastX: P.x, dj: false, maxCi: -1, heavy: false, blocks: 0, parries: 0, redDodges: 0, executed: false, skill: false, healed: false };
+      this.s = { moved: 0, lastX: P.x, dj: false, maxCi: -1, heavy: false, blocks: 0, parries: 0, perfects: 0, redDodges: 0, executed: false, skill: false, healed: false };
       // fence the training ground so nobody wanders into the first real fight
       // (the open stretch between the drop pod and the wrecked car: nothing to trip over)
       g.arena = { id: 'tut', x0: TX0, x1: TX1 };
@@ -107,7 +105,7 @@
       if (g.arena && g.arena.id === 'tut') { g.arena = null; G.Phys.dyn = []; }
       g.save.flags.tut_done = true;
       // the lessons are learned: no need to repeat the passive hints
-      for (const h of ['move', 'attack', 'guard', 'dodge', 'execute', 'skills', 'rally']) if (!skipped) g.save.flags['h_' + h] = true;
+      for (const h of ['move', 'attack', 'guard', 'dodge', 'execute', 'skills', 'rally']) g.save.flags['h_' + h] = true;
       G.UI.tutPanel(false);
       if (!skipped) { G.SFX.play('stingVictory'); g.toast('訓練完成', 'good'); g.save.tonic = g.player.maxTonic; }
       g.control = true; G.Input.clearBuffers();
@@ -128,6 +126,7 @@
       const s = this.s;
       if (name === 'block') s.blocks++;
       else if (name === 'parry') s.parries++;
+      else if (name === 'perfectDodge') s.perfects++;
       else if (name === 'dodgeRed') s.redDodges++;
       else if (name === 'execute') s.executed = true;
       void info;
@@ -148,6 +147,8 @@
       if (st.phantom) {
         const e = this.ensurePhantom();
         e.hp = e.maxHp;
+        // while it is teaching a dodge, the automatic blade leaves it alone (a stunned phantom never swings)
+        e.invuln = !!st.attack;
         if (!st.breakIt) { if (e.state !== 'broken') e.bal = 0; }
         else if (e.state !== 'broken' && e.state !== 'executed' && !e.dead) { e.atk = null; e.bal = e.maxBal; e.breakBalance(); }
         if (st.breakIt && e.state === 'executed') s.executed = true;

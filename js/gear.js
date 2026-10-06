@@ -20,7 +20,7 @@
   const CLASSES = {
     katana: { name: '直刀', en: 'STRAIGHT SWORD', glyph: '刀', dmg: 1, spd: 1, reach: 1, bal: 1, len: 1, w: 1, trait: '攻守平衡' },
     great: { name: '大劍', en: 'GREATSWORD', glyph: '劍', dmg: 1.38, spd: 0.8, reach: 1.22, bal: 1.6, len: 1.38, w: 1.9, trait: '慢而沉重，削韌極高' },
-    rapier: { name: '細劍', en: 'RAPIER', glyph: '刺', dmg: 0.8, spd: 1.22, reach: 1.06, bal: 0.7, len: 1.12, w: 0.55, parry: 0.02, trait: '出手快，完美格擋判定 +20ms' },
+    rapier: { name: '細劍', en: 'RAPIER', glyph: '刺', dmg: 0.8, spd: 1.22, reach: 1.06, bal: 0.7, len: 1.12, w: 0.55, parry: 0.02, trait: '出手快，完美閃避判定 +20ms' },
     twin: { name: '雙刃', en: 'TWINBLADE', glyph: '雙', dmg: 0.74, spd: 1.3, reach: 0.9, bal: 0.8, len: 0.82, w: 1.1, echo: 0.22, trait: '每次命中 22% 追加一刀' },
     odachi: { name: '長刀', en: 'ODACHI', glyph: '長', dmg: 1.12, spd: 0.9, reach: 1.34, bal: 1.05, len: 1.5, w: 1, trait: '刀身最長的刀' },
     spear: { name: '長槍', en: 'SPEAR', glyph: '槍', dmg: 0.95, spd: 1.0, reach: 1.48, bal: 0.9, len: 1.7, w: 1, shape: 'spear', trait: '攻擊距離最遠，削韌較低' },
@@ -102,7 +102,7 @@
     jade: { name: '碧玉琥珀', d: '最大生命 +15%', fx: { hpPct: 0.15 }, ch: 1, r: 1 },
     turtle: { name: '綠龜護符', d: '耐力 +25、耐力回復加快', fx: { sta: 25 }, ch: 1, r: 1 },
     feather: { name: '疾風羽', d: '閃避距離 +15%', fx: { dodge: 0.15 }, ch: 1, r: 1 },
-    shell: { name: '回音貝', d: '完美格擋判定 +25ms', fx: { parry: 0.025 }, ch: 2, r: 2 },
+    shell: { name: '回音貝', d: '完美閃避判定 +25ms', fx: { parry: 0.025 }, ch: 2, r: 2 },
     stone: { name: '共鳴石', d: '共鳴累積 +30%', fx: { res: 0.3 }, ch: 2, r: 1 },
     ring: { name: '斷弦指環', d: '暴擊率 +10%', fx: { crit: 0.1 }, ch: 2, r: 2 },
     crystal: { name: '碎晶之心', d: '削韌（失衡傷害）+35%', fx: { bal: 0.35 }, ch: 3, r: 2 },
@@ -120,7 +120,7 @@
     storm: { name: '雷紋護符', d: '命中時 12% 機率引發落雷', fx: { shock: 0.12 }, ch: 5, r: 3 },
     frost: { name: '寒霜之眼', d: '攻擊附帶寒氣累積', fx: { frostB: 9 }, ch: 6, r: 3 },
     blood: { name: '鮮血花', d: '攻擊附帶出血累積', fx: { bleedB: 9 }, ch: 6, r: 3 },
-    ward: { name: '盾紋護符', d: '格擋時受到的傷害 -50%', fx: { guard: 0.5 }, ch: 2, r: 1 },
+    ward: { name: '盾紋護符', d: '受到的傷害 -8%', fx: { dr: 0.08 }, ch: 2, r: 1 },
     finale: { name: '終止式胸針', d: '對頭目與菁英傷害 +15%', fx: { boss: 0.15 }, ch: 7, r: 3 },
   };
   // weapon affinities (like Elden's Ashes of War affinities)
@@ -146,10 +146,10 @@
     res: { d: (v) => `共鳴累積 +${Math.round(v * 100)}%`, w: ['head', 'body', 'weapon'], v: [0.08, 0.18] },
     shard: { d: (v) => `殘響碎片獲得 +${Math.round(v * 100)}%`, w: ['head', 'body'], v: [0.06, 0.14] },
     drop: { d: (v) => `裝備掉落率 +${Math.round(v * 100)}%`, w: ['head'], v: [0.1, 0.2] },
-    parry: { d: (v) => `完美格擋判定 +${Math.round(v * 1000)}ms`, w: ['head', 'body'], v: [0.008, 0.016] },
+    parry: { d: (v) => `完美閃避判定 +${Math.round(v * 1000)}ms`, w: ['head', 'body'], v: [0.008, 0.016] },
     dodge: { d: (v) => `閃避距離 +${Math.round(v * 100)}%`, w: ['body'], v: [0.04, 0.08] },
     run: { d: (v) => `移動速度 +${Math.round(v * 100)}%`, w: ['body', 'head'], v: [0.03, 0.07] },
-    parryHeal: { d: (v) => `完美格擋回復 ${Math.round(v * 100)}% 生命`, w: ['weapon', 'head', 'body'], v: [0.02, 0.05] },
+    parryHeal: { d: (v) => `完美閃避回復 ${Math.round(v * 100)}% 生命`, w: ['weapon', 'head', 'body'], v: [0.02, 0.05] },
     killRes: { d: (v) => `擊倒敵人回復 ${Math.round(v)} 共鳴`, w: ['weapon', 'head'], v: [3, 7], int: true },
     boss: { d: (v) => `對頭目與菁英傷害 +${Math.round(v * 100)}%`, w: ['weapon'], v: [0.05, 0.12] },
   };
@@ -534,9 +534,9 @@
     atk: ['攻擊力加成', pct], spd: ['攻擊速度加成', pct], crit: ['暴擊率', pct], bal: ['削韌加成', pct], echo: ['追加一刀機率', pct],
     leech: ['命中回復', (v) => `${v}`], exec: ['處決傷害', pct], hp: ['最大生命', (v) => `+${Math.round(v)}`], hpPct: ['最大生命', pct],
     sta: ['耐力', (v) => `${v >= 0 ? '+' : ''}${Math.round(v)}`], dr: ['減傷', pct], res: ['共鳴累積', pct], shard: ['碎片獲得', pct],
-    drop: ['掉落率', pct], parry: ['完美格擋判定', (v) => `+${Math.round(v * 1000)}ms`], dodge: ['閃避距離', (v) => `${v >= 0 ? '+' : ''}${Math.round(v * 100)}%`],
+    drop: ['掉落率', pct], parry: ['完美閃避判定', (v) => `+${Math.round(v * 1000)}ms`], dodge: ['閃避距離', (v) => `${v >= 0 ? '+' : ''}${Math.round(v * 100)}%`],
     iframes: ['閃避無敵', (v) => `+${v.toFixed(2)}s`], low: ['低血量增傷', pct], killHeal: ['擊倒回復', pct], heal: ['回復量', pct],
     tonic: ['調和劑', (v) => `+${v}`], shock: ['落雷機率', pct], frostB: ['寒氣累積', (v) => `${Math.round(v)}`], bleedB: ['出血累積', (v) => `${Math.round(v)}`],
-    guard: ['格擋減傷', pct], boss: ['對頭目增傷', pct], run: ['移動速度', pct], parryHeal: ['完美格擋回血', pct], killRes: ['擊倒回復共鳴', (v) => `+${Math.round(v)}`],
+    guard: ['格擋減傷', pct], dr: ['減傷', pct], boss: ['對頭目增傷', pct], run: ['移動速度', pct], parryHeal: ['完美閃避回血', pct], killRes: ['擊倒回復共鳴', (v) => `+${Math.round(v)}`],
   };
 })(window.G);

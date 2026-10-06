@@ -553,7 +553,7 @@
     },
     onBalanceBreak() { this.hint('execute'); if (!this._execBark) { this._execBark = true; this.bark('execute'); } },
     onPerfectParry() { G.Tut.ev('parry'); },
-    onPerfectDodge() { },
+    onPerfectDodge() { G.Tut.ev('perfectDodge'); },
     onBlock() { G.Tut.ev('block'); if (!G.Tut.active) this.hint('rally'); },
     findExecutable() {
       const P = this.player;
@@ -1066,7 +1066,7 @@
           ctx.restore();
           if (near) {
             ctx.font = '700 13px Rajdhani, "Noto Sans TC", sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffe2a8';
-            ctx.fillText(`${G.Input.glyph('light')}  處決`, x, dy - 16);
+            ctx.fillText('靠近即處決', x, dy - 16);
           }
         }
       }
@@ -1076,7 +1076,7 @@
         const x = b.x, y = b.y - b.h - 40;
         ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = `rgba(255,210,122,${0.6 + Math.sin(this.realTime * 8) * 0.4})`;
         ctx.beginPath(); ctx.moveTo(x, y - 12); ctx.lineTo(x + 12, y); ctx.lineTo(x, y + 12); ctx.lineTo(x - 12, y); ctx.fill(); ctx.restore();
-        if (Math.abs(b.x - P.x) < 200) { ctx.font = '700 14px Rajdhani, "Noto Sans TC", sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffe2a8'; ctx.fillText(`${G.Input.glyph('light')}  處決`, x, y - 20); }
+        if (Math.abs(b.x - P.x) < 200) { ctx.font = '700 14px Rajdhani, "Noto Sans TC", sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffe2a8'; ctx.fillText('靠近即處決', x, y - 20); }
       }
     },
     drawForeground(ctx, cam, S) {

@@ -322,7 +322,7 @@
         <section><h4>裝備 <em>EQUIPMENT</em></h4><ul class="bd-gear">${gear}</ul>
           <button type="button" class="gb-act main bd-go">${up ? '▲ 有更強的裝備，前往裝備' : '前往裝備'}</button>
           <ul class="bd-stats"><li><span>攻擊倍率</span><b>×${P.dmgMul.toFixed(2)}</b></li><li><span>受到傷害</span><b>${Math.round((P.dmgTaken || 1) * 100)}%</b></li>
-          <li><span>最大生命</span><b>${P.maxHp}</b></li><li><span>耐力</span><b>${Math.round(P.maxSta)}</b></li><li><span>完美格擋判定</span><b>${Math.round(P.parryWin * 1000)}ms</b></li>
+          <li><span>最大生命</span><b>${P.maxHp}</b></li><li><span>耐力</span><b>${Math.round(P.maxSta)}</b></li><li><span>完美閃避判定</span><b>${Math.round((0.06 + P.parryWin * 0.8) * 1000)}ms</b></li>
           <li><span>敵人生命</span><b>×${((g.dyn && g.dyn.hp) || 1).toFixed(2)}</b></li><li><span>敵人傷害</span><b>×${((g.dyn && g.dyn.dmg) || 1).toFixed(2)}</b></li></ul>
           <p class="bd-hint">第三章起，敵人強度會依你的攻擊力與耐打度自動調整。</p></section>`;
       const close = () => { if (this.top() && this.top().id === 'build') { G.SFX.play('uiBack'); this.pop(); } };

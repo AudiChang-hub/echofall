@@ -93,6 +93,7 @@
       if (this.dead || this.state === 'spawn' || this.state === 'executed' || this.invuln) return false;
       // shields / frontal guards: T.guard(e, h) returns true to deflect the blow entirely
       if (this.T.guard && this.T.guard(this, h)) {
+        this.deflectT = G.game.time;   // the automatic swing leaves a shield alone for a moment (js/player.js autoTarget)
         G.FX.spark(h.hx ?? this.cx, h.hy ?? this.cy, 10, { col: '#ffffff', speed: 520 }); G.SFX.play('parry', false); G.game.hitstop(0.04);
         return false;
       }

@@ -1577,7 +1577,7 @@
         { id: 'c5_gap', name: '極光斷口', en: 'THE AURORA GAP', unlock: 't_c5_t_gap', body: ['塔身斷開的一截懸廊。橫越其上的，只剩一條纜車線。', '從車廂往下望，是倒懸的天，與在天底下靜靜燃燒的極光。'] },
       ],
       items: [
-        { id: 'c5_chime', name: '叮叮的鈴芯', en: "DINGDING'S CHIME", unlock: 'relic_c5_chime', relic: true, body: ['燈俑十二號的鈴芯。它用這個記住每天走過的步數——也記住了一個孩子哼過的拍子。', '遺物效果：最大耐力 +15；每次完美格擋，回復 12 耐力。'] },
+        { id: 'c5_chime', name: '叮叮的鈴芯', en: "DINGDING'S CHIME", unlock: 'relic_c5_chime', relic: true, body: ['燈俑十二號的鈴芯。它用這個記住每天走過的步數——也記住了一個孩子哼過的拍子。', '遺物效果：最大耐力 +15；每次完美閃避，回復 12 耐力。'] },
         { id: 'c5_ribbon', name: '紅色布條', en: 'THE RED RIBBON', unlock: 'c5_got_ribbon', body: ['從一條紅色圍巾上撕下的布條，已經褪色。', '綁在鈴柄上，就不會走丟。曾經有個孩子這麼相信。'] },
       ],
       notes: [
@@ -1590,14 +1590,14 @@
       ],
     },
     relics: {
-      c5_chime: { name: '叮叮的鈴芯', desc: '最大耐力 +15、完美格擋回復 12 耐力' },
+      c5_chime: { name: '叮叮的鈴芯', desc: '最大耐力 +15、完美閃避回復 12 耐力' },
     },
   };
 
   // the elite's relic is normally defined by the foes author; provide a fallback so the drop never breaks
   if (!G.DATA.relics.c5_scope) {
-    data.relics.c5_scope = { name: '薇拉的觀星鏡', desc: '完美格擋判定 +30ms' };
-    data.codex.items.push({ id: 'c5_scope', name: '薇拉的觀星鏡', en: "VELA'S STAR-SCOPE", unlock: 'relic_c5_scope', relic: true, body: ['領航員的觀星鏡。鏡片上一道裂痕，正好劃過十字線。她說那道裂痕，讓她每一發都多想了一下。', '遺物效果：完美格擋判定 +30ms。'] });
+    data.relics.c5_scope = { name: '薇拉的觀星鏡', desc: '完美閃避判定 +30ms' };
+    data.codex.items.push({ id: 'c5_scope', name: '薇拉的觀星鏡', en: "VELA'S STAR-SCOPE", unlock: 'relic_c5_scope', relic: true, body: ['領航員的觀星鏡。鏡片上一道裂痕，正好劃過十字線。她說那道裂痕，讓她每一發都多想了一下。', '遺物效果：完美閃避判定 +30ms。'] });
     if (!G.Relics.c5_scope) G.Relics.c5_scope = { apply(P2) { P2.parryWin += 0.03; } };
   }
   // Dingding's chime keeps the beat: +15 stamina, and every perfect guard gives 12 back. (Vela's scope already boosts

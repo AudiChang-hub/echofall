@@ -2676,7 +2676,7 @@
   if (!G.DATA.speakers.c6_rook) data.speakers.c6_rook = { name: '洛克', en: 'ROOK', color: '#7dffcf' };
   if (!G.DATA.speakers.c6_cantor) data.speakers.c6_cantor = { name: '伊莉絲', en: 'IRIS', color: '#ffe6a6' };
   // the elite's relic is defined by the foes author; keep a fallback so the drop never breaks
-  if (!G.DATA.relics.c6_badge) data.relics.c6_badge = { name: '守夜者徽章', desc: '最大耐力 +25；格擋後反擊取回的可回復生命 +50%' };
+  if (!G.DATA.relics.c6_badge) data.relics.c6_badge = { name: '守夜者徽章', desc: '最大耐力 +25；受傷後立刻反擊取回的生命 +50%' };
   if (!G.Relics.c6_badge) G.Relics.c6_badge = { apply(P2) { P2.maxSta += 25; P2.rallyMul += 0.5; } };
   G.Relics.c6_portrait = { apply(P2) { P2.maxHp += 20; } };
   if (G.UI && G.UI.portraits) G.UI.portraits.c6_duoduo = (ctx, W, H, game) => { ctx.setTransform(3.3, 0, 0, 3.3, W / 2, H * 0.88); drawDuoduo(ctx, 0, 0, (game && game.realTime) || 1, 1, 1, !!(game && game.save && game.save.flags.c6_quest_done)); };

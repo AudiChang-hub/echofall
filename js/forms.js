@@ -129,7 +129,7 @@
     spear: { name: '突刺', desc: '平刺・上刺・下刺，終結技旋槍（前後皆中）', steps: [...THRUST_S, SPEAR_F], fx: 'thrust' },
     rapier: { name: '刺擊', desc: '快速突刺，終結技三連刺', steps: [...THRUST_S, RAPIER_F], fx: 'thrust' },
     scythe: { name: '收割', desc: '往身後拉回的大範圍揮掃（背後也打得到），終結技把敵人拉近', steps: REAP_S, fx: 'reap' },
-    fan: { name: '靈風', desc: '扇子本身幾乎不痛：每一揮都放出靈風（中距離穿透）', steps: FAN_S, fx: 'gust' },
+    fan: { name: '靈風', desc: '扇子本身幾乎不痛：每一揮都放出靈風（中距離穿透）', steps: FAN_S, fx: 'gust', autoRange: 440 },
   };
 
   const F = G.Forms = {

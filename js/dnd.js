@@ -36,8 +36,8 @@
       look: { cls: 'katana', len: 1, w: 1, shape: null, col: '#fff1c2' },
       base: { str: 14, dex: 8, con: 13, int: 8, wis: 12, cha: 15 },
       line: '養父母說，被丟掉的人也可以發誓。誓言不需要誰的允許。',
-      feature: { name: '神聖斬擊', desc: '完美格擋後的下一擊附加光明之力：傷害 +50%，並回復 5% 生命。' },
-      style: '直刀＋盾｜舉盾前進，完美格擋後神聖斬擊',
+      feature: { name: '神聖斬擊', desc: '完美閃避後的下一擊附加光明之力：傷害 +50%，並回復 5% 生命。' },
+      style: '直刀＋盾｜第二擊盾擊，完美閃避後神聖斬擊',
     },
     shaman: {
       name: '巫女', en: 'SHAMAN', col: '#c9b6ff', icon: 'shaman', outfit: 'gown', weapon: 'spiritfan',

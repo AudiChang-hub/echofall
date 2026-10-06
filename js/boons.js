@@ -19,7 +19,7 @@
     echoSlash: { name: '迴響斬', en: 'ECHO SLASH', col: '#7ff4ff', icon: '⟋', max: 3, v: [0, 12, 18, 24], desc: (l, m = 1) => `每第 3 下攻擊放出一道穿透劍氣，造成 <b>${n([0, 12, 18, 24][l] * m)}</b> 傷害` },
     thunder: { name: '雷弦', en: 'THUNDER STRING', col: '#ffe066', icon: 'ϟ', max: 3, v: [0, 25, 35, 45], desc: (l, m = 1) => `命中時 <b>${n(Math.min(80, [0, 25, 35, 45][l] * m))}%</b> 機率引發連鎖雷擊，彈到附近 2 名敵人（${n([0, 8, 11, 14][l] * m)} 傷害）` },
     afterimage: { name: '殘影', en: 'AFTERIMAGE', col: '#c9a2ff', icon: '◈', max: 3, v: [0, 16, 24, 32], desc: (l, m = 1) => `閃避時留下殘影，0.45 秒後爆炸，造成 <b>${n([0, 16, 24, 32][l] * m)}</b> 傷害` },
-    ward: { name: '共鳴盾', en: 'RESONANT WARD', col: '#9cf7d8', icon: '◎', max: 3, v: [0, 20, 30, 40], desc: (l, m = 1) => `完美格擋釋放衝擊波，周圍敵人受到 <b>${n([0, 20, 30, 40][l] * m)}</b> 傷害並被擊退` },
+    ward: { name: '共鳴盾', en: 'RESONANT WARD', col: '#9cf7d8', icon: '◎', max: 3, v: [0, 20, 30, 40], desc: (l, m = 1) => `完美閃避釋放衝擊波，周圍敵人受到 <b>${n([0, 20, 30, 40][l] * m)}</b> 傷害並被擊退` },
     leech: { name: '血契', en: 'BLOOD PACT', col: '#ff5d6e', icon: '♥', max: 3, v: [0, 1, 1.5, 2], desc: (l, m = 1) => `每次命中回復 <b>${n([0, 1, 1.5, 2][l] * m)}</b> 點生命` },
     crit: { name: '漸強', en: 'CRESCENDO', col: '#ffb347', icon: '✦', max: 3, v: [0, 12, 18, 25], desc: (l, m = 1) => `攻擊有 <b>${n(Math.min(60, [0, 12, 18, 25][l] * m))}%</b> 機率暴擊，造成 2 倍傷害` },
     shatter: { name: '破韻', en: 'BROKEN METER', col: '#ffd27a', icon: '✕', max: 3, v: [0, 35, 60, 85], desc: (l, m = 1) => `失衡傷害 <b>+${n([0, 35, 60, 85][l] * m)}%</b>，更快打出處決` },
@@ -35,7 +35,7 @@
     duo_allegro: { name: '疾奏', en: 'ALLEGRO', col: '#8dfcb0', icon: '≫', req: ['tempo', 'gale'], desc: () => '閃避後 1 秒內，攻擊速度再 <b>+30%</b>' },
     duo_breaker: { name: '碎譜漸強', en: 'SHATTERING CRESCENDO', col: '#8dfcb0', icon: '✸', req: ['crit', 'shatter'], desc: () => '暴擊造成<b>三倍失衡傷害</b>' },
     duo_chorus: { name: '共振斬', en: 'RESONANT WAVE', col: '#8dfcb0', icon: '〰', req: ['echoSlash', 'resonance'], desc: () => '迴響斬命中時回復 <b>5 共鳴</b>' },
-    duo_bastion: { name: '不破之盾', en: 'UNBROKEN WARD', col: '#8dfcb0', icon: '⛨', req: ['ward', 'defiance'], desc: () => '完美格擋後 2 秒內<b>受到的傷害減半</b>' },
+    duo_bastion: { name: '不破之盾', en: 'UNBROKEN WARD', col: '#8dfcb0', icon: '⛨', req: ['ward', 'defiance'], desc: () => '完美閃避後 2 秒內<b>受到的傷害減半</b>' },
   };
   const ALL = Object.assign({}, DEFS, DUOS);
 
@@ -65,7 +65,7 @@
       const cc = Math.min(0.6, this.val('crit') / 100);
       if (cc && Math.random() < cc) { dmg *= 2; crit = true; }
       if (crit && this.has('duo_breaker')) bal *= 3;
-      // Mirror of Echoes: 背刺 (strike a foe that faces away) / 反擊之刃 (first hit after a perfect parry) / 澄明 (crit after a perfect dodge)
+      // Mirror of Echoes: 背刺 (strike a foe that faces away) / 反擊之刃 (first hit after a perfect dodge — it carries what the parry used to) / 澄明 (crit after a perfect dodge)
       const M = G.Mirror;
       if (M) {
         const bs = M.lv('backstab'); if (bs && e.facing === Math.sign(e.x - P.x)) dmg *= 1 + 0.35 * bs;
@@ -119,7 +119,7 @@
       G.SFX.play('parry', true); G.game.slowmo(0.6, 0.3); G.game.toast(msg, 'item');
       return true;
     },
-    // damage the player takes is softened by 不破之盾 right after a perfect parry
+    // damage the player takes is softened by 不破之盾 right after a perfect dodge
     dmgTakenMul(P) { return this.has('duo_bastion') && P.bastionT > 0 ? 0.5 : 1; },
 
     /* ---------- effects ---------- */

@@ -111,7 +111,8 @@ window.G = window.G || {};
   };
 
   /* ---------------- Input ---------------- */
-  // Simplified scheme: attack (tap = combo, hold = heavy, auto-execute), guard, dodge, one skill key.
+  // Simplified scheme: attacks are automatic (js/player.js autoTarget); dodge, jump, one skill key. J still swings by hand;
+  // there is no guard any more (K / right mouse do nothing).
   const KEYMAP = {
     left: ['KeyA', 'ArrowLeft'], right: ['KeyD', 'ArrowRight'], up: ['KeyW', 'ArrowUp'], down: ['KeyS', 'ArrowDown'],
     jump: ['Space', 'KeyW', 'ArrowUp'], light: ['KeyJ'], dodge: ['KeyL', 'ShiftLeft', 'ShiftRight'],
@@ -164,7 +165,7 @@ window.G = window.G || {};
         if (e.pointerType !== 'mouse') return;
         this.device = 'kb';
         if (e.button === 0) { this._mouse.l = true; this._press('light'); }
-        if (e.button === 2) { this._mouse.r = true; this._press('guard'); }
+        if (e.button === 2) { this._mouse.r = true; this._press('dodge'); }   // right click dodges (there is no guard)
       });
       window.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') return; if (e.button === 0) this._mouse.l = false; if (e.button === 2) this._mouse.r = false; });
       target.addEventListener('contextmenu', (e) => e.preventDefault());

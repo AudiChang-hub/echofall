@@ -2062,12 +2062,12 @@
   ];
   const items = [
     { id: 'c4_score', name: '無名的搖籃曲', en: 'A LULLABY WITH NO NAME', unlock: 'relic_c4_score', relic: true,
-      body: ['從海上漂下來的樂譜，最上方寫著「給沒有名字的孩子」。前半是一個母親的字跡，後半是指揮補上的。它從來沒有被唱給那個孩子聽過。', '遺物效果：完美格擋判定時間 +30ms。'] },
+      body: ['從海上漂下來的樂譜，最上方寫著「給沒有名字的孩子」。前半是一個母親的字跡，後半是指揮補上的。它從來沒有被唱給那個孩子聽過。', '遺物效果：完美閃避判定時間 +30ms。'] },
     { id: 'c4_page1', name: '樂譜殘頁（一）', en: 'SCORE FRAGMENT I', unlock: 'c4_got_page1', body: ['泡過水的五線譜。音符被暈開了，但還讀得出旋律的開頭。'] },
     { id: 'c4_page2', name: '樂譜殘頁（二）', en: 'SCORE FRAGMENT II', unlock: 'c4_got_page2', body: ['邊緣被噴泉的水染成了青色。上面有一行鉛筆小字：「這裡要換氣」。'] },
     { id: 'c4_page3', name: '樂譜殘頁（三）', en: 'SCORE FRAGMENT III', unlock: 'c4_got_page3', body: ['最後一頁，是指揮的字跡。結尾是一個很長的休止，像是在等誰接著唱。'] },
   ];
-  const relics = { c4_score: { name: '無名的搖籃曲', desc: '完美格擋判定 +30ms' } };
+  const relics = { c4_score: { name: '無名的搖籃曲', desc: '完美閃避判定 +30ms' } };
   G.Relics.c4_score = { apply(P) { P.parryWin += 0.03; } };
   // the elite's relic belongs to ch4_foes.js; only fill it in if that file did not define it
   if (!G.DATA.relics.c4_rosin) {

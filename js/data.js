@@ -98,7 +98,7 @@
         tag: '寂裔｜低階・群聚',
         body: [
           '最常見的寂裔。死了卻進不了門的人，在十八年裡一點一點縮小，最後只剩一團會爬的聲音。背上的晶簇，亮著它們吞下的別人的話。',
-          '攻擊模式：蓄力後撲咬。白色閃光——可以格擋。',
+          '攻擊模式：蓄力後撲咬。白色閃光——時機寬鬆，看準了閃開。',
           '弱點：撲咬落空後的硬直。',
         ],
       },
@@ -107,7 +107,7 @@
         tag: '寂裔｜中階・人型',
         body: [
           '溫陀的王城衛兵。死在崗位上，進不了門，只好繼續站崗。右臂已和佩劍長成一體，面盔裡只剩一道縱向的裂光。',
-          '攻擊模式：二連斬（白光，可格擋）／突刺（紅光，無法格擋，必須閃避）。',
+          '攻擊模式：二連斬（白光）／突刺（紅光，傷害更重）。看到光就閃。',
           '它們仍會擺出衛隊劍術的起手式。換崗的號令，十八年沒有響過。',
         ],
       },
@@ -116,7 +116,7 @@
         tag: '寂裔｜中階・遠程',
         body: [
           '漂浮於空中的水母狀寂裔，以環狀口器發射壓縮的聲波彈。',
-          '技巧：在聲波彈命中前精準格擋，可以將它原路彈回。',
+          '技巧：聲波彈飛得慢，看準時機閃過去，再貼近打它。',
           '王城的人說，夜裡嘯者的鳴叫中，偶爾聽得出某個人的名字。被叫到的人，從不回頭。',
         ],
       },
@@ -134,7 +134,7 @@
         body: [
           '第一段悼詞：斷奏連擊、長音彈幕、滑步俯衝。',
           '第二段悼詞：「安魂曲」——晶柱會依序從地面刺出。她的拍子會越來越快，跟上它。',
-          '每一次完美格擋，都會敲響輓歌中的一個音。',
+          '每一次完美閃避，都會敲響輓歌中的一個音。',
         ],
       },
     ],
@@ -198,7 +198,7 @@
         id: 'tonic', name: '共鳴調和劑', en: 'RESONANCE TONIC', always: true,
         body: ['燈油、海鹽與苦艾調成的藥。棄兒之島的老婦人說，喝下去，魂就會記起自己還有身體。', '使用後恢復大量生命值。於魂燈台歇息時補充。'],
       },
-      { id: 'hushbell', name: '靜默之鈴', en: 'HUSHBELL', unlock: 'relic_hushbell', relic: true, body: ['一只拔掉了舌的喪鈴。送葬隊伍裡，走在最前面的人搖它。', '第三年，有人把鈴舌拔了。他說，至少別再吵醒王上。', '遺物效果：完美格擋判定時間 +40ms。'] },
+      { id: 'hushbell', name: '靜默之鈴', en: 'HUSHBELL', unlock: 'relic_hushbell', relic: true, body: ['一只拔掉了舌的喪鈴。送葬隊伍裡，走在最前面的人搖它。', '第三年，有人把鈴舌拔了。他說，至少別再吵醒王上。', '遺物效果：完美閃避判定時間 +40ms。'] },
       { id: 'dawnstring', name: '第一鏟土', en: 'THE FIRST SPADEFUL', unlock: 'relic_dawnstring', relic: true, body: ['葛雷夫替國王挖的第一個坑裡的土，裝在一只磨破的皮袋裡。', '十八年來，他一直沒有把它倒回去。', '遺物效果：攻擊時回復的「可回復生命」加倍。'] },
       { id: 'blessing', name: '敲鐘人的祝福', en: "THE RINGER'S BLESSING", unlock: 'relic_blessing', relic: true, body: ['老鐸用鐘上的銅屑為妳打的護符。', '他一輩子敲過的鐘，數得出這座城裡誰來過、誰走了。', '遺物效果：調和劑 +1，使用調和劑時額外獲得 25 共鳴。'] },
       { id: 'musicbox', name: '諾娜的音樂盒', en: "NONA'S MUSIC BOX", unlock: 'got_musicbox', body: ['一只小小的黃銅音樂盒。打開時，它唱的是溫陀的搖籃曲。', '只唱到一半，發條就鬆了。'] },
@@ -215,7 +215,7 @@
 
   /* ---------------- relics ---------------- */
   D.relics = {
-    hushbell: { name: '靜默之鈴', desc: '完美格擋判定 +40ms' },
+    hushbell: { name: '靜默之鈴', desc: '完美閃避判定 +40ms' },
     dawnstring: { name: '第一鏟土', desc: '攻擊回復的可回復生命 ×2' },
     blessing: { name: '敲鐘人的祝福', desc: '調和劑 +1；使用時 +25 共鳴' },
   };
@@ -225,14 +225,14 @@
     { id: 'vit', name: '強韌諧波', en: 'VITALITY', max: 3, cost: [60, 130, 220], desc: '最大生命 +20' },
     { id: 'edge', name: '銳弦', en: 'EDGE', max: 3, cost: [60, 130, 220], desc: '攻擊力 +12%' },
     { id: 'tempo', name: '律動', en: 'TEMPO', max: 2, cost: [80, 160], desc: '最大耐力 +20' },
-    { id: 'still', name: '靜心', en: 'STILLNESS', max: 2, cost: [90, 180], desc: '完美格擋判定 +25ms' },
+    { id: 'still', name: '靜心', en: 'STILLNESS', max: 2, cost: [90, 180], desc: '完美閃避判定 +25ms' },
     { id: 'echo', name: '回響', en: 'ECHO', max: 2, cost: [70, 150], desc: '共鳴獲取量 +30%' },
     { id: 'tonic', name: '調和', en: 'TONIC', max: 2, cost: [100, 200], desc: '調和劑攜帶量 +1' },
   ];
 
   /* ---------------- difficulty ---------------- */
   D.difficulty = {
-    story: { name: '故事', en: 'STORY', dmg: 0.5, hp: 0.75, parry: 0.27, aggr: 0.7, desc: '專注於故事與探索。完美格擋判定寬鬆，敵人傷害減半。' },
+    story: { name: '故事', en: 'STORY', dmg: 0.5, hp: 0.75, parry: 0.27, aggr: 0.7, desc: '專注於故事與探索。完美閃避判定寬鬆，敵人傷害減半。' },
     normal: { name: '標準', en: 'STANDARD', dmg: 1, hp: 1, parry: 0.17, aggr: 1, desc: '推薦。需要觀察、學習並回應敵人的節奏。' },
     master: { name: '大師', en: 'MAESTRO', dmg: 1.5, hp: 1.25, parry: 0.11, aggr: 1.3, desc: '致敬魂系的極限挑戰。一個錯誤的音符，就是終曲。' },
   };
@@ -241,11 +241,11 @@
   D.hints = {
     // device-neutral wording: {action} renders as the key, gamepad button or on-screen button in use
     move: '{move} 移動　　{jump} 跳躍（空中再按一次可二段跳）',
-    attack: '{light} 攻擊：連按打出連段，<b>按住</b> 蓄力重擊',
-    guard: '{guard} 格擋 —— 在 <b class="w">白光</b> 攻擊命中前一瞬按下，就是 <b>完美格擋</b>',
-    dodge: '{dodge} 閃避 —— <b class="r">紅光</b> 攻擊不能格擋，要閃開。剛好閃過會觸發 <b>殘響閃避</b>',
-    rally: '格擋時損失的生命會變成 <b>可回復生命</b>（灰色），立刻反擊就能取回',
-    execute: '敵人的 <b>失衡條</b> 滿了時，靠近按 {light} 攻擊就會自動 <b>處決</b>',
+    attack: '巴里會 <b>自動攻擊</b> 武器搆得到的敵人——你專心走位、跳躍和閃避',
+    guard: '敵人發出 <b class="w">白光</b> 或 <b class="r">紅光</b> 就是要出招了：按 {dodge} 閃開',
+    dodge: '{dodge} 閃避 —— 在攻擊命中前一瞬閃開，會觸發 <b>完美閃避</b>：累積共鳴並自動反擊',
+    rally: '受傷後立刻反擊，可以取回部分 <b>可回復生命</b>（灰色）',
+    execute: '敵人的 <b>失衡條</b> 滿了時，走近它，巴里會自動 <b>處決</b>',
     skills: '{skill} 共鳴技：能量滿 1 格放出職業戰技，2 格放出更強的技藝　　{heal} 回復',
     pylon: '按 {interact} 在魂燈台歇息：恢復、強化、裝備遺物。<br>注意：歇息會讓附近的寂裔復甦',
     note: '按 {interact} 閱讀',

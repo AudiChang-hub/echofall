@@ -1,12 +1,12 @@
 'use strict';
 /* ECHOFALL — mobile controls, modern side-scroller layout:
    left  : floating virtual joystick (appears under the thumb)
-   right : 4 core buttons in a thumb arc (攻 attack/hold heavy, 跳 jump, 閃 dodge, 擋 guard)
+   right : 跳 jump (big) and 閃 dodge — attacks are automatic (Bari swings at whatever is in reach)
            + 技 skill bubble that only appears when the resonance gauge can pay for it
    top   : 回復 heal (with count), ⛶ fullscreen, ☰ pause
    interaction is contextual: tap the on-screen prompt ("互動 點亮魂燈台"). */
 (function (G) {
-  const ACTS = [['KeyJ', '攻', 'a1'], ['Space', '跳', 'a2'], ['KeyL', '閃', 'a3'], ['KeyK', '擋', 'a4'], ['KeyU', '技', 'a5 sk']];
+  const ACTS = [['Space', '跳', 'a1'], ['KeyL', '閃', 'a2'], ['KeyU', '技', 'a5 sk']];
   const TOP = [['KeyF', '回復', 'heal'], ['FS', '⛶', 'fs'], ['Escape', '☰', 'pause']];
   const send = (type, code) => {
     window.dispatchEvent(new KeyboardEvent(type, { code }));

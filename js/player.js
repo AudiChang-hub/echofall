@@ -87,7 +87,7 @@
       this.jumpT = (this.jumpT || 0) + dt;
       this.dropThrough = this.dropT > 0;
       // stamina
-      this.staDelay -= dt;
+      this.staDelay -= dt; this.autoCd = (this.autoCd || 0) - dt;
       if (this.staDelay <= 0 && !ATTACK_STATES.includes(this.state) && this.state !== 'dodge') {
         this.sta = Math.min(this.maxSta, this.sta + (this.state === 'guard' ? 22 : 48) * (this.staRegen || 1) * dt);
       }
@@ -188,8 +188,6 @@
     tryCancel(allowAttack) {
       const I = G.Input;
       if (I.pressed('dodge', 160) && this.sta > 0) { I.consume('dodge'); this.startDodge(); return true; }
-      // guard cuts an attack's recovery short (it used to wait for the whole swing to finish)
-      if (this.state !== 'guard' && I.down('guard') && this.onGround) { this.enterGuard(); return true; }
       if (allowAttack && I.pressed('light', 160) && this.sta > 0) {
         I.consume('light');
         if (this.counterT > 0 && this.counterTarget && !this.counterTarget.dead) { this.startCounter(); return true; }
@@ -231,7 +229,6 @@
         }
       }
       if (I.pressed('dodge', 150) && this.sta > 0) { I.consume('dodge'); this.startDodge(); return; }
-      if (I.down('guard') && this.onGround) { if (!mx) this.autoFace(); this.enterGuard(); return; }
       // one skill button: the strongest technique the resonance gauge can pay for
       if (I.pressed('skill', 150)) {
         I.consume('skill');
@@ -239,13 +236,49 @@
         const cls = G.DnD.st() && G.DnD.st().cls;
         if (this.res >= c2 && this.onGround) { this.res -= c2; if (cls === 'shaman') { this.setState('cskill', 0.04); G.DnD.skillStart(this, 'summon'); } else this.startSkill2(); return; }
         if (this.res >= c1) { this.res -= c1; if (cls) { this.setState('cskill', 0.03); G.DnD.skillStart(this); } else this.startSkill1(); return; }
-        this.game.toast('共鳴不足：攻擊與完美格擋可以累積共鳴', 'warn');
+        this.game.toast('共鳴不足：攻擊命中與完美閃避可以累積共鳴', 'warn');
       }
       if (I.pressed('heal', 150) && this.onGround) {
         I.consume('heal');
         if (this.game.save.tonic > 0) { this.setState('heal', 0.12); this.healed = false; }
         else this.game.bark('noTonic');
+        return;
       }
+      // auto attack: Bari swings by herself at whatever comes within reach of her weapon; you move, jump, dodge and choose when to spend skills
+      if (this.autoCd <= 0) {
+        // right after a perfect dodge: the counter flashes in on its own
+        const ct = this.counterTarget;
+        if (this.counterT > 0 && ct && !ct.dead && Math.abs(ct.x - this.x) < 420 && Math.abs(ct.y - this.y) < 220) { this.startCounter(); return; }
+        const ex = this.onGround && this.game.findExecutable();
+        if (ex) { this.startExecute(ex); return; }
+        const tgt = this.autoTarget(0);
+        if (tgt) {
+          this.facing = tgt.x > this.x ? 1 : -1;
+          if (this.onGround) this.startLight(0, true);
+          else if (!this.airUsed) this.startAir(true);
+        }
+      }
+    }
+    // the nearest foe the weapon's opening move can reach (running away from a foe never turns Bari back to swing at it)
+    autoTarget(ci) {
+      const S = G.Forms.step(this, ci), form = G.Forms.form(this), R = (this.gear && this.gear.reach) || 1;
+      const fwd = form.autoRange || (S.box.x + S.box.w) * R + 24;
+      const top = this.y + Math.min(S.box.y, -150) - 40, bot = this.y + 20;
+      const mx = G.Input.moveX();
+      let best = null, bd = 1e9;
+      for (const e of this.game.enemies) {
+        if (e.dead || e.state === 'spawn' || e.state === 'executed' || e.invuln || e.state === 'die') continue;
+        // never swing on its own into a counter stance (Vega's 靜, Graves' 靜候) or a shield that just turned the blade
+        const A0 = e.state === 'atk' && e.atk;
+        if (A0 && A0.stance && (Array.isArray(A0.stance) ? e.st >= A0.stance[0] - 0.1 && e.st <= A0.stance[1] : e.st >= (A0.guardFrom || 0) - 0.1 && e.st <= (A0.guardTo ?? 99))) continue;
+        if (this.game.time - (e.deflectT ?? -9) < 1.2) continue;
+        const b = e.box; if (!b || b.y > bot || b.y + b.h < top) continue;
+        const dx = e.x - this.x, side = Math.sign(dx) || this.facing;
+        if (mx && side !== Math.sign(mx)) continue;
+        const gap = Math.max(0, Math.abs(dx) - b.w / 2);
+        if (gap <= fwd && gap < bd) { bd = gap; best = e; }
+      }
+      return best;
     }
 
     // raise the blade now; a guard press buffered during a swing starts the perfect-parry window when the blade is up,
@@ -277,11 +310,11 @@
       if (best && Math.abs(best.x - this.x) > 4) this.facing = best.x > this.x ? 1 : -1;
     }
 
-    startLight(ci) {
+    startLight(ci, auto) {
       // the weapon decides the move (js/forms.js): a spear thrusts, a hammer smashes, a scythe reaps
-      this.ci = ci; this.step = G.Forms.step(this, ci); this.hitWin = -1; this.setState('light', ci === 0 ? 0.05 : 0.03);
-      this.spendSta(STAM.light + ci * 2);
-      const mx = G.Input.moveX(); if (mx) this.facing = mx > 0 ? 1 : -1; else this.autoFace();
+      this.ci = ci; this.step = G.Forms.step(this, ci); this.hitWin = -1; this.auto = !!auto; this.setState('light', ci === 0 ? 0.05 : 0.03);
+      if (!auto) this.spendSta(STAM.light + ci * 2);   // automatic swings are free: stamina is for dodging
+      const mx = G.Input.moveX(); if (auto) { /* facing already set toward the target */ } else if (mx) this.facing = mx > 0 ? 1 : -1; else this.autoFace();
       this.vx = this.facing * this.step.lunge * G.DnD.lungeMul(ci);
       G.DnD.onLightStart(this, ci);
       G.Boons.onLight(this);
@@ -322,6 +355,13 @@
         else if (this.st >= 0.14) { this.holdCheck = false; this.setState('charge', 0.1); this.chargeK = 0.15; this.vx *= 0.3; return; }
       }
       if (I.pressed('light', 300) && this.st > 0.06 && !this.holdCheck) this.queued = true;
+      // the automatic combo carries on while a foe stays within reach of the next move
+      if (this.auto && this.ci < 3 && this.st >= L.cancel && this.st > last[1]) {
+        const ex = this.game.findExecutable();
+        if (ex) { this.startExecute(ex); return; }
+        const tgt = this.autoTarget(this.ci + 1);
+        if (tgt) { this.facing = tgt.x > this.x ? 1 : -1; this.startLight(this.ci + 1, true); return; }
+      }
       if (this.st >= L.cancel) {
         if (this.queued && this.ci < 3) {
           const ex = this.game.findExecutable();
@@ -330,10 +370,10 @@
         }
         if (this.st > last[1] && this.tryCancel(false)) return;
       }
-      if (this.st >= an.dur) this.setState('move', 0.14);
+      if (this.st >= an.dur) { this.setState('move', 0.14); if (this.auto) this.autoCd = this.ci === 3 ? 0.3 : 0.12; }
     }
-    startAir() {
-      this.setState('air', 0.04); this.airUsed = true; this.spendSta(STAM.air);
+    startAir(auto) {
+      this.setState('air', 0.04); this.airUsed = true; if (!auto) this.spendSta(STAM.air);
       this.vy = Math.min(this.vy, -120); this.trail.clear(); this.swung = false;
     }
     updAir(dt, ctl) {
@@ -392,6 +432,7 @@
       const sp = (this.back ? 640 : 860) * G.Boons.dodgeMul() * G.DnD.dodgeMul() * (1 + ((this.gear && this.gear.dodge) || 0)) * (1 - U.easeInCubic(Math.min(1, k)));
       this.vx = this.dodgeDir * sp;
       if (this.st >= 0.34) { this.setState('move', 0.1); return; }
+      if (this.st > 0.22 && this.counterT > 0 && this.counterTarget && !this.counterTarget.dead && Math.abs(this.counterTarget.x - this.x) < 520 && Math.abs(this.counterTarget.y - this.y) < 260) { this.startCounter(); return; }
       if (this.st > 0.22 && this.tryCancel(true)) return;
     }
     startCounter() {
@@ -532,7 +573,8 @@
       const fromX = info.waveFrom ?? (src && src.x != null ? src.x : info.hx);
       const front = (fromX - this.x) * this.facing >= -12;
       if (this.iframes > 0) {
-        if (this.state === 'dodge' && this.st < 0.2 && !this.perfectUsed) this.perfectDodge(src);
+        // the perfect-dodge window (difficulty, 靜心, relics and gear widen it — they used to widen the parry window)
+        if (this.state === 'dodge' && this.st < 0.06 + this.parryWin * 0.8 + (this.assist ? 0.04 : 0) + (g.tutBonus || 0) && !this.perfectUsed) this.perfectDodge(src);
         if (this.state === 'dodge' && info.unblockable) G.Tut.ev('dodgeRed');
         return 'dodged';
       }
@@ -544,7 +586,7 @@
         this.block(src, info); return 'blocked';
       }
       const hp0 = this.hp;
-      this.takeDamage(info.dmg * g.diff.dmg * (this.dmgTaken || 1) * ((g.dyn && g.dyn.dmg) || 1) * G.Boons.dmgTakenMul(this), src, info);
+      this.takeDamage(info.dmg * g.diff.dmg * (this.dmgTaken || 1) * ((g.dyn && g.dyn.dmg) || 1) * G.Boons.dmgTakenMul(this) * (1 - Math.min(0.5, (this.gear && this.gear.dr) || 0)) * (info.unblockable ? 1 : 0.85), src, info);   // white blows were made to be guarded: with dodging the only answer, they bite a little less
       // 苦難契約・脆弱: every wound also tears at what is already missing
       const fr = G.Abyss.active && G.Abyss.pact().frail;
       if (fr && this.hp > 1 && this.hp < hp0) this.hp = Math.max(1, this.hp - (this.maxHp - this.hp) * 0.1 * fr);
@@ -584,7 +626,11 @@
     }
     perfectDodge(src) {
       const g = this.game;
-      this.perfectUsed = true; this.gainRes(10); this.sta = Math.min(this.maxSta, this.sta + 10); G.DnD.onDodge(this);
+      // with guarding gone, the perfect dodge carries everything the perfect parry used to: resonance, stamina, the paladin's
+      // smite, parry boons and relics, healing affixes, and the count Mira's duet listens for (stats.parries)
+      this.perfectUsed = true; this.gainRes(13); this.sta = Math.min(this.maxSta, this.sta + 15); G.DnD.onDodge(this); G.DnD.onParry(this);
+      G.Boons.onParry(this); if (this.gear && this.gear.parryHeal) this.hp = Math.min(this.maxHp, this.hp + this.maxHp * this.gear.parryHeal);
+      g.stats.parries++;
       this.counterTarget = src && src.takeHit ? src : (src && src.owner) || null; this.counterT = 1.1;
       g.slowmo(0.65, 0.22); G.SFX.play('perfectDodge');
       G.FX.ring(this.x, this.y - 60, 10, 160, 0.5, '#7ff4ff', 4);
